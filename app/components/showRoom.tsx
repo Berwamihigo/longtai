@@ -37,7 +37,6 @@ const minutesToHours = (minutes: string | number | undefined) => {
 
 const CarsBanner = () => {
   const [cars, setCars] = useState<CarType[]>([]);
-  const [selectedImages, setSelectedImages] = useState<Record<string, string>>({});
   const router = useRouter();
 
   useEffect(() => {
@@ -47,12 +46,6 @@ const CarsBanner = () => {
         const data = await res.json();
         if (data.success) {
           setCars(data.cars);
-          // Initialize selected images with main images
-          const initialSelectedImages = data.cars.reduce((acc: Record<string, string>, car: CarType) => {
-            acc[car.name] = car.mainImageUrl;
-            return acc;
-          }, {});
-          setSelectedImages(initialSelectedImages);
         } else {
           console.error("Failed to load cars");
         }
@@ -63,13 +56,6 @@ const CarsBanner = () => {
 
     fetchCars();
   }, []);
-
-  const handleImageClick = (carName: string, imageUrl: string) => {
-    setSelectedImages(prev => ({
-      ...prev,
-      [carName]: imageUrl
-    }));
-  };
 
   return (
     <section className="cars-banner w-full bg-white">
@@ -88,7 +74,7 @@ const CarsBanner = () => {
             >
               <div className="relative aspect-[4/3]">
                 <Image
-                  src={selectedImages[car.name] || car.mainImageUrl}
+                  src={car.mainImageUrl}
                   alt={car.name}
                   fill
                   className="object-cover"
@@ -102,30 +88,6 @@ const CarsBanner = () => {
                     }}
                   />
                 </div>
-              </div>
-              
-              {/* Small Images Gallery */}
-              <div className="flex overflow-x-auto gap-2 p-2 bg-gray-50">
-                <div className="relative w-16 h-16 flex-shrink-0">
-                  <Image
-                    src={car.mainImageUrl}
-                    alt={`${car.name} main`}
-                    fill
-                    className={`object-cover rounded cursor-pointer ${selectedImages[car.name] === car.mainImageUrl ? 'ring-2 ring-[#f1b274]' : ''}`}
-                    onClick={() => handleImageClick(car.name, car.mainImageUrl)}
-                  />
-                </div>
-                {car.subImages?.map((image, index) => (
-                  <div key={index} className="relative w-16 h-16 flex-shrink-0">
-                    <Image
-                      src={image}
-                      alt={`${car.name} ${index + 1}`}
-                      fill
-                      className={`object-cover rounded cursor-pointer ${selectedImages[car.name] === image ? 'ring-2 ring-[#f1b274]' : ''}`}
-                      onClick={() => handleImageClick(car.name, image)}
-                    />
-                  </div>
-                ))}
               </div>
 
               <div
