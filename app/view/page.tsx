@@ -1,14 +1,14 @@
+"use client";
+
 import CarHero from "../components/car-hero";
 import CarCustomizer from "../components/car-view";
 import Footer from "../components/footer";
 import DesktopNav from "../components/navbar";
+import { useSearchParams } from "next/navigation";
 
-type Props = {
-  params: { name: string };
-};
-
-export default function View({ params }: Props) {
-  const carName = decodeURIComponent(params.name);
+export default function View() {
+  const searchParams = useSearchParams();
+  const carName = searchParams.get("name") || "";
 
   return (
     <section>
