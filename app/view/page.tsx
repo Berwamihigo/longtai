@@ -1,23 +1,21 @@
-"use client";
-
-import DesktopNav from "../components/navbar";
-import Footer from "../components/footer";
 import CarHero from "../components/car-hero";
 import CarCustomizer from "../components/car-view";
-import { useSearchParams } from "next/navigation";
+import Footer from "../components/footer";
+import DesktopNav from "../components/navbar";
 
-export const dynamic = 'force-dynamic'; // <-- Add this line to prevent static generation
+type Props = {
+  params: { name: string };
+};
 
-export default function View() {
-    const searchParams = useSearchParams();
-    const carName = searchParams.get("name") || "";
+export default function View({ params }: Props) {
+  const carName = decodeURIComponent(params.name);
 
-    return (
-        <section>
-            <DesktopNav />
-            <CarHero name={carName} />
-            <CarCustomizer />
-            <Footer />
-        </section>
-    );
+  return (
+    <section>
+      <DesktopNav />
+      <CarHero name={carName} />
+      <CarCustomizer />
+      <Footer />
+    </section>
+  );
 }
