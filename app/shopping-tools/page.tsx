@@ -9,7 +9,7 @@ export default function ShoppingToolsPage() {
     <main className="min-h-screen bg-gray-100">
         <Navbar />
       <ShoppingToolsHero />
-      <CarFinder />
+      {/* <CarFinder /> */}
       <ToolsGrid />
       <Footer />
     </main>

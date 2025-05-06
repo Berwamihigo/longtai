@@ -39,7 +39,7 @@ export default function DesktopNav() {
   // Handler for heart icon click
   const handleFavoritesClick = () => {
     setShowFavorites(true);
-    setIsMobileMenuOpen(false); // Optionally close mobile nav
+    setIsMobileMenuOpen(false); // Close mobile nav when opening favorites
   };
 
   const handleLogout = async () => {
@@ -103,8 +103,8 @@ export default function DesktopNav() {
         </div>
       </header>
 
-      {/* Mobile nav — updated */}
-      <header className="mobile flex items-center justify-between px-4 py-3 bg-white shadow-md md:hidden">
+      {/* Mobile nav */}
+      <header className="mobile md:display-none flex justify-between items-center px-4 py-3 bg-white">
         <div className="image">
           <img
             src="/assets/longtai.png"
@@ -120,7 +120,7 @@ export default function DesktopNav() {
         </div>
       </header>
 
-      {/* Full-screen popup menu (only if dialog is not open) */}
+      {/* Full-screen popup menu */}
       {isMobileMenuOpen && !showDialog && (
         <div className="fixed inset-0 z-50000 bg-white flex flex-col justify-between p-12">
           <div className="flex justify-between items-center">
@@ -145,7 +145,10 @@ export default function DesktopNav() {
             </Link>
           </div>
           <div className="flex justify-center gap-10 mt-10 text-2xl text-gray-700">
-            <RiHeartLine />
+            <RiHeartLine 
+              onClick={handleFavoritesClick}
+              style={{ cursor: "pointer" }}
+            />
             <RiAccountCircleLine
               onClick={handleAccountClick}
               style={{ cursor: "pointer" }}
@@ -153,7 +156,7 @@ export default function DesktopNav() {
           </div>
         </div>
       )}
-      <FavoriteTray open={showFavorites} onClose={() => setShowFavorites(false)} />
+      
       <LoginSignupDialog open={showDialog} onClose={() => setShowDialog(false)} />
       {user && (
         <ProfilePopup
@@ -164,6 +167,7 @@ export default function DesktopNav() {
           onEditPassword={handleEditPassword}
         />
       )}
+      <FavoriteTray open={showFavorites} onClose={() => setShowFavorites(false)} />
     </>
   );
 }
