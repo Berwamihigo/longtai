@@ -24,7 +24,7 @@ export default function Hero() {
         <SwiperSlide>
           <div className="relative h-full w-full">
             <Image
-              src={"https://res.cloudinary.com/dc5mdwzoz/image/upload/v1746457204/cars/main/o43j0kydrk8fjn2h10yb.jpg"}
+              src={"/assets/txl.jpg"}
               alt="Luxury Car"
               fill
               className="object-cover"

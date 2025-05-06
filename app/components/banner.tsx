@@ -93,7 +93,7 @@ export default function Banner() {
       <div className="banner" id="vehicle-stories">
         <div className="banner-top">
           <div className="left">
-            <img src="https://i.pinimg.com/736x/12/b0/88/12b0883d3d11ef60ed6b19035a81ab86.jpg" alt="" />
+            <img src="/assets/txl.jpg" alt="" />
           </div>
           <div className="right">
             <span>Offers & Services</span>
@@ -109,7 +109,7 @@ export default function Banner() {
         <div className="other-banner">
           <div className="banners-small">
             <div className="image">
-              <img src="https://i.pinimg.com/736x/12/b0/88/12b0883d3d11ef60ed6b19035a81ab86.jpg" alt="" />
+              <img src="/assets/evpolestar.jpg" alt="" />
             </div>
             <div className="texts">
               <span>Offers & Services</span>
@@ -126,7 +126,7 @@ export default function Banner() {
 
           <div className="banners-small">
             <div className="image">
-              <img src="https://i.pinimg.com/736x/12/b0/88/12b0883d3d11ef60ed6b19035a81ab86.jpg" alt="" />
+              <img src="/assets/evvolvo.jpg" alt="" />
             </div>
             <div className="texts">
               <span>Offers & Services</span>
