@@ -24,7 +24,7 @@ export default function Hero() {
         <SwiperSlide>
           <div className="relative h-full w-full">
             <Image
-              src={"/assets/txl.jpg"}
+              src={"/assets/hero-back.webp"}
               alt="Luxury Car"
               fill
               className="object-cover"

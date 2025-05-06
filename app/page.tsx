@@ -8,7 +8,7 @@ import BannerWani from "./components/inter";
 
 export default function Home() {
   return (
-    <>
+    <div className="bg-gray-100">
       <DesktopNav />
       <HomeSlider />
       <FeaturedCars />
@@ -16,6 +16,6 @@ export default function Home() {
       <Banner />
       <BannerWani />
       <Footer />
-    </>
+    </div>
   )
 }

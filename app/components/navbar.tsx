@@ -72,7 +72,7 @@ export default function DesktopNav() {
               {/* {!showVehicles ? <RiArrowDownSLine /> : <RiArrowUpSLine />} */}
             </li>
             <li className="linked flex items-center gap-1.5">
-              Shopping Tools{" "}
+              <Link href="/shopping-tools">Shopping Tools</Link>
               {/* {!showShopping ? <RiArrowDownSLine /> : <RiArrowUpSLine />} */}
             </li>
             <li className="linked">
