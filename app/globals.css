@@ -61,11 +61,12 @@ body {
 .desktop .links .nav-links .linked {
     /*✅*/
     padding: .4rem 1rem .4rem 1rem;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     color: #000;
     cursor: pointer;
     position: relative;
     border-radius: 3rem;
+    font-weight: 700;
     border: 1px solid #f4f4f4;
     transition: .51s ease-in-out;
 }
@@ -75,7 +76,7 @@ body {
     border: 1px solid #000;
 }
 
-.desktop .links .nav-links .give-border {
+.desktop .links .nav-links .nav-links .give-border {
     /*✅*/
     border: 1px solid #000;
 }
@@ -113,6 +114,26 @@ body {
     background-color: #000;
     color: #fff;
     transition: 0.3s;
+}
+
+.desktop .links .icons .icons-arrangement .ic .search-container {
+    position: relative;
+    margin-right: 1rem;
+}
+
+.desktop .links .icons .icons-arrangement .ic .search-input {
+    background-color: #f4f4f4;
+    border: 1px solid #000;
+    transition: all 0.3s ease;
+}
+
+.desktop .links .icons .icons-arrangement .ic .search-input:focus {
+    background-color: #fff;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+.desktop .links .icons .icons-arrangement .ic .search-input::placeholder {
+    color: #666;
 }
 
 .desktop .links .nav-links .vehicle-selection {
@@ -472,7 +493,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
-    align-items: center;
+    /* align-items: center; */
     padding: 5rem 0;
     color: white;
     overflow: hidden;
@@ -599,7 +620,7 @@ body {
     color: #e74c3c;
 }
 
-.featured .newone {
+.newone {
     /*✅*/
     display: flex;
     z-index: 1000;
@@ -607,7 +628,7 @@ body {
     justify-content: center;
 }
 
-.featured .newone button {
+.newone button {
     /*✅*/
     padding: 12px 30px;
     border-radius: 30px;
@@ -624,7 +645,7 @@ body {
     transition: all 0.3s ease-in-out;
 }
 
-.featured .newone button:hover {
+.newone button:hover {
     /*✅*/
     background: linear-gradient(135deg, #ff6a00, #ff3a00);
     transform: translateY(-5px);
@@ -632,18 +653,18 @@ body {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
-.featured .newone button i {
+.newone button i {
     /*✅*/
     transition: transform 0.3s ease-in-out, color 0.3s ease;
 }
 
-.featured .newone button:hover i {
+.newone button:hover i {
     /*✅*/
     transform: translateX(10px);
     color: #fff;
 }
 
-.featured.newone button:focus {
+.newone button:focus {
     /*✅*/
     outline: none;
     box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5);
@@ -2470,9 +2491,10 @@ footer .unisal .quick a:hover {
 /* react responsiveness */
 
 @media (max-width: 1200) {
-    body{
+    body {
         overflow-x: hidden;
     }
+
     .desktop {
         display: none;
     }
@@ -2497,21 +2519,25 @@ footer .unisal .quick a:hover {
     }
 
 
-    .owners{
+    .owners {
         padding: 2rem;
     }
 
-    .longtai{
+    .longtai {
         padding: 1.3rem;
     }
 
+    .desktop .links .icons .icons-arrangement .ic .search-container {
+        display: none;
+    }
 
 }
 
 @media (max-width: 820) {
-    body{
+    body {
         overflow-x: hidden;
     }
+
     .longtai .banner .banner-top {
         display: none;
     }
@@ -2520,7 +2546,7 @@ footer .unisal .quick a:hover {
         display: none;
     }
 
-    .longtai{
+    .longtai {
         padding: 1rem;
     }
 }

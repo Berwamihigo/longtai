@@ -1,0 +1,169 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { FaHeart, FaBolt, FaLeaf } from "react-icons/fa";
+import { RiArrowRightSLine } from "react-icons/ri";
+
+type CarType = {
+  name: string;
+  year: number | string;
+  price: number;
+  range: string;
+  mainImageUrl: string;
+  subImages: string[];
+  powerType?: string;
+  fullCharge?: string;
+  fullTank?: string;
+  mpgRange?: { min: string; max: string };
+  seats?: string;
+  zeroToSixty?: string;
+  category?: string;
+  description?: string;
+};
+
+export default function FeaturedCars() {
+  const router = useRouter();
+  const [cars, setCars] = useState<CarType[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [activeCategory, setActiveCategory] = useState("Sedans");
+
+  useEffect(() => {
+    const fetchCars = async () => {
+      try {
+        const res = await fetch("/api/getAllCars");
+        const data = await res.json();
+        if (data.success) {
+          const latestCars = data.cars.slice(0, 4);
+          setCars(latestCars);
+        }
+      } catch (error) {
+        console.error("Error fetching cars:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCars();
+  }, []);
+
+  const redirectTo = (carName: string) => {
+    router.push(`/view?name=${encodeURIComponent(carName)}`);
+  };
+
+  const categories = ["Sedans", "Coupe", "SUV", "Hatchback", "Truck"];
+
+  return (
+    <section className="flex flex-col gap-6 px-6 py-30 bg-gray-300">
+      <h2 className="text-4xl text-center font-bold text-gray-900 mb-5">
+        Explore Our Featured Cars
+      </h2>
+      <div className="flex justify-center mb-10">
+        <ul className="flex flex-wrap gap-4 px-6 text-lg font-semibold text-gray-600">
+          {categories.map((category) => (
+            <li key={category}>
+              <button
+                onClick={() => setActiveCategory(category)}
+                className={`relative px-4 py-2 transition duration-300 ease-in-out
+            ${
+              activeCategory === category
+                ? "text-gray-900"
+                : "hover:text-gray-800"
+            }
+            after:content-[''] after:absolute after:left-0 after:-bottom-1 after:h-[2px]
+            after:bg-gray-900 after:w-full after:scale-x-0 after:origin-left
+            ${
+              activeCategory === category
+                ? "after:scale-x-100"
+                : "after:hover:scale-x-100"
+            }
+            after:transition-transform after:duration-300 after:ease-in-out`}
+              >
+                {category}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {loading ? (
+        <div className="text-center w-full text-gray-400">
+          Loading featured cars...
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {cars.map((car, index) => (
+            <div key={index} className="flex justify-center">
+              <div
+                onClick={() => redirectTo(car.name)}
+                className="relative cursor-pointer w-full max-w-sm bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white rounded-2xl overflow-hidden shadow-2xl hover:scale-105 transition-transform duration-300 group"
+              >
+                {/* Top Image Section */}
+                <div className="relative">
+                  <img
+                    src={car.mainImageUrl}
+                    alt={car.name}
+                    className="w-full h-48 object-cover"
+                  />
+                  <div className="absolute bottom-0 left-0 w-full h-20 bg-gradient-to-t from-gray-600 via-transparent to-transparent z-10" />
+
+                  <div className="absolute top-3 right-3 bg-red-600 text-white px-3 py-1 rounded-full flex items-center gap-2 text-sm shadow-md z-20 capitalize">
+                    <FaHeart />
+                    {activeCategory}
+                  </div>
+                </div>
+
+                {/* Price Label */}
+                <div className="absolute top-44 left-4 bg-black/70 backdrop-blur-md px-4 py-1 rounded-md text-white text-sm shadow z-30">
+                  RWF {car.price.toLocaleString()}
+                </div>
+
+                {/* Info Section */}
+                <div className="p-5 pt-10 z-20 relative space-y-3">
+                  <h3 className="text-xl font-bold flex items-center gap-2">
+                    {car.name}
+                    {car.powerType === "Electric" && (
+                      <FaBolt className="text-blue-500" />
+                    )}
+                    {car.powerType === "Hybrid" && (
+                      <FaLeaf className="text-green-500" />
+                    )}
+                  </h3>
+                  <p className="text-sm text-gray-300">
+                    {car.powerType} • {car.year} • {car.category}
+                  </p>
+
+                  <hr className="border-gray-700" />
+
+                  <div className="flex flex-col gap-1 text-sm text-gray-400">
+                    {car.zeroToSixty && (
+                      <span>0-60 mph in {car.zeroToSixty}s</span>
+                    )}
+                    {car.range && car.powerType === "Electric" && (
+                      <span>Range: {car.range}</span>
+                    )}
+                    {car.fullCharge && car.powerType === "Electric" && (
+                      <span>Full Charge: {car.fullCharge} min</span>
+                    )}
+                    {car.mpgRange && car.powerType !== "Electric" && (
+                      <span>
+                        MPG: {car.mpgRange.min} - {car.mpgRange.max}
+                      </span>
+                    )}
+                    {car.seats && <span>Seats: {car.seats}</span>}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className="newone mt-8 flex justify-center">
+        <button onClick={() => router.push("/inventory")} className="">
+          Explore More Vehicles <RiArrowRightSLine size={20} />
+        </button>
+      </div>
+    </section>
+  );
+}

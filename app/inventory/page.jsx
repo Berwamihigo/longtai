@@ -3,7 +3,7 @@ import Footer from "../components/footer";
 import InventoryHero from "../components/inventory-hero";
 import BannerWani from "../components/inter";
 import CarsBanner from "../components/showRoom";
-
+import CarFinder from "../components/shopping-tools/car-finder";
 
 export default function Inventory(){
 
@@ -11,6 +11,7 @@ export default function Inventory(){
         <>
             <DesktopNav />
             <InventoryHero />
+            <CarFinder />
             <CarsBanner />
             <BannerWani />
             <Footer />

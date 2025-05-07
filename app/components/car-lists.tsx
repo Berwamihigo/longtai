@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-
 const cars = [
   { year: 2025, name: "Audi A3", price: "$40,770", mpg: "20 MPG", slug: "audia3" },
   { year: 2025, name: "BMW A3", price: "$40,770", mpg: "20 MPG", slug: "bmwa3" },
@@ -25,6 +24,7 @@ const CarList = () => {
       <div className="mb-6">
         <h2 className="text-2xl font-semibold">44 Matches</h2>
       </div>
+
 
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
         {cars.concat(cars).map((car, index) => (

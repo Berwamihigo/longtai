@@ -9,6 +9,7 @@ import {
   RiCloseLine,
   RiHeartLine,
   RiAccountCircleLine,
+  RiSearchLine,
 } from "react-icons/ri";
 import LoginSignupDialog from "./LoginSignUpDialog";
 import FavoriteTray from "./favorites";
@@ -22,6 +23,7 @@ export default function DesktopNav() {
   const [showFavorites, setShowFavorites] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [user, setUser] = useState<{ name: string; email: string } | null>(null);
+  const [showDiscover, setShowDiscover] = useState(false);
 
   // Handler for account icon click (desktop or mobile)
   const handleAccountClick = async () => {
@@ -67,23 +69,54 @@ export default function DesktopNav() {
         </div>
         <div className="links">
           <ul className="nav-links">
+            
             <li className="linked flex items-center gap-1.5">
-              <Link href="/">Home</Link>
+              <Link href="/">Our Cars</Link>
               {/* {!showVehicles ? <RiArrowDownSLine /> : <RiArrowUpSLine />} */}
             </li>
             <li className="linked flex items-center gap-1.5">
-              <Link href="/shopping-tools">Shopping Tools</Link>
+              <Link href="/shopping-tools">Shop</Link>
               {/* {!showShopping ? <RiArrowDownSLine /> : <RiArrowUpSLine />} */}
             </li>
             <li className="linked">
-              <Link href="/owners">Owners</Link>
+              <Link href="/inventory">Inventory</Link>
             </li>
-            <li className="linked">
-              <Link href="/inventory">Search Inventory</Link>
+            <li className="linked relative flex items-center align-center justify-center gap-1.5" 
+                onMouseEnter={() => setShowDiscover(true)}
+                onMouseLeave={() => setShowDiscover(false)}>
+              {/* <Link href="/owners" className="flex items-center gap-1.5"> */}
+                Discover
+                {!showDiscover ? <RiArrowDownSLine /> : <RiArrowUpSLine />}
+              {/* </Link> */}
+              {showDiscover && (
+                <div className="absolute top-full left-0 bg-white shadow-lg rounded-lg py-2 min-w-[200px] z-50">
+                  <Link href="/owners/about" className="block px-4 py-2 hover:bg-gray-100">
+                    About Us
+                  </Link>
+                  <Link href="/owners/services" className="block px-4 py-2 hover:bg-gray-100">
+                    Our Services
+                  </Link>
+                  <Link href="/owners/contact" className="block px-4 py-2 hover:bg-gray-100">
+                    Contact Us
+                  </Link>
+                </div>
+              )}
             </li>
           </ul>
-          <div className="icons">
+        </div>
+        <div className="links">
+        <div className="icons">
             <ul className="icons-arrangement">
+              <li className="ic">
+                <div className="search-container relative">
+                  <input
+                    type="text"
+                    placeholder="Search..."
+                    className="search-input pl-10 pr-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:border-black transition-all duration-300 w-48"
+                  />
+                  <RiSearchLine className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                </div>
+              </li>
               <li className="ic text-5xl">
                 <RiHeartLine
                   className="ri-heart-line"
