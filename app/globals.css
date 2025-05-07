@@ -476,9 +476,10 @@ body {
     padding: 5rem 0;
     color: white;
     overflow: hidden;
+    /* overflow: hidden;
     animation: fromLeft .4s ease-in-out, toRight .4s ease-in-out;
     animation-range: 0% entry, exit;
-    animation-timeline: view();
+    animation-timeline: view(); */
 }
 
 .featured .header {
@@ -869,8 +870,7 @@ svg.inverted-wave {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    color: #fff;
-    background-color: #f1b274;
+    color: #000;
     align-items: start;
     border-top-right-radius: 20px;
     border-bottom-right-radius: 20px;
@@ -2470,13 +2470,17 @@ footer .unisal .quick a:hover {
 /* react responsiveness */
 
 @media (max-width: 1200) {
+    body{
+        overflow-x: hidden;
+    }
     .desktop {
         display: none;
     }
 
     .mobile {
         display: flex;
-        padding: 2rem 2rem 2rem 2rem;
+        padding: .4rem 1.4rem .4rem 1.4rem;
+        height: 5rem;
     }
 
     .mobile .image img {
@@ -2489,7 +2493,7 @@ footer .unisal .quick a:hover {
     }
 
     .ri-menu-line {
-        font-size: 2.6rem;
+        font-size: 1.6rem;
     }
 
 
@@ -2497,15 +2501,26 @@ footer .unisal .quick a:hover {
         padding: 2rem;
     }
 
+    .longtai{
+        padding: 1.3rem;
+    }
+
 
 }
 
 @media (max-width: 820) {
+    body{
+        overflow-x: hidden;
+    }
     .longtai .banner .banner-top {
         display: none;
     }
 
     .longtai .navlinks {
         display: none;
+    }
+
+    .longtai{
+        padding: 1rem;
     }
 }

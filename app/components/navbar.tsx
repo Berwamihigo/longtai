@@ -135,7 +135,8 @@ export default function DesktopNav() {
                {/* <RiArrowDownSLine /> */}
             </span>
             <span className="flex justify-between items-center cursor-pointer">
-              Shopping Tools <RiArrowDownSLine />
+              <Link href="/shopping-tools">Shopping Tools</Link> 
+              {/* <RiArrowDownSLine /> */}
             </span>
             <Link href="/owners" onClick={() => setIsMobileMenuOpen(false)}>
               Owners

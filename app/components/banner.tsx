@@ -11,7 +11,7 @@ export default function Banner() {
         </span>
       </h1>
 
-      <div className="navlinks">
+      {/* <div className="navlinks">
         <ul>
           <li className="active" id="featured">
             Featured Stories
@@ -19,7 +19,7 @@ export default function Banner() {
           <li id="vehicle">Vehicles</li>
           <li id="room">Show Room</li>
         </ul>
-      </div>
+      </div> */}
 
       <div className="banner" id="featured-stories">
         <div className="banner-top">
