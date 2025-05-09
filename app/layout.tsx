@@ -15,6 +15,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Longtai Auto Rwanda",
   description: "Car Sales in Rwanda",
+  icons: {
+    icon: "/assets/longtai.ico",
+  },
 };
 
 export default function RootLayout({

@@ -89,7 +89,7 @@ export default function DesktopNav() {
                 {!showDiscover ? <RiArrowDownSLine /> : <RiArrowUpSLine />}
               {/* </Link> */}
               {showDiscover && (
-                <div className="absolute top-full left-0 bg-white shadow-lg rounded-lg py-2 min-w-[200px] z-50">
+                <div className="absolute top-full left-0 bg-white shadow-lg rounded-lg py-2 min-w-[200px] z-6000">
                   <Link href="/owners/about" className="block px-4 py-2 hover:bg-gray-100">
                     About Us
                   </Link>

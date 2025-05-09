@@ -58,7 +58,7 @@ export default function Footer() {
                 </svg>
               </motion.a>
               <motion.a 
-                href="#" 
+                href="https://www.instagram.com/longtai.rwanda/" 
                 className="text-[#f1b274] hover:text-white transition-colors duration-300"
                 whileHover={{ y: -3 }}
               >

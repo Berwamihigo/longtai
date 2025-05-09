@@ -45,7 +45,6 @@ const sampleReviews = [
     review:
       'Absolutely love this car! The performance is outstanding and the comfort is unmatched.',
     date: '2024-03-15',
-    images: ['/assets/reviews/car1.jpg'],
     carName: 'Mercedes-Benz S-Class'
   },
   {
@@ -55,7 +54,6 @@ const sampleReviews = [
     review:
       'Great luxury vehicle with amazing features. The only downside is the fuel consumption.',
     date: '2024-03-10',
-    images: ['/assets/reviews/car2.jpg'],
     carName: 'Mercedes-Benz S-Class'
   },
   {
@@ -65,7 +63,6 @@ const sampleReviews = [
     review:
       "Best car I've ever owned. The technology features are mind-blowing!",
     date: '2024-03-05',
-    images: ['/assets/reviews/car3.jpg'],
     carName: 'Mercedes-Benz S-Class'
   },
   {
@@ -75,7 +72,6 @@ const sampleReviews = [
     review:
       'Excellent build quality and comfort. The service experience was also top-notch.',
     date: '2024-03-01',
-    images: ['/assets/reviews/car4.jpg'],
     carName: 'Mercedes-Benz S-Class'
   }
 ];
@@ -110,8 +106,8 @@ export default function CarReview({ cars }: CarReviewProps) {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-4 md:p-6">
-      <h1 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8">Car Reviews</h1>
+    <div className="max-w-7xl mx-auto p-12 md:p-12">
+      <h1 className="text-5xl text-center md:text-5xl font-bold mb-15 md:mb-15">Car Reviews</h1>
 
       {/* Main Cars Horizontal Swiper */}
       <Swiper

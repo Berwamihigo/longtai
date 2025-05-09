@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 const brands = [
   {
     name: "Toyota",
-    logo: "/assets/toyota.jpeg",
+    logo: "/logos/toyota.jpeg",
   },
   {
     name: "BMW",
@@ -17,15 +17,15 @@ const brands = [
   },
   {
     name: "Audi",
-    logo: "/assets/audi.png",
+    logo: "/logos/audi.png",
   },
   {
     name: "Honda",
-    logo: "/assets/honda.jpeg",
+    logo: "/logos/honda.jpeg",
   },
   {
     name: "Nissan",
-    logo: "/assets/nissan.jpeg",
+    logo: "/logos/nissan.jpeg",
   },
   {
     name: "Ford",
@@ -33,48 +33,72 @@ const brands = [
   },
   {
     name: "Chevrolet",
-    logo: "/assets/chev.jpeg",
+    logo: "/logos/chev.jpeg",
   },
 ];
 
 export default function PopularBrands() {
-  return (
-    <section className="py-12 px-6 bg-white">
-      <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">
-        Popular Brands
-      </h2>
+  // Split brands into two equal rows
+  const firstRow = brands.slice(0, 4);
+  const secondRow = brands.slice(4);
 
-      <motion.div
-        className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 items-center justify-center max-w-5xl mx-auto"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        variants={{
-          visible: {
+  return (
+    <section className="py-20 px-6 bg-white overflow-hidden">
+      <h2 className="text-4xl md:text-5xl font-bold text-center text-gray-800 mb-16">
+        Popular Brands
+      </h2>      
+      <div className="mb-12 overflow-hidden">
+        <motion.div
+          className="flex"
+          animate={{
+            x: ["-100%", "0%"],
             transition: {
-              staggerChildren: 0.1,
+              duration: 20,
+              repeat: Infinity,
+              ease: "linear",
             },
-          },
-        }}
-      >
-        {brands.map((brand, index) => (
-          <motion.div
-            key={index}
-            className="bg-white p-4 rounded-xl shadow-md hover:shadow-xl transition duration-300 flex items-center justify-center group"
-            variants={{
-              hidden: { opacity: 0, y: 30 },
-              visible: { opacity: 1, y: 0 },
-            }}
-            whileHover={{ scale: 1.05 }}
-          >
-            <img
-              src={brand.logo}
-              alt={brand.name}
-              className="h-14 object-contain grayscale group-hover:grayscale-0 transition duration-300"
-            />
-          </motion.div>
-        ))}
-      </motion.div>
+          }}
+        >
+          {[...firstRow, ...firstRow].map((brand, index) => (
+            <div key={index} className="flex-shrink-0 w-1/4 px-4">
+              <div className="bg-white p-4 rounded-xl shadow-md hover:shadow-xl transition duration-300 flex items-center justify-center h-full">
+                <img
+                  src={brand.logo}
+                  alt={brand.name}
+                  className="h-14 object-contain grayscale hover:grayscale-0 transition duration-300"
+                />
+              </div>
+            </div>
+          ))}
+        </motion.div>
+      </div>
+
+      <div className="overflow-hidden">
+        <motion.div
+          className="flex"
+          animate={{
+            x: ["0%", "-100%"],
+            transition: {
+              duration: 20,
+              repeat: Infinity,
+              ease: "linear",
+            },
+          }}
+        >
+          {[...secondRow, ...secondRow].map((brand, index) => (
+            <div key={index} className="flex-shrink-0 w-1/4 px-4">
+              <div className="bg-white p-4 rounded-xl shadow-md hover:shadow-xl transition duration-300 flex items-center justify-center h-full">
+                <img
+                  src={brand.logo}
+                  alt={brand.name}
+                  className="h-14 object-contain grayscale hover:grayscale-0 transition duration-300"
+                />
+              </div>
+            </div>
+          ))}
+        </motion.div>
+      </div>
+     
     </section>
   );
 }

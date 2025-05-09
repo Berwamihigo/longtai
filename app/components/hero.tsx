@@ -9,7 +9,7 @@ import "swiper/css";
 import "swiper/css/pagination";
 import { RiArrowRightSLine, RiSearchLine, RiPlugLine, RiLeafLine } from "react-icons/ri";
 
-const videos = ["/assets/vid5.mp4", "/assets/vid2.mp4", "/assets/vid3.mp4"];
+const videos = ["/hero/vid1.webm", "/hero/vid2.webm", "/hero/vid3.webm", "/hero/vid4.webm", "/hero/vid5.webm", "/hero/vid6.webm", "/hero/vid7.webm"];
 
 export default function Hero() {
   const swiperRef = useRef<SwiperCore | null>(null);
@@ -64,7 +64,7 @@ export default function Hero() {
   };
 
   return (
-    <div className="relative h-[80vh] w-full overflow-hidden">
+    <div className="relative h-[87vh] w-full overflow-hidden">
       <Swiper
         modules={[Pagination]}
         pagination={{ clickable: true }}

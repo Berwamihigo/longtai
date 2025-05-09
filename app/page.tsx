@@ -1,10 +1,6 @@
 import Footer from "./components/footer";
 import HomeSlider from "./components/hero";
 import DesktopNav from "./components/navbar";
-import FeaturedCars from "./components/featured";
-import Services from "./components/services";
-import Banner from "./components/banner";
-import BannerWani from "./components/inter";
 import FeaturedCarTile from "./components/new/featured-car-tile";
 import PopularBrands from "./components/new/popular-brands";
 import ContactSection from "./components/new/contact-us";
@@ -13,29 +9,29 @@ import CarReview from "./components/car-review";
 const sampleCars = [
   {
     id: "1",
-    name: "Mercedes-Benz S-Class",
-    model: "S 580",
+    name: "BYD Seal",
+    model: "Electric",
     year: 2024,
     price: 125000,
     rating: 4.5,
-    images: ["/assets/txl.jpg", "/assets/evpolestar.jpg"],
+    images: ["/assets/bydseal.jpeg", "/assets/bydseal1.jpeg"],
     specs: {
       engine: "4.0L V8 Biturbo",
       transmission: "9-speed automatic",
       horsepower: 496,
-      acceleration: "0-60 mph in 4.4s",
+      acceleration: "0-60 mph in 2.4s",
       topSpeed: "155 mph"
     },
-    description: "The Mercedes-Benz S-Class represents the pinnacle of luxury and innovation."
+    description: "BYD seal is a chinese car with high acceleration combining elegance and performance."
   },
   {
     id: "2",
-    name: "BMW 7 Series",
+    name: "Dongfeng Nano Box",
     model: "740i",
     year: 2023,
     price: 115000,
     rating: 4.3,
-    images: ["/assets/bmw1.jpg", "/assets/bmw2.jpg"],
+    images: ["/assets/dongfeng.jpg", "/assets/dongfeng1.jpg"],
     specs: {
       engine: "3.0L Turbocharged I6",
       transmission: "8-speed automatic",
@@ -47,12 +43,12 @@ const sampleCars = [
   },
   {
     id: "3",
-    name: "Audi A8",
-    model: "A8 L",
+    name: "Wuling Baojun",
+    model: "Baojun",
     year: 2024,
-    price: 98000,
+    price: 8000,
     rating: 4.4,
-    images: ["/assets/audi1.jpg", "/assets/audi2.jpg"],
+    images: ["/assets/wuling.jpeg", "/assets/wuling1.jpeg", "/assets/wuling2.jpeg"],
     specs: {
       engine: "3.0L Turbo V6",
       transmission: "8-speed automatic",
@@ -69,14 +65,10 @@ export default function Home() {
     <div className="bg-gray-100">
       <DesktopNav />
       <HomeSlider />
-      {/* <FeaturedCars /> */}
-      <div className=""><FeaturedCarTile /></div>
+      <FeaturedCarTile />
       <PopularBrands />
-      {/* <Services /> */}
-      {/* <Banner /> */}
       <CarReview cars={sampleCars} />
       <ContactSection />
-      {/* <BannerWani /> */}
       <Footer />
     </div>
   )
