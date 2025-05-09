@@ -58,26 +58,26 @@ export default function FeaturedCars() {
       <h2 className="text-4xl text-center font-bold text-gray-900 mb-5">
         Explore Our Featured Cars
       </h2>
-      <div className="flex justify-center mb-10">
-        <ul className="flex flex-wrap gap-4 px-6 text-lg font-semibold text-gray-600">
+      <div className="mb-10 overflow-x-auto">
+        <ul className="flex min-w-max flex-nowrap md:flex-wrap gap-4 px-4 md:px-6 text-base md:text-lg font-semibold text-gray-600 justify-start md:justify-center">
           {categories.map((category) => (
-            <li key={category}>
+            <li key={category} className="shrink-0">
               <button
                 onClick={() => setActiveCategory(category)}
                 className={`relative px-4 py-2 transition duration-300 ease-in-out
-            ${
-              activeCategory === category
-                ? "text-gray-900"
-                : "hover:text-gray-800"
-            }
-            after:content-[''] after:absolute after:left-0 after:-bottom-1 after:h-[2px]
-            after:bg-gray-900 after:w-full after:scale-x-0 after:origin-left
-            ${
-              activeCategory === category
-                ? "after:scale-x-100"
-                : "after:hover:scale-x-100"
-            }
-            after:transition-transform after:duration-300 after:ease-in-out`}
+          ${
+            activeCategory === category
+              ? "text-gray-900"
+              : "hover:text-gray-800"
+          }
+          after:content-[''] after:absolute after:left-0 after:-bottom-1 after:h-[2px]
+          after:bg-gray-900 after:w-full after:scale-x-0 after:origin-left
+          ${
+            activeCategory === category
+              ? "after:scale-x-100"
+              : "after:hover:scale-x-100"
+          }
+          after:transition-transform after:duration-300 after:ease-in-out`}
               >
                 {category}
               </button>
