@@ -25,9 +25,11 @@ export default function CarUploadPage() {
   const [fullCharge, setFullCharge] = useState("");
   const [range, setRange] = useState("");
   const [fullTank, setFullTank] = useState("");
+  const [transmission, setTransmission] = useState("");
   const [mpgRange, setMpgRange] = useState({ min: "", max: "" });
   const [price, setPrice] = useState("");
   const [dragActive, setDragActive] = useState(false);
+  const [mileage, setMileage] = useState("");
   const [subDragActive, setSubDragActive] = useState(false);
 
   const handleMainImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -85,6 +87,8 @@ export default function CarUploadPage() {
         category,
         year,
         seats,
+        transmission,
+        mileage,
         zeroToSixty,
         powerType,
         price,
@@ -191,6 +195,20 @@ export default function CarUploadPage() {
           placeholder="Seats"
           value={seats}
           onChange={(e) => setSeats(e.target.value)}
+          className="p-3 border rounded-md"
+        />
+        <input
+          type="text"
+          placeholder="Transmission"
+          value={transmission}
+          onChange={(e) => setTransmission(e.target.value)}
+          className="p-3 border rounded-md"
+        />
+        <input
+          type="number"
+          placeholder="Mileage"
+          value={mileage}
+          onChange={(e) => setMileage(e.target.value)}
           className="p-3 border rounded-md"
         />
         <input
