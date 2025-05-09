@@ -2,7 +2,15 @@
 
 import { useState } from "react";
 
-const categories = ["SUV", "Sedan", "Coupe", "Hatchback", "Convertible", "Truck", "Van"];
+const categories = [
+  "SUV",
+  "Sedan",
+  "Coupe",
+  "Hatchback",
+  "Convertible",
+  "Truck",
+  "Van",
+];
 const powerTypes = ["Electric", "Hybrid", "Engine Powered"];
 
 export default function CarUploadPage() {
@@ -31,6 +39,7 @@ export default function CarUploadPage() {
   const [dragActive, setDragActive] = useState(false);
   const [mileage, setMileage] = useState("");
   const [subDragActive, setSubDragActive] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   const handleMainImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
@@ -56,7 +65,7 @@ export default function CarUploadPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSuccessMsg("");
-
+    setUploading(true);
     if (!carName || !mainImage) {
       alert("Car name and main image are required.");
       return;
@@ -115,8 +124,10 @@ export default function CarUploadPage() {
       if (!saveData.success) throw new Error(saveData.message);
 
       setSuccessMsg("🚗 Car uploaded and saved successfully!");
+      setUploading(false);
     } catch (err: any) {
       setSuccessMsg(`❌ Upload failed: ${err.message}`);
+      setUploading(false);
     }
   };
 
@@ -146,8 +157,18 @@ export default function CarUploadPage() {
 
   return (
     <div className="max-w-4xl mx-auto p-4 sm:p-8 bg-white rounded-lg shadow-lg mt-6">
-      <h1 className="text-3xl font-bold text-center mb-6 text-blue-700">Upload Car Details</h1>
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <h1 className="text-3xl font-bold text-center mb-6 text-blue-700">
+        Upload Car Details
+      </h1>
+      <form
+        onSubmit={handleSubmit}
+        className="grid grid-cols-1 md:grid-cols-2 gap-4"
+      >
+        {successMsg && (
+          <div className="mt-8 p-4 rounded bg-green-100 text-green-700 font-medium text-center">
+            {successMsg}
+          </div>
+        )}
         <input
           type="text"
           placeholder="Car Name"
@@ -263,14 +284,18 @@ export default function CarUploadPage() {
                 type="number"
                 placeholder="MPG Min"
                 value={mpgRange.min}
-                onChange={(e) => setMpgRange({ ...mpgRange, min: e.target.value })}
+                onChange={(e) =>
+                  setMpgRange({ ...mpgRange, min: e.target.value })
+                }
                 className="p-3 border rounded-md w-1/2"
               />
               <input
                 type="number"
                 placeholder="MPG Max"
                 value={mpgRange.max}
-                onChange={(e) => setMpgRange({ ...mpgRange, max: e.target.value })}
+                onChange={(e) =>
+                  setMpgRange({ ...mpgRange, max: e.target.value })
+                }
                 className="p-3 border rounded-md w-1/2"
               />
             </div>
@@ -291,12 +316,16 @@ export default function CarUploadPage() {
           className="col-span-1 md:col-span-2 p-3 border rounded-md"
         />
         <div
-          className={`col-span-1 border-2 border-dashed rounded-md p-4 text-center ${dragActive ? "border-blue-500 bg-blue-50" : "border-gray-300"}`}
+          className={`col-span-1 border-2 border-dashed rounded-md p-4 text-center ${
+            dragActive ? "border-blue-500 bg-blue-50" : "border-gray-300"
+          }`}
           onDragOver={handleMainDrag}
           onDragLeave={handleMainDrag}
           onDrop={handleMainDrop}
         >
-          <label className="block text-sm font-medium text-gray-700 mb-1">Main Image (Drag & Drop or Click)</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Main Image (Drag & Drop or Click)
+          </label>
           <input
             type="file"
             onChange={handleMainImageChange}
@@ -305,18 +334,27 @@ export default function CarUploadPage() {
             className="hidden"
             id="mainImageInput"
           />
-          <label htmlFor="mainImageInput" className="cursor-pointer text-blue-600 underline">
+          <label
+            htmlFor="mainImageInput"
+            className="cursor-pointer text-blue-600 underline"
+          >
             Choose File
           </label>
-          {mainImage && <div className="mt-2 text-green-600">{mainImage.name}</div>}
+          {mainImage && (
+            <div className="mt-2 text-green-600">{mainImage.name}</div>
+          )}
         </div>
         <div
-          className={`col-span-1 border-2 border-dashed rounded-md p-4 text-center ${subDragActive ? "border-blue-500 bg-blue-50" : "border-gray-300"}`}
+          className={`col-span-1 border-2 border-dashed rounded-md p-4 text-center ${
+            subDragActive ? "border-blue-500 bg-blue-50" : "border-gray-300"
+          }`}
           onDragOver={handleSubDrag}
           onDragLeave={handleSubDrag}
           onDrop={handleSubDrop}
         >
-          <label className="block text-sm font-medium text-gray-700 mb-1">Sub Images (Drag & Drop or Click)</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Sub Images (Drag & Drop or Click)
+          </label>
           <input
             type="file"
             onChange={handleSubImagesChange}
@@ -325,25 +363,28 @@ export default function CarUploadPage() {
             className="hidden"
             id="subImagesInput"
           />
-          <label htmlFor="subImagesInput" className="cursor-pointer text-blue-600 underline">
+          <label
+            htmlFor="subImagesInput"
+            className="cursor-pointer text-blue-600 underline"
+          >
             Choose Files
           </label>
-          {subImages.length > 0 && <div className="mt-2 text-green-600">{subImages.length} file(s) selected</div>}
+          {subImages.length > 0 && (
+            <div className="mt-2 text-green-600">
+              {subImages.length} file(s) selected
+            </div>
+          )}
         </div>
         <div className="col-span-1 md:col-span-2 text-center mt-4">
           <button
             type="submit"
             className="bg-blue-600 hover:bg-blue-700 text-white py-3 px-8 rounded-lg shadow-md transition-all w-full md:w-auto"
           >
-            Upload Car
+            {uploading ? "Uploading" : "Upload Car"}
           </button>
         </div>
       </form>
-      {successMsg && (
-        <div className="mt-8 p-4 rounded bg-green-100 text-green-700 font-medium text-center">
-          {successMsg}
-        </div>
-      )}
+
       {/* {mainImageUrl && (
         <div className="mt-10">
           <h2 className="text-lg font-semibold mb-2">Main Image:</h2>
