@@ -11,7 +11,6 @@ export default function Inventory(){
         <>
             <DesktopNav />
             <InventoryHero />
-            <CarFinder />
             <CarsBanner />
             <BannerWani />
             <Footer />
