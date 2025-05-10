@@ -12,7 +12,7 @@ const categories = [
   "Van",
 ];
 
-const driveTypes = ["Front Wheel Drive", "Rear Wheel Drive", "All Wheel Drive"];
+const driveTypes = ["Front Wheel Drive", "Rear Wheel Drive"];
 const powerTypes = ["Electric", "Hybrid", "Engine Powered"];
 
 export default function CarUploadPage() {
@@ -63,6 +63,32 @@ export default function CarUploadPage() {
       reader.onload = () => resolve(reader.result as string);
       reader.onerror = reject;
     });
+  };
+
+  const clearForm = () => {
+    setCarName("");
+    setMake("");
+    setChassisNumber("");
+    setMpg("");
+    setTankCapacity("");
+    setDescription("");
+    setMainImage(null);
+    setSubImages([]);
+    setMainImageUrl("");
+    setSubImageUrls([]);
+    setCategory("");
+    setYear("");
+    setSeats("");
+    setZeroToSixty("");
+    setPowerType("");
+    setFullCharge("");
+    setRange("");
+    setFullTank("");
+    setTransmission("");
+    setMpgRange({ min: "", max: "" });
+    setPrice("");
+    setMileage("");
+    setDriveType("");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -129,6 +155,7 @@ export default function CarUploadPage() {
 
       setSuccessMsg("🚗 Car uploaded and saved successfully!");
       setUploading(false);
+      clearForm();
     } catch (err: any) {
       setSuccessMsg(`❌ Upload failed: ${err.message}`);
       setUploading(false);
@@ -164,15 +191,57 @@ export default function CarUploadPage() {
       <h1 className="text-3xl font-bold text-center mb-6 text-blue-700">
         Upload Car Details
       </h1>
+      {successMsg && (
+        <div
+          className={`mb-6 p-4 rounded-lg text-center transition-all duration-500 ${
+            successMsg.includes("successfully")
+              ? "bg-green-100 text-green-700 border-2 border-green-500"
+              : "bg-red-100 text-red-700 border-2 border-red-500"
+          }`}
+        >
+          <div className="flex items-center justify-center gap-2">
+            {successMsg.includes("successfully") ? (
+              <>
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                <span className="font-medium">{successMsg}</span>
+              </>
+            ) : (
+              <>
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+                <span className="font-medium">{successMsg}</span>
+              </>
+            )}
+          </div>
+        </div>
+      )}
       <form
         onSubmit={handleSubmit}
         className="grid grid-cols-1 md:grid-cols-2 gap-4"
       >
-        {successMsg && (
-          <div className="mt-8 p-4 rounded bg-green-100 text-green-700 font-medium text-center">
-            {successMsg}
-          </div>
-        )}
         <input
           type="text"
           placeholder="Car Name"
