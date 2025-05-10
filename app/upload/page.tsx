@@ -17,6 +17,7 @@ const powerTypes = ["Electric", "Hybrid", "Engine Powered"];
 
 export default function CarUploadPage() {
   const [carName, setCarName] = useState("");
+  const [color, setColor] = useState("");
   const [make, setMake] = useState("");
   const [chassisNumber, setChassisNumber] = useState("");
   const [mpg, setMpg] = useState("");
@@ -43,6 +44,8 @@ export default function CarUploadPage() {
   const [subDragActive, setSubDragActive] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [driveType, setDriveType] = useState("");
+  const [engineSize, setEngineSize] = useState("");
+  const [weight, setWeight] = useState("");
 
   const handleMainImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
@@ -79,6 +82,9 @@ export default function CarUploadPage() {
     setCategory("");
     setYear("");
     setSeats("");
+    setColor("");
+    setWeight("");
+    setEngineSize("");
     setZeroToSixty("");
     setPowerType("");
     setFullCharge("");
@@ -128,7 +134,10 @@ export default function CarUploadPage() {
         transmission,
         mileage,
         zeroToSixty,
+        engineSize,
         driveType,
+        color,
+        weight,
         powerType,
         price,
         description,
@@ -255,6 +264,27 @@ export default function CarUploadPage() {
           placeholder="Car Make"
           value={make}
           onChange={(e) => setMake(e.target.value)}
+          className="p-3 border rounded-md"
+        />
+        <input
+          type="text"
+          placeholder="Car Color"
+          value={color}
+          onChange={(e) => setColor(e.target.value)}
+          className="p-3 border rounded-md"
+        />
+        <input
+          type="text"
+          placeholder="Weight"
+          value={weight}
+          onChange={(e) => setWeight(e.target.value)}
+          className="p-3 border rounded-md"
+        />
+        <input
+          type="text"
+          placeholder="Engine Size"
+          value={engineSize}
+          onChange={(e) => setEngineSize(e.target.value)}
           className="p-3 border rounded-md"
         />
         <select
