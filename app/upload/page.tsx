@@ -11,6 +11,8 @@ const categories = [
   "Truck",
   "Van",
 ];
+
+const driveTypes = ["Front Wheel Drive", "Rear Wheel Drive", "All Wheel Drive"];
 const powerTypes = ["Electric", "Hybrid", "Engine Powered"];
 
 export default function CarUploadPage() {
@@ -40,6 +42,7 @@ export default function CarUploadPage() {
   const [mileage, setMileage] = useState("");
   const [subDragActive, setSubDragActive] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [driveType, setDriveType] = useState("");
 
   const handleMainImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
@@ -99,6 +102,7 @@ export default function CarUploadPage() {
         transmission,
         mileage,
         zeroToSixty,
+        driveType,
         powerType,
         price,
         description,
@@ -184,13 +188,6 @@ export default function CarUploadPage() {
           onChange={(e) => setMake(e.target.value)}
           className="p-3 border rounded-md"
         />
-        <input
-          type="text"
-          placeholder="Chassis Number"
-          value={chassisNumber}
-          onChange={(e) => setChassisNumber(e.target.value)}
-          className="p-3 border rounded-md"
-        />
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
@@ -199,6 +196,19 @@ export default function CarUploadPage() {
         >
           <option value="">Select Category</option>
           {categories.map((cat) => (
+            <option key={cat} value={cat}>
+              {cat}
+            </option>
+          ))}
+        </select>
+        <select
+          value={driveType}
+          onChange={(e) => setDriveType(e.target.value)}
+          required
+          className="p-3 border rounded-md"
+        >
+          <option value="">Select Drive Type</option>
+          {driveTypes.map((cat) => (
             <option key={cat} value={cat}>
               {cat}
             </option>
@@ -282,7 +292,7 @@ export default function CarUploadPage() {
             <div className="flex gap-2">
               <input
                 type="number"
-                placeholder="MPG Min"
+                placeholder="Range Min"
                 value={mpgRange.min}
                 onChange={(e) =>
                   setMpgRange({ ...mpgRange, min: e.target.value })
@@ -291,7 +301,7 @@ export default function CarUploadPage() {
               />
               <input
                 type="number"
-                placeholder="MPG Max"
+                placeholder="Range Max"
                 value={mpgRange.max}
                 onChange={(e) =>
                   setMpgRange({ ...mpgRange, max: e.target.value })
