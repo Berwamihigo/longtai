@@ -59,7 +59,7 @@ export default function FeaturedCars() {
         Explore Our Featured Cars
       </h2>
       <div className="mb-10 overflow-x-auto">
-        <ul className="flex min-w-max flex-nowrap md:flex-wrap gap-4 px-4 md:px-6 text-base md:text-lg font-semibold text-gray-600 justify-start md:justify-center">
+        <ul className="flex min-w-max flex-nowrap md:flex-wrap gap-4 px-4 md:px-6 text-base md:text-lg font-semibold text-gray-600 justify-start h-20 md:justify-center">
           {categories.map((category) => (
             <li key={category} className="shrink-0">
               <button
@@ -115,7 +115,7 @@ export default function FeaturedCars() {
 
                 {/* Price Label */}
                 <div className="absolute top-44 left-4 bg-black/70 backdrop-blur-md px-4 py-1 rounded-md text-white text-sm shadow z-30">
-                  RWF {car.price.toLocaleString()}
+                  RWF {Number(car.price).toLocaleString("en-US")}
                 </div>
 
                 {/* Info Section */}
@@ -147,7 +147,7 @@ export default function FeaturedCars() {
                     )}
                     {car.mpgRange && car.powerType !== "Electric" && (
                       <span>
-                        MPG: {car.mpgRange.min} - {car.mpgRange.max}
+                        Range(km): {car.mpgRange.min} - {car.mpgRange.max}
                       </span>
                     )}
                     {car.seats && <span>Seats: {car.seats}</span>}
