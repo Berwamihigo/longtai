@@ -12,7 +12,7 @@ const categories = [
   "Van",
 ];
 
-const driveTypes = ["Front Wheel Drive", "Rear Wheel Drive"];
+const driveTypes = ["2WD", "4WD"];
 const powerTypes = ["Electric", "Hybrid", "Engine Powered"];
 
 export default function CarUploadPage() {
