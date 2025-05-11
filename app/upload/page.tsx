@@ -127,7 +127,6 @@ export default function CarUploadPage() {
       const carData: any = {
         carName,
         make,
-        chassisNumber,
         category,
         year,
         seats,
