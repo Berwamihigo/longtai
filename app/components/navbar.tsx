@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   RiArrowDownSLine,
   RiArrowUpSLine,
@@ -11,7 +11,7 @@ import {
   RiAccountCircleLine,
   RiSearchLine,
 } from "react-icons/ri";
-import LoginSignupDialog from "./LoginSignUpDialog";
+import AuthModals from "./auth/auth-modals";
 import FavoriteTray from "./favorites";
 import ProfilePopup from "./ProfilePopup";
 import NotificationToast from "./NotificationToast";
@@ -31,16 +31,28 @@ export default function DesktopNav() {
     "success"
   );
 
+  // Check user session on component mount
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const res = await fetch("/api/session");
+        const data = await res.json();
+        if (data.loggedIn) {
+          setUser(data.user);
+        }
+      } catch (error) {
+        console.error("Error checking session:", error);
+      }
+    };
+    checkSession();
+  }, []);
+
   // Handler for account icon click (desktop or mobile)
-  //okay here we check if the user is logged in or not
-  //if the user is logged in, we set the user state to the user data
-  //if the user is not logged in, we show the login dialog
   const handleAccountClick = async () => {
     // Check session
     const res = await fetch("/api/session");
     const data = await res.json();
     if (data.loggedIn) {
-      //set user
       setUser(data.user);
       setShowProfile(true);
     } else {
@@ -53,9 +65,6 @@ export default function DesktopNav() {
   };
 
   // Handler for heart icon click
-  // here we check if the user clicked the heart icon
-  // if the user clicked the heart icon, we show the favorites tray
-
   const handleFavoritesClick = async () => {
     // Check if user is logged in
     const res = await fetch("/api/session");
@@ -73,11 +82,8 @@ export default function DesktopNav() {
     }
   };
 
-  // here we check if the user clicked the logout button
-  // if the user clicked the logout button, we clear the session cookie
-
   const handleLogout = async () => {
-    // Clear session cookie (implement /api/logout to clear cookie)
+    // Clear session cookie
     await fetch("/api/logout", { method: "POST" });
     setShowProfile(false);
     setUser(null);
@@ -87,9 +93,6 @@ export default function DesktopNav() {
     setTimeout(() => setShowNotification(false), 3000);
   };
 
-  // here we check if the user clicked the edit password button
-  // if the user clicked the edit password button, we show the password change dialog
-
   const handleEditPassword = () => {
     setNotificationMessage("Password change dialog coming soon!");
     setNotificationType("success");
@@ -97,10 +100,9 @@ export default function DesktopNav() {
     setTimeout(() => setShowNotification(false), 3000);
   };
 
-  //here we return the desktop navbar
   return (
     <>
-      {/* Desktop header — untouched */}
+      {/* Desktop header */}
       <header className="desktop md:display-none">
         <div className="image">
           <img className="logo" src="/assets/longtai.png" alt="Longtai" />
@@ -109,11 +111,9 @@ export default function DesktopNav() {
           <ul className="nav-links">
             <li className="linked flex items-center gap-1.5">
               <Link href="/">Home</Link>
-              {/* {!showVehicles ? <RiArrowDownSLine /> : <RiArrowUpSLine />} */}
             </li>
             <li className="linked flex items-center gap-1.5">
               <Link href="/shopping-tools">Shop</Link>
-              {/* {!showShopping ? <RiArrowDownSLine /> : <RiArrowUpSLine />} */}
             </li>
             <li className="linked">
               <Link href="/inventory">Inventory</Link>
@@ -123,10 +123,8 @@ export default function DesktopNav() {
               onMouseEnter={() => setShowDiscover(true)}
               onMouseLeave={() => setShowDiscover(false)}
             >
-              {/* <Link href="/owners" className="flex items-center gap-1.5"> */}
               Discover
               {!showDiscover ? <RiArrowDownSLine /> : <RiArrowUpSLine />}
-              {/* </Link> */}
               {showDiscover && (
                 <div className="absolute top-full left-0 bg-white shadow-lg rounded-lg py-2 min-w-[200px] z-6000">
                   <Link
@@ -209,7 +207,6 @@ export default function DesktopNav() {
           <div className="flex flex-col gap-6 mt-10 text-lg font-medium text-gray-800">
             <span className="flex justify-between items-center cursor-pointer">
               <Link href="/">Home</Link>
-              {/* <RiArrowDownSLine /> */}
             </span>
             <span className="flex justify-between items-center cursor-pointer">
               <Link href="/shopping-tools">Shop</Link>
@@ -235,10 +232,10 @@ export default function DesktopNav() {
         </div>
       )}
 
-      <LoginSignupDialog
-        open={showDialog}
-        onClose={() => setShowDialog(false)}
-      />
+      {/* Auth Modal */}
+      <AuthModals isOpen={showDialog} onClose={() => setShowDialog(false)} />
+
+      {/* Profile Popup */}
       {user && (
         <ProfilePopup
           open={showProfile}
@@ -248,10 +245,14 @@ export default function DesktopNav() {
           onEditPassword={handleEditPassword}
         />
       )}
+
+      {/* Favorites Tray */}
       <FavoriteTray
         open={showFavorites}
         onClose={() => setShowFavorites(false)}
       />
+
+      {/* Notification Toast */}
       <NotificationToast
         show={showNotification}
         message={notificationMessage}

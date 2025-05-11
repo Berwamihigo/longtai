@@ -27,18 +27,15 @@ export default function NotificationDialog({
         >
           <RiCloseLine />
         </button>
-        
+
         <div className="text-center">
           <p className="text-gray-800 text-lg mb-6">{message}</p>
-          
+
           {showLoginButton && (
-            <LoginSignupDialog
-              open={showLoginButton}
-              onClose={onClose}
-            />
+            <LoginSignupDialog open={showLoginButton} onClose={onClose} />
           )}
         </div>
       </div>
     </div>
   );
-} 
+}
