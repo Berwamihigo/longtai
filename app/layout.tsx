@@ -34,7 +34,10 @@ export default function RootLayout({
           name="description"
           content="Longtai Auto is Rwanda’s trusted destination for quality car sales. Find affordable new and used vehicles, expert service, and unbeatable deals tailored to your needs."
         />
-
+        <meta
+          name="google-site-verification"
+          content="VEuFtkOQlQ_46YEYNo0EjQEN7e00NYO7QVrmvRtiAKg"
+        />
         <meta
           name="keywords"
           content="Longtai Auto, car sales Rwanda, used cars Rwanda, buy cars Kigali, auto dealership Rwanda"
