@@ -1,3 +1,5 @@
+"use client";
+
 import Footer from "./components/footer";
 import HomeSlider from "./components/hero";
 import DesktopNav from "./components/navbar";
@@ -5,6 +7,18 @@ import FeaturedCarTile from "./components/new/featured-car-tile";
 import PopularBrands from "./components/new/popular-brands";
 import ContactSection from "./components/new/contact-us";
 import CarReview from "./components/car-review";
+import dynamic from "next/dynamic";
+
+const WhyChooseUs = dynamic(() => import("./components/new/why-choose-us"), {
+  ssr: false,
+});
+
+const ServicesOffered = dynamic(
+  () => import("./components/new/services-offered"),
+  {
+    ssr: false,
+  }
+);
 
 const sampleCars = [
   {
@@ -20,9 +34,10 @@ const sampleCars = [
       transmission: "9-speed automatic",
       horsepower: 496,
       acceleration: "0-60 mph in 2.4s",
-      topSpeed: "155 mph"
+      topSpeed: "155 mph",
     },
-    description: "BYD seal is a chinese car with high acceleration combining elegance and performance."
+    description:
+      "BYD seal is a chinese car with high acceleration combining elegance and performance.",
   },
   {
     id: "2",
@@ -37,9 +52,10 @@ const sampleCars = [
       transmission: "8-speed automatic",
       horsepower: 375,
       acceleration: "0-60 mph in 5.1s",
-      topSpeed: "155 mph"
+      topSpeed: "155 mph",
     },
-    description: "The BMW 7 Series combines dynamic performance with exceptional comfort."
+    description:
+      "The BMW 7 Series combines dynamic performance with exceptional comfort.",
   },
   {
     id: "3",
@@ -48,16 +64,21 @@ const sampleCars = [
     year: 2024,
     price: 8000,
     rating: 4.4,
-    images: ["/assets/wuling.jpeg", "/assets/wuling1.jpeg", "/assets/wuling2.jpeg"],
+    images: [
+      "/assets/wuling.jpeg",
+      "/assets/wuling1.jpeg",
+      "/assets/wuling2.jpeg",
+    ],
     specs: {
       engine: "3.0L Turbo V6",
       transmission: "8-speed automatic",
       horsepower: 335,
       acceleration: "0-60 mph in 5.6s",
-      topSpeed: "155 mph"
+      topSpeed: "155 mph",
     },
-    description: "The Audi A8 L offers cutting-edge technology and refined elegance."
-  }
+    description:
+      "The Audi A8 L offers cutting-edge technology and refined elegance.",
+  },
 ];
 
 export default function Home() {
@@ -66,10 +87,12 @@ export default function Home() {
       <DesktopNav />
       <HomeSlider />
       <FeaturedCarTile />
+      <WhyChooseUs />
+      <ServicesOffered />
       <PopularBrands />
       <CarReview cars={sampleCars} />
       <ContactSection />
       <Footer />
     </div>
-  )
+  );
 }

@@ -134,7 +134,6 @@ export default function CarUploadPage() {
         transmission,
         mileage,
         zeroToSixty,
-        engineSize,
         driveType,
         color,
         weight,
@@ -152,6 +151,7 @@ export default function CarUploadPage() {
       if (powerType === "Hybrid" || powerType === "Engine Powered") {
         carData.fullTank = fullTank;
         carData.mpgRange = mpgRange;
+        carData.engineSize = engineSize;
       }
 
       const saveRes = await fetch("/api/saveToFirebase", {
@@ -280,13 +280,7 @@ export default function CarUploadPage() {
           onChange={(e) => setWeight(e.target.value)}
           className="p-3 border rounded-md"
         />
-        <input
-          type="text"
-          placeholder="Engine Size"
-          value={engineSize}
-          onChange={(e) => setEngineSize(e.target.value)}
-          className="p-3 border rounded-md"
-        />
+
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
@@ -397,6 +391,13 @@ export default function CarUploadPage() {
                   setMpgRange({ ...mpgRange, min: e.target.value })
                 }
                 className="p-3 border rounded-md w-1/2"
+              />
+              <input
+                type="text"
+                placeholder="Engine Size"
+                value={engineSize}
+                onChange={(e) => setEngineSize(e.target.value)}
+                className="p-3 border rounded-md"
               />
               <input
                 type="number"
