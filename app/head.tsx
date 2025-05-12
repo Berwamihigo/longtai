@@ -1,34 +1,8 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-export const metadata: Metadata = {
-  title: "Longtai Auto Rwanda",
-  description:
-    "Longtai Auto is a company that specialized in car sales in rwanda",
-  icons: {
-    icon: "/longtaiico.ico", 
-  },
-};
-
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  return (
-    <html lang="en">
-      <meta
+// app/head.tsx
+export default function Head() {
+    return (
+      <>
+        <meta
           name="description"
           content="Longtai Auto is Rwanda’s trusted destination for quality car sales. Find affordable new and used vehicles, expert service, and unbeatable deals tailored to your needs."
         />
@@ -53,11 +27,7 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap"
           rel="stylesheet"
         />
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
-    </html>
-  );
-}
+      </>
+    );
+  }
+  

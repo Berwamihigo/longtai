@@ -174,7 +174,7 @@ export default function CarReview({ cars }: CarReviewProps) {
                 </div>
 
                 <div className="text-2xl md:text-3xl font-bold text-[#f1b274]">
-                  ${car.price.toLocaleString()}
+                  RWF {car.price.toLocaleString()}
                 </div>
 
                 {/* Tabs */}

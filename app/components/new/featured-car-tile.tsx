@@ -10,6 +10,7 @@ type CarType = {
   year: number | string;
   price: number;
   range: string;
+  mileage: number;
   mainImageUrl: string;
   subImages: string[];
   powerType?: string;
@@ -26,16 +27,25 @@ export default function FeaturedCars() {
   const router = useRouter();
   const [cars, setCars] = useState<CarType[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeCategory, setActiveCategory] = useState("Sedans");
+  const [activeCategory, setActiveCategory] = useState("All");
+
+  const categories = ["All", "SUV", "Van", "Truck"];
 
   useEffect(() => {
     const fetchCars = async () => {
+      setLoading(true);
       try {
-        const res = await fetch("/api/getAllCars");
+        const url =
+          activeCategory === "All"
+            ? "/api/getAllCars"
+            : `/api/getAllCars?category=${encodeURIComponent(activeCategory)}`;
+
+        const res = await fetch(url);
         const data = await res.json();
+
         if (data.success) {
-          const latestCars = data.cars.slice(0, 4);
-          setCars(latestCars);
+          const limitedCars = data.cars.slice(0, 4);
+          setCars(limitedCars);
         }
       } catch (error) {
         console.error("Error fetching cars:", error);
@@ -45,19 +55,19 @@ export default function FeaturedCars() {
     };
 
     fetchCars();
-  }, []);
+  }, [activeCategory]);
 
   const redirectTo = (carName: string) => {
     router.push(`/view?name=${encodeURIComponent(carName)}`);
   };
-
-  const categories = ["Sedans", "Coupe", "SUV", "Hatchback", "Truck"];
 
   return (
     <section className="flex flex-col gap-6 px-6 py-30 bg-gray-300">
       <h2 className="text-4xl text-center font-bold text-gray-900 mb-5">
         Explore Our Featured Cars
       </h2>
+
+      {/* Category Tabs */}
       <div className="mb-10 overflow-x-auto">
         <ul className="flex min-w-max flex-nowrap md:flex-wrap gap-4 px-4 md:px-6 text-base md:text-lg font-semibold text-gray-600 justify-start h-20 md:justify-center">
           {categories.map((category) => (
@@ -65,19 +75,19 @@ export default function FeaturedCars() {
               <button
                 onClick={() => setActiveCategory(category)}
                 className={`relative px-4 py-2 transition duration-300 ease-in-out
-          ${
-            activeCategory === category
-              ? "text-gray-900"
-              : "hover:text-gray-800"
-          }
-          after:content-[''] after:absolute after:left-0 after:-bottom-1 after:h-[2px]
-          after:bg-gray-900 after:w-full after:scale-x-0 after:origin-left
-          ${
-            activeCategory === category
-              ? "after:scale-x-100"
-              : "after:hover:scale-x-100"
-          }
-          after:transition-transform after:duration-300 after:ease-in-out`}
+                  ${
+                    activeCategory === category
+                      ? "text-gray-900"
+                      : "hover:text-gray-800"
+                  }
+                  after:content-[''] after:absolute after:left-0 after:-bottom-1 after:h-[2px]
+                  after:bg-gray-900 after:w-full after:scale-x-0 after:origin-left
+                  ${
+                    activeCategory === category
+                      ? "after:scale-x-100"
+                      : "after:hover:scale-x-100"
+                  }
+                  after:transition-transform after:duration-300 after:ease-in-out`}
               >
                 {category}
               </button>
@@ -86,6 +96,7 @@ export default function FeaturedCars() {
         </ul>
       </div>
 
+      {/* Cars Section */}
       {loading ? (
         <div className="text-center w-full text-gray-400">
           Loading featured cars...
@@ -98,7 +109,7 @@ export default function FeaturedCars() {
                 onClick={() => redirectTo(car.name)}
                 className="relative cursor-pointer w-full max-w-sm bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white rounded-2xl overflow-hidden shadow-2xl hover:scale-105 transition-transform duration-300 group"
               >
-                {/* Top Image Section */}
+                {/* Image Section */}
                 <div className="relative">
                   <img
                     src={car.mainImageUrl}
@@ -107,9 +118,10 @@ export default function FeaturedCars() {
                   />
                   <div className="absolute bottom-0 left-0 w-full h-20 bg-gradient-to-t from-gray-600 via-transparent to-transparent z-10" />
 
+                  {/* Category Label */}
                   <div className="absolute top-3 right-3 bg-red-600 text-white px-3 py-1 rounded-full flex items-center gap-2 text-sm shadow-md z-20 capitalize">
                     <FaHeart />
-                    {activeCategory}
+                    {car.category || activeCategory}
                   </div>
                 </div>
 
@@ -136,9 +148,7 @@ export default function FeaturedCars() {
                   <hr className="border-gray-700" />
 
                   <div className="flex flex-col gap-1 text-sm text-gray-400">
-                    {car.zeroToSixty && (
-                      <span>0-60 mph in {car.zeroToSixty}s</span>
-                    )}
+                    {car.mileage && <span>Mileage: {car.mileage} km</span>}
                     {car.range && car.powerType === "Electric" && (
                       <span>Range: {car.range}</span>
                     )}
@@ -159,8 +169,12 @@ export default function FeaturedCars() {
         </div>
       )}
 
+      {/* Explore More Button */}
       <div className="newone mt-8 flex justify-center">
-        <button onClick={() => router.push("/inventory")} className="">
+        <button
+          onClick={() => router.push("/inventory")}
+          className="text-gray-900 flex items-center gap-2 hover:underline hover:text-black font-semibold"
+        >
           Explore More Vehicles <RiArrowRightSLine size={20} />
         </button>
       </div>

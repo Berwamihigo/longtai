@@ -23,12 +23,12 @@ const ServicesOffered = dynamic(
 const sampleCars = [
   {
     id: "1",
-    name: "BYD Seal",
+    name: "GEELY RADAR HORIZON",
     model: "Electric",
     year: 2024,
-    price: 125000,
+    price: 44000000,
     rating: 4.5,
-    images: ["/assets/bydseal.jpeg", "/assets/bydseal1.jpeg"],
+    images: ["https://res.cloudinary.com/dc5mdwzoz/image/upload/v1746979319/cars/main/zodgb6xcmmn4cutavkaw.jpg", "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1746979320/cars/sub/qy71uvrftujzpfgyywz6.jpg", "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1746979321/cars/sub/vlnk4hbnc2b6d4hxqdsb.jpg"],
     specs: {
       engine: "4.0L V8 Biturbo",
       transmission: "9-speed automatic",
@@ -37,16 +37,16 @@ const sampleCars = [
       topSpeed: "155 mph",
     },
     description:
-      "BYD seal is a chinese car with high acceleration combining elegance and performance.",
+      "The 2024 Geely Radar RD6 Horizon is an all-electric pickup with powerful dual-motor AWD, a spacious cargo bed, and advanced features like vehicle-to-load power output. It offers strong performance, modern design, and impressive electric range, making it ideal for both work and adventure."
   },
   {
     id: "2",
-    name: "Dongfeng Nano Box",
+    name: "Toyota Prado Landcruiser",
     model: "740i",
-    year: 2023,
-    price: 115000,
+    year: 2024,
+    price: 135000000,
     rating: 4.3,
-    images: ["/assets/dongfeng.jpg", "/assets/dongfeng1.jpg"],
+    images: ["https://res.cloudinary.com/dc5mdwzoz/image/upload/v1746978219/cars/main/qnksz7odjwi0ea0wrxof.jpg", "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1746978220/cars/sub/lyrhd94a8tucsnuarsvz.jpg", "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1746978220/cars/sub/fbciyoadajnnpoapxci9.jpg"],
     specs: {
       engine: "3.0L Turbocharged I6",
       transmission: "8-speed automatic",
@@ -55,30 +55,9 @@ const sampleCars = [
       topSpeed: "155 mph",
     },
     description:
-      "The BMW 7 Series combines dynamic performance with exceptional comfort.",
+      "The 2024 Toyota Land Cruiser Prado Hybrid blends rugged performance with fuel efficiency, featuring a 2.4L turbo hybrid engine, 8-speed automatic transmission, and advanced off-road tech. It offers a refined interior, modern safety features, and strong capability for both city driving and off-road adventures.",
   },
-  {
-    id: "3",
-    name: "Wuling Baojun",
-    model: "Baojun",
-    year: 2024,
-    price: 8000,
-    rating: 4.4,
-    images: [
-      "/assets/wuling.jpeg",
-      "/assets/wuling1.jpeg",
-      "/assets/wuling2.jpeg",
-    ],
-    specs: {
-      engine: "3.0L Turbo V6",
-      transmission: "8-speed automatic",
-      horsepower: 335,
-      acceleration: "0-60 mph in 5.6s",
-      topSpeed: "155 mph",
-    },
-    description:
-      "The Audi A8 L offers cutting-edge technology and refined elegance.",
-  },
+
 ];
 
 export default function Home() {

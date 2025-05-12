@@ -1,9 +1,14 @@
 "use client";
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { RiArrowRightSLine } from "react-icons/ri";
+import { useRouter } from "next/navigation";
+
 
 const ServicesOffered = () => {
   
+
+  const router = useRouter();
 
 
   const containerVariants = {
@@ -116,6 +121,15 @@ const ServicesOffered = () => {
             </motion.div>
           </div>
         </motion.div>
+
+        <div className="newone mt-8 flex justify-center">
+        <button
+          onClick={() => router.push("/maintenance")}
+          className="text-gray-900 flex items-center gap-2 hover:underline hover:text-black font-semibold"
+        >
+          Request Maintenance <RiArrowRightSLine size={20} />
+        </button>
+      </div>
 
       </div>
     </section>
