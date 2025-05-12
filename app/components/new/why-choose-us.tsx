@@ -53,12 +53,12 @@ const WhyChooseUs = () => {
               🚗
             </div>
             <h3 className="text-2xl font-semibold mb-4 text-gray-800">
-              Expert Knowledge
+              Best Garage
             </h3>
             <p className="text-gray-600 leading-relaxed">
-              Our team of certified professionals has extensive experience with
-              both traditional and electric vehicles, ensuring you get the best
-              advice and service.
+              Our state-of-the-art garage combines skilled technicians with
+              smart technology to deliver unparalleled service for your vehicle.
+              
             </p>
           </motion.div>
 
