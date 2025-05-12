@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import {
   RiArrowDownSLine,
   RiArrowUpSLine,
@@ -16,20 +16,31 @@ import FavoriteTray from "./favorites";
 import ProfilePopup from "./ProfilePopup";
 import NotificationToast from "./NotificationToast";
 
+interface CarData {
+  id: string;
+  make: string;
+  model: string;
+  year: number;
+  // Add other car properties as needed
+}
+
 export default function DesktopNav() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [showFavorites, setShowFavorites] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
-  const [user, setUser] = useState<{ name: string; email: string } | null>(
-    null
-  );
+  const [search, setSearch] = useState("");
+  const [searchResults, setSearchResults] = useState<CarData[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [showSearchResults, setShowSearchResults] = useState(false);
+  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
   const [showDiscover, setShowDiscover] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState("");
   const [notificationType, setNotificationType] = useState<"success" | "error">(
     "success"
   );
+  const searchRef = useRef<HTMLDivElement>(null);
 
   // Check user session on component mount
   useEffect(() => {
@@ -46,6 +57,60 @@ export default function DesktopNav() {
     };
     checkSession();
   }, []);
+
+  // Close search results when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setShowSearchResults(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // Debounced search function
+  const debouncedSearch = useCallback(
+    debounce(async (query: string) => {
+      if (!query.trim()) {
+        setSearchResults([]);
+        setIsSearching(false);
+        return;
+      }
+
+      try {
+        setIsSearching(true);
+        const response = await fetch(`/api/customizedSearch?query=${encodeURIComponent(query)}`);
+        const data = await response.json();
+        
+        if (response.ok) {
+          setSearchResults(data.results || []);
+        } else {
+          setSearchResults([]);
+          console.error("Search error:", data.error);
+        }
+      } catch (error) {
+        console.error("Search failed:", error);
+        setSearchResults([]);
+      } finally {
+        setIsSearching(false);
+      }
+    }, 300),
+    []
+  );
+
+  // Trigger search when search term changes
+  useEffect(() => {
+    if (search.trim()) {
+      debouncedSearch(search);
+    } else {
+      setSearchResults([]);
+      setIsSearching(false);
+    }
+  }, [search, debouncedSearch]);
 
   // Handler for account icon click (desktop or mobile)
   const handleAccountClick = async () => {
@@ -100,13 +165,28 @@ export default function DesktopNav() {
     setTimeout(() => setShowNotification(false), 3000);
   };
 
+  // Debounce function implementation
+  function debounce<T extends (...args: any[]) => void>(
+    func: T,
+    wait: number
+  ): (...args: Parameters<T>) => void {
+    let timeout: NodeJS.Timeout;
+    return (...args: Parameters<T>) => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func(...args), wait);
+    };
+  }
+
   return (
     <>
       {/* Desktop header */}
       <header className="desktop md:display-none">
-        <div className="image">
-          <img className="logo" src="/assets/longtai.png" alt="Longtai" />
-        </div>
+        <Link href="/">
+          <div className="image">
+            <img className="logo" src="/assets/longtai.png" alt="Longtai" />
+          </div>
+        </Link>
+          
         <div className="links">
           <ul className="nav-links">
             <li className="linked flex items-center gap-1.5">
@@ -154,13 +234,48 @@ export default function DesktopNav() {
           <div className="icons">
             <ul className="icons-arrangement">
               <li className="ic">
-                <div className="search-container relative">
+                <div className="search-container relative" ref={searchRef}>
                   <input
                     type="text"
                     placeholder="Search..."
+                    value={search}
+                    onChange={(e) => {
+                      setSearch(e.target.value);
+                      setShowSearchResults(true);
+                    }}
+                    onFocus={() => setShowSearchResults(true)}
                     className="search-input pl-10 pr-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:border-black transition-all duration-300 w-48"
                   />
                   <RiSearchLine className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                  
+                  {/* Search results dropdown */}
+                  {showSearchResults && (
+                    <div className="absolute top-full left-0 mt-1 w-64 bg-white shadow-lg rounded-lg z-6000 max-h-96 overflow-y-auto">
+                      {isSearching ? (
+                        <div className="p-4 text-center text-gray-500">Searching...</div>
+                      ) : searchResults.length > 0 ? (
+                        <ul>
+                          {searchResults.map((car) => (
+                            <li key={`${car.id}-${car.make}-${car.model}`}>
+                              <Link
+                                href={`/view?name=${car.id}`}
+                                className="block px-4 py-2 hover:bg-gray-100"
+                                onClick={() => {
+                                  setShowSearchResults(false);
+                                  setSearch("");
+                                }}
+                              >
+                                <div className="font-medium">{car.make} {car.model}</div>
+                                <div className="text-sm text-gray-500">{car.year}</div>
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : search.trim() ? (
+                        <div className="p-4 text-center text-gray-500">No results found</div>
+                      ) : null}
+                    </div>
+                  )}
                 </div>
               </li>
               <li className="ic text-5xl">
@@ -254,7 +369,7 @@ export default function DesktopNav() {
 
       {/* Notification Toast */}
       <NotificationToast
-        show={showNotification}
+        show={showNotification} 
         message={notificationMessage}
         type={notificationType}
         onClose={() => setShowNotification(false)}
