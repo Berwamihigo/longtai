@@ -3,14 +3,16 @@
 import { motion } from "framer-motion";
 
 const brands = [
-  { name: "Toyota", logo: "/logos/toyota.jpeg" },
+  { name: "Toyota", logo: "/assets/logos/toyota.png" },
   { name: "BMW", logo: "https://upload.wikimedia.org/wikipedia/commons/4/44/BMW.svg" },
   { name: "Mercedes-Benz", logo: "https://upload.wikimedia.org/wikipedia/commons/9/90/Mercedes-Logo.svg" },
-  { name: "Audi", logo: "/logos/audi.png" },
-  { name: "Honda", logo: "/logos/honda.jpeg" },
-  { name: "Nissan", logo: "/logos/nissan.jpeg" },
-  { name: "Ford", logo: "https://upload.wikimedia.org/wikipedia/commons/3/3e/Ford_logo_flat.svg" },
-  { name: "Chevrolet", logo: "/logos/chev.jpeg" },
+  { name: "Audi", logo: "/assets/logos/audi.png" },
+  { name: "Honda", logo: "/assets/logos/honda.png" },
+  { name: "Toyota", logo: "/assets/logos/toyota.png" },
+  { name: "BMW", logo: "https://upload.wikimedia.org/wikipedia/commons/4/44/BMW.svg" },
+  { name: "Mercedes-Benz", logo: "https://upload.wikimedia.org/wikipedia/commons/9/90/Mercedes-Logo.svg" },
+  { name: "Audi", logo: "/assets/logos/audi.png" },
+  { name: "Honda", logo: "/assets/logos/honda.png" },
 ];
 
 export default function PopularBrands() {
