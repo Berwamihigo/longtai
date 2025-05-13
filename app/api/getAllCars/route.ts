@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { collection, getDocs } from "firebase/firestore";
+import { Darumadrop_One } from "next/font/google";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
@@ -27,6 +28,7 @@ export async function GET(request: Request) {
         seats: data.seats || "",
         zeroToSixty: data.zeroToSixty || "",
         category: data.category || "",
+        make: data.make || "",
         description: data.description || "",
       };
     });

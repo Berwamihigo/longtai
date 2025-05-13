@@ -24,6 +24,7 @@ type CarType = {
   category?: string;
   description?: string;
   brand?: string;
+  make?: string;
   bodyType?: string;
   mileage?: number;
   fuelType?: string;
@@ -31,20 +32,20 @@ type CarType = {
 };
 
 const brands = [
-  "Toyota", "Honda", "Ford", "BMW", "Mercedes", "Audi", "Lexus", "Hyundai", "Kia", "Nissan"
+  "Toyota", "Honda", "Geely Automobile"
 ];
 
 const bodyTypes = [
-  "Sedan", "SUV", "Hatchback", "Coupe", "Wagon", "Pickup", "Van", "Minivan"
+  "SUV", "Coupe", "Truck", "Van"
 ];
 
 const priceRanges = [
-  { label: "Under $10,000", min: 0, max: 10000 },
-  { label: "$10,000 - $20,000", min: 10000, max: 20000 },
-  { label: "$20,000 - $30,000", min: 20000, max: 30000 },
-  { label: "$30,000 - $40,000", min: 30000, max: 40000 },
-  { label: "$40,000 - $50,000", min: 40000, max: 50000 },
-  { label: "Over $50,000", min: 50000, max: Infinity }
+  { label: "Under RWF 10,000,000", min: 0, max: 10000000 },
+  { label: "RWF 10,000,000 - RWF 20,000,000", min: 10000000, max: 20000000 },
+  { label: "RWF 20,000,000 - RWF 30,000,000", min: 20000000, max: 30000000 },
+  { label: "RWF 30,000,000 - RWF 40,000,000", min: 30000000, max: 40000000 },
+  { label: "RWF 40,000,000 - RWF 50,000,000", min: 40000000, max: 50000000 },
+  { label: "Over RWF 50,000,000", min: 50000000, max: Infinity }
 ];
 
 export default function CarFinderAndDisplay() {
@@ -103,12 +104,12 @@ export default function CarFinderAndDisplay() {
 
     // Apply brand filter
     if (filters.brand) {
-      results = results.filter(car => car.brand === filters.brand);
+      results = results.filter(car => car.make?.toLowerCase() === filters.brand.toLowerCase());
     }
 
     // Apply body type filter
     if (filters.bodyType) {
-      results = results.filter(car => car.bodyType === filters.bodyType);
+      results = results.filter(car => car.category === filters.bodyType);
     }
 
     // Apply price range filter
@@ -138,7 +139,7 @@ export default function CarFinderAndDisplay() {
 
     // Apply transmission filter
     if (filters.transmission) {
-      results = results.filter(car => car.transmission === filters.transmission);
+      results = results.filter(car => car.transmission?.toLowerCase === filters.transmission?.toLowerCase);
     }
 
     setFilteredCars(results);
@@ -325,8 +326,8 @@ export default function CarFinderAndDisplay() {
                   onChange={handleFilterChange}
                 >
                   <option value="">All Transmissions</option>
-                  <option value="automatic">Automatic</option>
-                  <option value="manual">Manual</option>
+                  <option value="Automatic">Automatic</option>
+                  <option value="Manual">Manual</option>
                 </select>
               </div>
             </div>
