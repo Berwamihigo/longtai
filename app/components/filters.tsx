@@ -58,11 +58,11 @@ const FilterSidebar = () => {
               <div className="flex justify-between text-sm text-gray-600">
                 <div>
                   <p>Min</p>
-                  <p>$12,657</p>
+                  <p>RWF 12,657</p>
                 </div>
                 <div>
                   <p>Max</p>
-                  <p>$45,000</p>
+                  <p>RWF 45,000</p>
                 </div>
               </div>
             </div>

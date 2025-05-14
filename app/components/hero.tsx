@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import Typewriter from "typewriter-effect";
+import Link from "next/link";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
 import SwiperCore from "swiper";
@@ -14,8 +15,6 @@ import {
   RiLeafLine,
 } from "react-icons/ri";
 
-const videos = ["/hero/vid3.webm"];
-
 interface SearchResult {
   id: string;
   make: string;
@@ -23,59 +22,15 @@ interface SearchResult {
   year: string;
 }
 
+const videos = ["/hero/vid3.webm"];
+
 export default function Hero() {
   const swiperRef = useRef<SwiperCore | null>(null);
-  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  const playActiveVideo = (activeIndex: number) => {
-    videoRefs.current.forEach((video, idx) => {
-      if (!video) return;
-      video.onended = null;
-      if (idx === activeIndex) {
-        video.currentTime = 0;
-        video.play().catch(() => {});
-        video.onended = () => {
-          if (swiperRef.current) swiperRef.current.slideNext();
-        };
-      } else {
-        video.pause();
-      }
-    });
-  };
-
-  useEffect(() => {
-    const swiper = swiperRef.current;
-    if (!swiper) return;
-
-    const onSlideChange = () => {
-      playActiveVideo(swiper.realIndex);
-    };
-
-    swiper.on("slideChange", onSlideChange);
-    playActiveVideo(swiper.realIndex);
-
-    return () => {
-      swiper.off("slideChange", onSlideChange);
-    };
-  }, []);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        searchRef.current &&
-        !searchRef.current.contains(event.target as Node)
-      ) {
-        setSearchResults([]);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
 
   const performSearch = useCallback(async (query: string) => {
     if (!query.trim()) {
@@ -109,7 +64,14 @@ export default function Hero() {
   };
 
   useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setSearchResults([]);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
       if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
     };
   }, []);
@@ -128,8 +90,11 @@ export default function Hero() {
             <div className="relative h-full w-full">
               <video
                 src={videoSrc}
+                autoPlay
+                loop
                 muted
                 playsInline
+                preload="auto"
                 className="absolute inset-0 h-full w-full object-cover"
               />
               <div className="absolute inset-0 bg-black/40" />
@@ -208,25 +173,25 @@ export default function Hero() {
 
         {/* Action Buttons */}
         <div className="mx-auto flex flex-wrap justify-center gap-3 min-[440px]:inline-flex min-[440px]:max-w-[330px] min-[640px]:flex-nowrap pt-3 pb-4">
-          <a
+          <Link
             className="linkable flex flex-col items-center justify-center w-full text-center shadow-md hover:shadow-lg rounded-[10px] bg-[rgba(100,100,100,0.60)] md:bg-[rgba(0,0,0,0.60)] backdrop-blur-md h-[132px] gap-2 min-[280px]:w-[calc(50%_-_10px)] min-[440px]:min-w-[132px] min-[440px]:max-w-[25%] bg-[radial-gradient(circle_at_top,_rgba(235,0,139,0.15)_0%,_rgba(230,230,230,0.1)_39%,_rgba(255,255,255,0)_100%)]"
-            href="#"
+            href="buy?type=electric"
           >
             <RiPlugLine size={24} />
             <span className="text-white flex items-center">
               Shop Electric <RiArrowRightSLine />
             </span>
-          </a>
+          </Link>
 
-          <a
+          <Link 
             className="linkable flex flex-col items-center justify-center w-full text-center shadow-md hover:shadow-lg rounded-[10px] bg-[rgba(100,100,100,0.60)] md:bg-[rgba(0,0,0,0.60)] backdrop-blur-md h-[132px] gap-2 min-[280px]:w-[calc(50%_-_10px)] min-[440px]:min-w-[132px] min-[440px]:max-w-[25%] bg-[radial-gradient(circle_at_top,_rgba(6,174,170,0.15)_0%,_rgba(230,230,230,0.1)_39%,_rgba(255,255,255,0)_100%)]"
-            href="#"
+            href="buy?type=hybrids"
           >
             <RiLeafLine size={24} />
             <span className="text-white flex items-center">
               Shop Hybrid <RiArrowRightSLine />
             </span>
-          </a>
+          </Link>
         </div>
       </div>
 

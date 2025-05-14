@@ -1,23 +1,39 @@
-"use client"
+"use client";
 
-import { useState } from 'react';
-import { Search, SlidersHorizontal } from 'lucide-react';
+import { useState } from "react";
+import { Search, SlidersHorizontal } from "lucide-react";
 
 const brands = [
-  "Toyota", "Honda", "Ford", "BMW", "Mercedes", "Audi", "Lexus", "Hyundai", "Kia", "Nissan"
+  "Toyota",
+  "Honda",
+  "Ford",
+  "BMW",
+  "Mercedes",
+  "Audi",
+  "Lexus",
+  "Hyundai",
+  "Kia",
+  "Nissan",
 ];
 
 const bodyTypes = [
-  "Sedan", "SUV", "Hatchback", "Coupe", "Wagon", "Pickup", "Van", "Minivan"
+  "Sedan",
+  "SUV",
+  "Hatchback",
+  "Coupe",
+  "Wagon",
+  "Pickup",
+  "Van",
+  "Minivan",
 ];
 
 const priceRanges = [
-  "Under $10,000",
-  "$10,000 - $20,000",
-  "$20,000 - $30,000",
-  "$30,000 - $40,000",
-  "$40,000 - $50,000",
-  "Over $50,000"
+  "Under RWF 10,000",
+  "RWF 10,000 - RWF 20,000",
+  "RWF 20,000 - RWF 30,000",
+  "RWF 30,000 - RWF 40,000",
+  "RWF 40,000 - RWF 50,000",
+  "Over RWF 50,000",
 ];
 
 export default function CarFinder() {
@@ -26,9 +42,12 @@ export default function CarFinder() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
       <div className="text-center mb-12">
-        <h2 className="text-3xl font-bold text-gray-900 mb-4">Find Your Perfect Car</h2>
+        <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          Find Your Perfect Car
+        </h2>
         <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-          Use our advanced search tools to find the car that matches your preferences
+          Use our advanced search tools to find the car that matches your
+          preferences
         </p>
       </div>
 
@@ -42,9 +61,7 @@ export default function CarFinder() {
               className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-[#f1b274] focus:ring-2 focus:ring-[#f1b274] focus:ring-opacity-20 outline-none transition-all duration-200"
             />
           </div>
-          <button
-            className="bg-[#f1b274] text-white px-6 py-3 rounded-lg hover:bg-[#e5a666] transition-colors duration-300 flex items-center justify-center gap-2"
-          >
+          <button className="bg-[#f1b274] text-white px-6 py-3 rounded-lg hover:bg-[#e5a666] transition-colors duration-300 flex items-center justify-center gap-2">
             <Search className="w-5 h-5" />
             Search
           </button>
@@ -162,4 +179,4 @@ export default function CarFinder() {
       </div>
     </div>
   );
-} 
+}
