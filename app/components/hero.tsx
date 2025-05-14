@@ -127,7 +127,6 @@ export default function Hero() {
           <SwiperSlide key={index}>
             <div className="relative h-full w-full">
               <video
-                ref={(el) => (videoRefs.current[index] = el)}
                 src={videoSrc}
                 muted
                 playsInline
