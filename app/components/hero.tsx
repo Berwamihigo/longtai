@@ -22,7 +22,7 @@ interface SearchResult {
   year: string;
 }
 
-const videos = ["/hero/vid3.webm"];
+const videos = ["/hero/usage.webm"];
 
 export default function Hero() {
   const swiperRef = useRef<SwiperCore | null>(null);
