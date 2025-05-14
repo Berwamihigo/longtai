@@ -208,7 +208,7 @@ export default function DesktopNav() {
               {showDiscover && (
                 <div className="absolute top-full left-0 bg-white shadow-lg rounded-lg py-2 min-w-[200px] z-6000">
                   <Link
-                    href="/owners/about"
+                    href="/owners"
                     className="block px-4 py-2 hover:bg-gray-100"
                   >
                     About Us
@@ -224,6 +224,12 @@ export default function DesktopNav() {
                     className="block px-4 py-2 hover:bg-gray-100"
                   >
                     Contact Us
+                  </Link>
+                  <Link
+                    href="/maintenance"
+                    className="block px-4 py-2 hover:bg-gray-100"
+                  >
+                    Maintenance
                   </Link>
                 </div>
               )}

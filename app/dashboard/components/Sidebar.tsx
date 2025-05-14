@@ -1,13 +1,24 @@
-"use client"
-import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
-import { FaCar, FaTachometerAlt, FaTools, FaStar, FaSignOutAlt } from 'react-icons/fa';
+"use client";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import {
+  FaCar,
+  FaTachometerAlt,
+  FaTools,
+  FaStar,
+  FaSignOutAlt,
+} from "react-icons/fa";
+
 
 const navItems = [
-  { label: 'Dashboard', href: '/dashboard', icon: <FaTachometerAlt /> },
-  { label: 'Cars', href: '/dashboard/cars', icon: <FaCar /> },
-  { label: 'Maintenance Requests', href: '/dashboard/maintenance', icon: <FaTools /> },
-  { label: 'Recent Ratings', href: '/dashboard/ratings', icon: <FaStar /> },
+  { label: "Dashboard", href: "/dashboard", icon: <FaTachometerAlt /> },
+  { label: "Cars", href: "/dashboard/cars", icon: <FaCar /> },
+  {
+    label: "Maintenance Requests",
+    href: "/dashboard/maintenance",
+    icon: <FaTools />,
+  },
+  { label: "Recent Ratings", href: "/dashboard/ratings", icon: <FaStar /> },
 ];
 
 export default function Sidebar() {
@@ -16,8 +27,8 @@ export default function Sidebar() {
 
   const handleLogout = () => {
     // Your logout logic here
-    alert('Logged out successfully!');
-    router.push('/login');
+    alert("Logged out successfully!");
+    router.push("/login");
   };
 
   return (
@@ -36,7 +47,9 @@ export default function Sidebar() {
             key={item.href}
             href={item.href}
             className={`flex items-center gap-4 px-5 py-3 rounded-xl text-lg font-medium transition-all duration-200 hover:bg-blue-800/70 hover:pl-7 ${
-              pathname === item.href ? 'bg-white/20 text-yellow-300 font-bold shadow-lg' : ''
+              pathname === item.href
+                ? "bg-white/20 text-yellow-300 font-bold shadow-lg"
+                : ""
             }`}
           >
             {item.icon}
@@ -54,4 +67,4 @@ export default function Sidebar() {
       </button>
     </aside>
   );
-} 
+}
