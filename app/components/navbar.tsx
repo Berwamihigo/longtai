@@ -321,9 +321,11 @@ export default function DesktopNav() {
 
       {/* Mobile nav */}
       <header className="mobile md:display-none flex justify-between items-center px-4 py-3 bg-white">
-        <div className="image">
-          <img src="/assets/longtai.png" alt="Longtai" className="h-10" />
-        </div>
+        <Link href="/">
+          <div className="image">
+            <img src="/assets/longtai.png" alt="Longtai" className="h-10" />
+          </div>
+        </Link>
         <div className="icon">
           <RiMenuLine
             className="ri-menu-line text-3xl"
