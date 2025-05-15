@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import NotificationToast from "../NotificationToast";
 
@@ -7,6 +7,19 @@ interface AuthModalsProps {
   isOpen: boolean;
   onClose: () => void;
   initialMode?: "login" | "signup";
+}
+
+function useModalLock(isOpen: boolean) {
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
 }
 
 const AuthModals = ({
@@ -28,6 +41,8 @@ const AuthModals = ({
   const [notificationType, setNotificationType] = useState<"success" | "error">(
     "success"
   );
+
+  useModalLock(isOpen);
 
   const showSuccessNotification = (message: string) => {
     setNotificationMessage(message);

@@ -182,7 +182,7 @@ export default function Footer() {
 
   return (
     <footer className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 w-full">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
         <EnvelopeModal
           show={modal.show}
           onClose={() => setModal({ ...modal, show: false })}
@@ -276,16 +276,7 @@ export default function Footer() {
                   className="text-gray-300 hover:text-white text-lg transition-colors duration-300 flex items-center"
                 >
                   <span className="w-2 h-2 bg-[#f1b274] rounded-full mr-2"></span>
-                  Shopping Tools
-                </Link>
-              </motion.li>
-              <motion.li whileHover={{ x: 5 }}>
-                <Link
-                  href="/owners"
-                  className="text-gray-300 hover:text-white text-lg transition-colors duration-300 flex items-center"
-                >
-                  <span className="w-2 h-2 bg-[#f1b274] rounded-full mr-2"></span>
-                  Owners
+                  Shop
                 </Link>
               </motion.li>
               <motion.li whileHover={{ x: 5 }}>
@@ -295,6 +286,15 @@ export default function Footer() {
                 >
                   <span className="w-2 h-2 bg-[#f1b274] rounded-full mr-2"></span>
                   Inventory
+                </Link>
+              </motion.li>
+              <motion.li whileHover={{ x: 5 }}>
+                <Link
+                  href="/owners/contact-us"
+                  className="text-gray-300 hover:text-white text-lg transition-colors duration-300 flex items-center"
+                >
+                  <span className="w-2 h-2 bg-[#f1b274] rounded-full mr-2"></span>
+                  Contact Us
                 </Link>
               </motion.li>
             </ul>

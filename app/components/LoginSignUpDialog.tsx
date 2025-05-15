@@ -1,8 +1,21 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { RiCloseLine } from "react-icons/ri";
 import NotificationToast from "./NotificationToast";
+
+function useModalLock(isOpen: boolean) {
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
+}
 
 export default function LoginSignupDialog({
   open,
@@ -21,6 +34,8 @@ export default function LoginSignupDialog({
   const [notificationType, setNotificationType] = useState<"success" | "error">(
     "success"
   );
+
+  useModalLock(open);
 
   if (!open) return null;
 
@@ -86,7 +101,7 @@ export default function LoginSignupDialog({
 
       if (data.success) {
         showSuccessNotification("Login successful!");
-        //delete the fields 
+        //delete the fields
         setLoginEmail("");
         setLoginPassword("");
         setTimeout(() => onClose(), 1000);

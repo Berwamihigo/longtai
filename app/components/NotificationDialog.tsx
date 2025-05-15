@@ -2,6 +2,7 @@
 
 import { RiCloseLine } from "react-icons/ri";
 import LoginSignupDialog from "./LoginSignUpDialog";
+import { useEffect } from "react";
 
 type NotificationDialogProps = {
   open: boolean;
@@ -10,12 +11,26 @@ type NotificationDialogProps = {
   showLoginButton?: boolean;
 };
 
+function useModalLock(isOpen: boolean) {
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
+}
+
 export default function NotificationDialog({
   open,
   onClose,
   message,
   showLoginButton = false,
 }: NotificationDialogProps) {
+  useModalLock(open);
   if (!open) return null;
 
   return (

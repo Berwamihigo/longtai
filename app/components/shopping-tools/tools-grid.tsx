@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Car,
   Calculator,
@@ -27,42 +27,69 @@ const tools = [
     color: "bg-green-50",
     iconColor: "text-green-500",
   },
-  {
-    title: "Price Comparison",
-    description: "Compare prices across different dealerships",
-    icon: Search,
-    color: "bg-purple-50",
-    iconColor: "text-purple-500",
-  },
-  {
-    title: "Market Analysis",
-    description: "Get insights into current market trends",
-    icon: TrendingUp,
-    color: "bg-yellow-50",
-    iconColor: "text-yellow-500",
-  },
-  {
-    title: "Financing Options",
-    description: "Explore various financing and loan options",
-    icon: CreditCard,
-    color: "bg-red-50",
-    iconColor: "text-red-500",
-  },
+  // {
+  //   title: "Price Comparison",
+  //   description: "Compare prices across different dealerships",
+  //   icon: Search,
+  //   color: "bg-purple-50",
+  //   iconColor: "text-purple-500",
+  // },
+  // {
+  //   title: "Market Analysis",
+  //   description: "Get insights into current market trends",
+  //   icon: TrendingUp,
+  //   color: "bg-yellow-50",
+  //   iconColor: "text-yellow-500",
+  // },
+  // {
+  //   title: "Financing Options",
+  //   description: "Explore various financing and loan options",
+  //   icon: CreditCard,
+  //   color: "bg-red-50",
+  //   iconColor: "text-red-500",
+  // },
   {
     title: "Vehicle History",
-    description: "Check detailed vehicle history reports",
+    description:
+      "Check detailed vehicle history reports that we own here  and planning to add more",
     icon: Shield,
     color: "bg-indigo-50",
     iconColor: "text-indigo-500",
   },
 ];
 
+function useModalLock(isOpen: boolean) {
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
+}
+
 export default function ToolsGrid() {
   const [showModal, setShowModal] = useState(false);
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [price, setPrice] = useState("");
   const [duration, setDuration] = useState("");
   const [downPayment, setDownPayment] = useState(0);
   const [monthlyPayment, setMonthlyPayment] = useState(0);
+
+  useModalLock(showModal || showHistoryModal);
+
+  // Mock AI and Cloudinary data for demo
+  const aiParagraphs = [
+    "This vehicle has a clean history, with regular maintenance and no major accidents reported. It has been inspected by certified professionals and is in excellent condition, making it a reliable choice for your needs.",
+    "The previous owner took great care of this car, ensuring all services were up to date. With a detailed service record and a spotless interior, this vehicle stands out as a top pick in its class.",
+  ];
+  const cloudinaryImages = [
+    "https://res.cloudinary.com/demo/image/upload/car1.jpg",
+    "https://res.cloudinary.com/demo/image/upload/car2.jpg",
+  ];
 
   const handleCalculatorClick = () => {
     setShowModal(true);
@@ -104,6 +131,9 @@ export default function ToolsGrid() {
                 if (tool.title === "Payment Calculator") {
                   handleCalculatorClick();
                 }
+                if (tool.title === "Vehicle History") {
+                  setShowHistoryModal(true);
+                }
               }}
             >
               <div className="p-6">
@@ -133,8 +163,6 @@ export default function ToolsGrid() {
 
       {/* Modal */}
       {showModal && (
-
-        
         <div className="fixed inset-0  bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-[5000]">
           <div className="bg-white rounded-lg p-8 w-full max-w-md relative shadow-lg">
             <button
@@ -190,6 +218,36 @@ export default function ToolsGrid() {
                   </p>
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showHistoryModal && (
+        <div className="fixed inset-0 bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-[5000]">
+          <div className="bg-white rounded-lg p-8 w-full max-w-md relative shadow-lg">
+            <button
+              onClick={() => setShowHistoryModal(false)}
+              className="absolute top-3 right-4 text-gray-500 hover:text-gray-700 text-xl"
+            >
+              &times;
+            </button>
+            <h2 className="text-2xl font-bold mb-4 text-gray-900">
+              Vehicle History
+            </h2>
+            <div className="space-y-4 mb-4">
+              <p>{aiParagraphs[0]}</p>
+              <p>{aiParagraphs[1]}</p>
+            </div>
+            <div className="flex gap-2">
+              {cloudinaryImages.map((img, i) => (
+                <img
+                  key={i}
+                  src={img}
+                  alt="Vehicle"
+                  className="w-1/2 rounded"
+                />
+              ))}
             </div>
           </div>
         </div>
