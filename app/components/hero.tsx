@@ -131,7 +131,7 @@ export default function Hero() {
             />
             <button
               type="submit"
-              className="absolute right-2 bg-orange-500 hover:bg-orange-600 text-white p-2 rounded-full transition-colors"
+              className="absolute right-2 top-2 bg-orange-500 hover:bg-orange-600 text-white p-2 rounded-full transition-colors"
               disabled={isSearching}
             >
               <RiSearchLine size={24} />
