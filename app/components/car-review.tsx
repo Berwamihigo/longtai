@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import {
@@ -338,20 +339,24 @@ export default function CarReview({ cars }: CarReviewProps) {
 
                 {/* Action Buttons */}
                 <div className="flex flex-col sm:flex-row gap-3 md:gap-4 pt-4 md:pt-6">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="flex-1 bg-[#f1b274] text-white py-2 md:py-3 rounded-lg font-semibold hover:bg-[#e5a066] transition-colors"
-                  >
-                    Schedule Test Drive
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="flex-1 border-2 border-[#f1b274] text-[#f1b274] py-2 md:py-3 rounded-lg font-semibold hover:bg-[#f1b274] hover:text-white transition-colors"
-                  >
-                    Contact Dealer
-                  </motion.button>
+                  <Link href="/test-drive">
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="flex-1 bg-[#f1b274] text-white py-2 md:py-3 rounded-lg font-semibold hover:bg-[#e5a066] transition-colors"
+                    >
+                      Schedule Test Drive
+                    </motion.button>
+                  </Link>
+                  <a href="tel:+250795570900">
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="flex-1 border-2 border-[#f1b274] text-[#f1b274] py-2 md:py-3 rounded-lg font-semibold hover:bg-[#f1b274] hover:text-white transition-colors"
+                    >
+                      Contact Dealer
+                    </motion.button>
+                  </a>
                 </div>
               </div>
             </div>

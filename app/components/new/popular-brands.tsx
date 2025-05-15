@@ -4,87 +4,59 @@ import { motion } from "framer-motion";
 
 const brands = [
   { name: "Toyota", logo: "/assets/logos/toyota.png" },
-  { name: "BMW", logo: "https://upload.wikimedia.org/wikipedia/commons/4/44/BMW.svg" },
-  { name: "Mercedes-Benz", logo: "https://upload.wikimedia.org/wikipedia/commons/9/90/Mercedes-Logo.svg" },
-  { name: "Audi", logo: "/assets/logos/audi.png" },
-  { name: "Honda", logo: "/assets/logos/honda.png" },
-  { name: "Toyota", logo: "/assets/logos/toyota.png" },
-  { name: "BMW", logo: "https://upload.wikimedia.org/wikipedia/commons/4/44/BMW.svg" },
-  { name: "Mercedes-Benz", logo: "https://upload.wikimedia.org/wikipedia/commons/9/90/Mercedes-Logo.svg" },
+  {
+    name: "BMW",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/4/44/BMW.svg",
+  },
+  {
+    name: "Mercedes-Benz",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/9/90/Mercedes-Logo.svg",
+  },
   { name: "Audi", logo: "/assets/logos/audi.png" },
   { name: "Honda", logo: "/assets/logos/honda.png" },
 ];
 
 export default function PopularBrands() {
-  const firstRow = brands.slice(0, 4);
-  const secondRow = brands.slice(4);
-
-  // Duplicate the items to fill the space (prevents gaps)
-  const firstRowDuplicated = [...firstRow, ...firstRow, ...firstRow];
-  const secondRowDuplicated = [...secondRow, ...secondRow, ...secondRow];
-
-  // Calculate animation duration based on number of items (for smoothness)
-  const baseDuration = 20;
+  // Lighter, single-row, gentle animation
+  const duplicated = [...brands, ...brands];
+  const baseDuration = 24;
 
   return (
-    <section className="py-20 px-6 bg-white overflow-hidden">
-      <h2 className="text-4xl md:text-5xl font-bold text-center text-gray-800 mb-16">
+    <section className="py-16 px-4 bg-white/80 overflow-hidden">
+      <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-700 mb-10">
         Popular Brands
       </h2>
-
-      {/* First Row (Left to Right) */}
-      <div className="mb-12 overflow-hidden">
-        <motion.div
-          className="flex"
-          animate={{
-            x: ["-66.666%", "0%"], // Matches the duplicated content
-          }}
-          transition={{
-            duration: baseDuration,
-            repeat: Infinity,
-            ease: "linear",
-          }}
-        >
-          {firstRowDuplicated.map((brand, index) => (
-            <div key={`first-${index}`} className="flex-shrink-0 min-w-[180px] px-4">
-              <div className="bg-white p-4 rounded-xl shadow-md hover:shadow-xl transition duration-300 flex items-center justify-center h-full">
-                <img
-                  src={brand.logo}
-                  alt={brand.name}
-                  className="h-14 object-contain grayscale hover:grayscale-0 transition duration-300"
-                />
-              </div>
-            </div>
-          ))}
-        </motion.div>
-      </div>
-
-      {/* Second Row (Right to Left) */}
       <div className="overflow-hidden">
         <motion.div
           className="flex"
-          animate={{
-            x: ["0%", "-66.666%"], // Matches the duplicated content
-          }}
+          animate={{ x: ["-100%", "100%"] }}
           transition={{
             duration: baseDuration,
             repeat: Infinity,
             ease: "linear",
           }}
         >
-          {secondRowDuplicated.map((brand, index) => (
-            <div key={`second-${index}`} className="flex-shrink-0 min-w-[180px] px-4">
-              <div className="bg-white p-4 rounded-xl shadow-md hover:shadow-xl transition duration-300 flex items-center justify-center h-full">
-                <img
+          {duplicated.map((brand, index) => (
+            <div key={index} className="flex-shrink-0 min-w-[140px] px-3">
+              <div className="bg-white/60 p-3 rounded-lg shadow-sm hover:shadow-md transition duration-200 flex items-center justify-center h-full">
+                <p>{brand.name}</p>
+
+                {/* <img
                   src={brand.logo}
                   alt={brand.name}
-                  className="h-14 object-contain grayscale hover:grayscale-0 transition duration-300"
-                />
+                  className="h-10 object-contain grayscale opacity-60 hover:opacity-100 hover:grayscale-0 transition duration-300"
+                  loading="lazy"
+                /> */}
               </div>
             </div>
           ))}
         </motion.div>
       </div>
+      <style jsx>{`
+        section {
+          box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.03);
+        }
+      `}</style>
     </section>
   );
 }

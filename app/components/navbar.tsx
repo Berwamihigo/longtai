@@ -33,7 +33,9 @@ export default function DesktopNav() {
   const [searchResults, setSearchResults] = useState<CarData[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [showSearchResults, setShowSearchResults] = useState(false);
-  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
+  const [user, setUser] = useState<{ name: string; email: string } | null>(
+    null
+  );
   const [showDiscover, setShowDiscover] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState("");
@@ -41,6 +43,7 @@ export default function DesktopNav() {
     "success"
   );
   const searchRef = useRef<HTMLDivElement>(null);
+  const [showMobileDiscover, setShowMobileDiscover] = useState(false);
 
   // Check user session on component mount
   useEffect(() => {
@@ -61,7 +64,10 @@ export default function DesktopNav() {
   // Close search results when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target as Node)
+      ) {
         setShowSearchResults(false);
       }
     };
@@ -83,9 +89,11 @@ export default function DesktopNav() {
 
       try {
         setIsSearching(true);
-        const response = await fetch(`/api/customizedSearch?query=${encodeURIComponent(query)}`);
+        const response = await fetch(
+          `/api/customizedSearch?query=${encodeURIComponent(query)}`
+        );
         const data = await response.json();
-        
+
         if (response.ok) {
           setSearchResults(data.results || []);
         } else {
@@ -186,7 +194,7 @@ export default function DesktopNav() {
             <img className="logo" src="/assets/longtai.png" alt="Longtai" />
           </div>
         </Link>
-          
+
         <div className="links">
           <ul className="nav-links">
             <li className="linked flex items-center gap-1.5">
@@ -220,7 +228,7 @@ export default function DesktopNav() {
                     Our Services
                   </Link>
                   <Link
-                    href="/owners/contact"
+                    href="/owners/contact-us"
                     className="block px-4 py-2 hover:bg-gray-100"
                   >
                     Contact Us
@@ -253,12 +261,14 @@ export default function DesktopNav() {
                     className="search-input pl-10 pr-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:border-black transition-all duration-300 w-48"
                   />
                   <RiSearchLine className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-                  
+
                   {/* Search results dropdown */}
                   {showSearchResults && (
                     <div className="absolute top-full left-0 mt-1 w-64 bg-white shadow-lg rounded-lg z-6000 max-h-96 overflow-y-auto">
                       {isSearching ? (
-                        <div className="p-4 text-center text-gray-500">Searching...</div>
+                        <div className="p-4 text-center text-gray-500">
+                          Searching...
+                        </div>
                       ) : searchResults.length > 0 ? (
                         <ul>
                           {searchResults.map((car) => (
@@ -271,14 +281,20 @@ export default function DesktopNav() {
                                   setSearch("");
                                 }}
                               >
-                                <div className="font-medium">{car.make} {car.model}</div>
-                                <div className="text-sm text-gray-500">{car.year}</div>
+                                <div className="font-medium">
+                                  {car.make} {car.model}
+                                </div>
+                                <div className="text-sm text-gray-500">
+                                  {car.year}
+                                </div>
                               </Link>
                             </li>
                           ))}
                         </ul>
                       ) : search.trim() ? (
-                        <div className="p-4 text-center text-gray-500">No results found</div>
+                        <div className="p-4 text-center text-gray-500">
+                          No results found
+                        </div>
                       ) : null}
                     </div>
                   )}
@@ -335,10 +351,45 @@ export default function DesktopNav() {
             <Link href="/inventory" onClick={() => setIsMobileMenuOpen(false)}>
               Inventory
             </Link>
-            <span className="flex justify-between items-center cursor-pointer">
-              <Link href="">Discover</Link>
-              <RiArrowDownSLine />
+            <span
+              className="flex justify-between items-center cursor-pointer select-none"
+              onClick={() => setShowMobileDiscover((v) => !v)}
+            >
+              Discover
+              {showMobileDiscover ? <RiArrowUpSLine /> : <RiArrowDownSLine />}
             </span>
+            {showMobileDiscover && (
+              <div className="ml-4 flex flex-col gap-2 animate-fadeIn">
+                <Link
+                  href="/owners"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="py-1"
+                >
+                  About Us
+                </Link>
+                <Link
+                  href="/owners/services"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="py-1"
+                >
+                  Our Services
+                </Link>
+                <Link
+                  href="/owners/contact-us"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="py-1"
+                >
+                  Contact Us
+                </Link>
+                <Link
+                  href="/maintenance"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="py-1"
+                >
+                  Maintenance
+                </Link>
+              </div>
+            )}
           </div>
           <div className="flex justify-center gap-10 mt-10 text-2xl text-gray-700">
             <RiHeartLine
@@ -375,11 +426,27 @@ export default function DesktopNav() {
 
       {/* Notification Toast */}
       <NotificationToast
-        show={showNotification} 
+        show={showNotification}
         message={notificationMessage}
         type={notificationType}
         onClose={() => setShowNotification(false)}
       />
+
+      <style jsx>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.3s ease;
+        }
+      `}</style>
     </>
   );
 }
