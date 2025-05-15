@@ -1,21 +1,22 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import Image from 'next/image';
-import { motion } from 'framer-motion';
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import { motion } from "framer-motion";
 import {
   RiStarFill,
   RiStarLine,
   RiHeartLine,
   RiHeartFill,
   RiArrowLeftLine,
-  RiArrowRightLine
-} from 'react-icons/ri';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination, Autoplay } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
+  RiArrowRightLine,
+  RiLoader4Line,
+} from "react-icons/ri";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination, Autoplay } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 
 interface CarReviewProps {
   cars: {
@@ -39,46 +40,49 @@ interface CarReviewProps {
 
 const sampleReviews = [
   {
-    id: '1',
-    customerName: 'John Doe',
+    id: "1",
+    customerName: "John Doe",
     rating: 5,
     review:
-      'Absolutely love this car! The performance is outstanding and the comfort is unmatched.',
-    date: '2024-03-15',
-    carName: 'Mercedes-Benz S-Class'
+      "Absolutely love this car! The performance is outstanding and the comfort is unmatched.",
+    date: "2024-03-15",
+    carName: "Mercedes-Benz S-Class",
   },
   {
-    id: '2',
-    customerName: 'Sarah Smith',
+    id: "2",
+    customerName: "Sarah Smith",
     rating: 4,
     review:
-      'Great luxury vehicle with amazing features. The only downside is the fuel consumption.',
-    date: '2024-03-10',
-    carName: 'Mercedes-Benz S-Class'
+      "Great luxury vehicle with amazing features. The only downside is the fuel consumption.",
+    date: "2024-03-10",
+    carName: "Mercedes-Benz S-Class",
   },
   {
-    id: '3',
-    customerName: 'Mike Johnson',
+    id: "3",
+    customerName: "Mike Johnson",
     rating: 5,
     review:
       "Best car I've ever owned. The technology features are mind-blowing!",
-    date: '2024-03-05',
-    carName: 'Mercedes-Benz S-Class'
+    date: "2024-03-05",
+    carName: "Mercedes-Benz S-Class",
   },
   {
-    id: '4',
-    customerName: 'Emma Wilson',
+    id: "4",
+    customerName: "Emma Wilson",
     rating: 4,
     review:
-      'Excellent build quality and comfort. The service experience was also top-notch.',
-    date: '2024-03-01',
-    carName: 'Mercedes-Benz S-Class'
-  }
+      "Excellent build quality and comfort. The service experience was also top-notch.",
+    date: "2024-03-01",
+    carName: "Mercedes-Benz S-Class",
+  },
 ];
 
 export default function CarReview({ cars }: CarReviewProps) {
   const [favorites, setFavorites] = useState<Record<string, boolean>>({});
-  const [activeTab, setActiveTab] = useState('overview');
+  const [loadingHearts, setLoadingHearts] = useState<Record<string, boolean>>(
+    {}
+  );
+  const [activeTab, setActiveTab] = useState("overview");
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -86,15 +90,37 @@ export default function CarReview({ cars }: CarReviewProps) {
       setIsMobile(window.innerWidth < 768);
     };
     handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const toggleFavorite = (carId: string) => {
-    setFavorites((prev) => ({
-      ...prev,
-      [carId]: !prev[carId]
-    }));
+  const handleFavoriteClick = async (carId: string, carName: string) => {
+    setLoadingHearts((prev) => ({ ...prev, [carId]: true }));
+    try {
+      // Check session
+      const sessionRes = await fetch("/api/session");
+      const sessionData = await sessionRes.json();
+      if (!sessionData.loggedIn || !sessionData.user?.email) {
+        alert("You must be logged in to favorite a car.");
+        setLoadingHearts((prev) => ({ ...prev, [carId]: false }));
+        return;
+      }
+      // Add to favorites
+      const res = await fetch("/api/favorites", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: sessionData.user.email, carName }),
+      });
+      if (res.ok) {
+        setFavorites((prev) => ({ ...prev, [carId]: true }));
+      } else {
+        alert("Failed to add to favorites.");
+      }
+    } catch (err) {
+      alert("An error occurred.");
+    } finally {
+      setLoadingHearts((prev) => ({ ...prev, [carId]: false }));
+    }
   };
 
   const renderStars = (rating: number) => {
@@ -107,14 +133,16 @@ export default function CarReview({ cars }: CarReviewProps) {
 
   return (
     <div className="max-w-7xl mx-auto p-12 md:p-12">
-      <h1 className="text-5xl text-center md:text-5xl font-bold mb-15 md:mb-15">Car Reviews</h1>
+      <h1 className="text-5xl text-center md:text-5xl font-bold mb-15 md:mb-15">
+        Car Reviews
+      </h1>
 
       {/* Main Cars Horizontal Swiper */}
       <Swiper
         modules={[Navigation, Pagination]}
         navigation={{
-          nextEl: '.main-next',
-          prevEl: '.main-prev'
+          nextEl: ".main-next",
+          prevEl: ".main-prev",
         }}
         pagination={{ clickable: true }}
         spaceBetween={30}
@@ -132,7 +160,7 @@ export default function CarReview({ cars }: CarReviewProps) {
                   pagination={{ clickable: true }}
                   autoplay={{
                     delay: 3000,
-                    disableOnInteraction: false
+                    disableOnInteraction: false,
                   }}
                   loop
                   className="h-full"
@@ -155,16 +183,25 @@ export default function CarReview({ cars }: CarReviewProps) {
               <div className="space-y-4 md:space-y-6">
                 <div className="flex justify-between items-start">
                   <div>
-                    <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold">{car.name}</h1>
+                    <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold">
+                      {car.name}
+                    </h1>
                     <p className="text-base md:text-lg text-gray-600">
                       {car.model} • {car.year}
                     </p>
                   </div>
                   <button
-                    onClick={() => toggleFavorite(car.id)}
-                    className="text-2xl text-red-500 hover:scale-110 transition-transform"
+                    onClick={() => handleFavoriteClick(car.id, car.name)}
+                    className="text-2xl text-red-500 hover:scale-110 transition-transform relative"
+                    disabled={loadingHearts[car.id]}
                   >
-                    {favorites[car.id] ? <RiHeartFill /> : <RiHeartLine />}
+                    {loadingHearts[car.id] ? (
+                      <RiLoader4Line className="animate-spin" />
+                    ) : favorites[car.id] ? (
+                      <RiHeartFill />
+                    ) : (
+                      <RiHeartLine />
+                    )}
                   </button>
                 </div>
 
@@ -180,14 +217,14 @@ export default function CarReview({ cars }: CarReviewProps) {
                 {/* Tabs */}
                 <div className="border-b border-gray-200">
                   <nav className="flex gap-4 md:gap-8 overflow-x-auto pb-2">
-                    {['overview', 'specs', 'reviews'].map((tab) => (
+                    {["overview", "specs", "reviews"].map((tab) => (
                       <button
                         key={tab}
                         onClick={() => setActiveTab(tab)}
                         className={`whitespace-nowrap px-2 pb-2 ${
                           activeTab === tab
-                            ? 'border-b-2 border-[#f1b274] text-[#f1b274]'
-                            : 'text-gray-500'
+                            ? "border-b-2 border-[#f1b274] text-[#f1b274]"
+                            : "text-gray-500"
                         }`}
                       >
                         {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -198,11 +235,13 @@ export default function CarReview({ cars }: CarReviewProps) {
 
                 {/* Tab Content */}
                 <div className="space-y-3 md:space-y-4">
-                  {activeTab === 'overview' && (
-                    <p className="text-gray-600 leading-relaxed">{car.description}</p>
+                  {activeTab === "overview" && (
+                    <p className="text-gray-600 leading-relaxed">
+                      {car.description}
+                    </p>
                   )}
 
-                  {activeTab === 'specs' && (
+                  {activeTab === "specs" && (
                     <div className="grid grid-cols-2 gap-3 md:gap-4">
                       <div className="bg-gray-50 p-3 md:p-4 rounded-lg">
                         <h3 className="font-semibold">Engine</h3>
@@ -210,29 +249,39 @@ export default function CarReview({ cars }: CarReviewProps) {
                       </div>
                       <div className="bg-gray-50 p-3 md:p-4 rounded-lg">
                         <h3 className="font-semibold">Transmission</h3>
-                        <p className="text-gray-600">{car.specs.transmission}</p>
+                        <p className="text-gray-600">
+                          {car.specs.transmission}
+                        </p>
                       </div>
                       <div className="bg-gray-50 p-3 md:p-4 rounded-lg">
                         <h3 className="font-semibold">Horsepower</h3>
-                        <p className="text-gray-600">{car.specs.horsepower} hp</p>
+                        <p className="text-gray-600">
+                          {car.specs.horsepower} hp
+                        </p>
                       </div>
                       <div className="bg-gray-50 p-3 md:p-4 rounded-lg">
                         <h3 className="font-semibold">Acceleration</h3>
-                        <p className="text-gray-600">{car.specs.acceleration}</p>
+                        <p className="text-gray-600">
+                          {car.specs.acceleration}
+                        </p>
                       </div>
                     </div>
                   )}
 
-                  {activeTab === 'reviews' && (
+                  {activeTab === "reviews" && (
                     <div className="space-y-3 md:space-y-4">
                       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-3 md:mb-4 gap-2">
-                        <h2 className="text-xl md:text-2xl lg:text-3xl font-bold">Customer Reviews</h2>
+                        <h2 className="text-xl md:text-2xl lg:text-3xl font-bold">
+                          Customer Reviews
+                        </h2>
                         <div className="flex items-center gap-2">
                           <span className="text-xl md:text-2xl font-bold text-[#f1b274]">
                             {car.rating.toFixed(1)}
                           </span>
                           <div className="flex">{renderStars(car.rating)}</div>
-                          <span className="text-gray-600">({car.rating}/5)</span>
+                          <span className="text-gray-600">
+                            ({car.rating}/5)
+                          </span>
                         </div>
                       </div>
 
@@ -241,7 +290,7 @@ export default function CarReview({ cars }: CarReviewProps) {
                         pagination={{ clickable: true }}
                         autoplay={{
                           delay: 5000,
-                          disableOnInteraction: false
+                          disableOnInteraction: false,
                         }}
                         loop
                         spaceBetween={20}
@@ -265,7 +314,9 @@ export default function CarReview({ cars }: CarReviewProps) {
                                   <h3 className="font-semibold">
                                     {review.customerName}
                                   </h3>
-                                  <p className="text-xs md:text-sm text-gray-500">{review.date}</p>
+                                  <p className="text-xs md:text-sm text-gray-500">
+                                    {review.date}
+                                  </p>
                                 </div>
                               </div>
                               <div className="flex items-center gap-2 mb-3 md:mb-4">
@@ -274,7 +325,9 @@ export default function CarReview({ cars }: CarReviewProps) {
                                   ({review.rating}/5)
                                 </span>
                               </div>
-                              <p className="text-gray-600 mb-3 md:mb-4 text-sm md:text-base">{review.review}</p>
+                              <p className="text-gray-600 mb-3 md:mb-4 text-sm md:text-base">
+                                {review.review}
+                              </p>
                             </motion.div>
                           </SwiperSlide>
                         ))}
@@ -320,13 +373,13 @@ export default function CarReview({ cars }: CarReviewProps) {
         .swiper-pagination-bullet-active {
           background: #f1b274 !important;
         }
-        
+
         /* Hide default navigation arrows */
         .swiper-button-next,
         .swiper-button-prev {
           display: none !important;
         }
-        
+
         /* Review cards shadow on mobile */
         @media (max-width: 640px) {
           .review-swiper .swiper-slide {
