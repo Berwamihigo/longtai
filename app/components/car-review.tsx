@@ -343,7 +343,7 @@ export default function CarReview({ cars }: CarReviewProps) {
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="flex-1 bg-[#f1b274] text-white py-2 md:py-3 rounded-lg font-semibold hover:bg-[#e5a066] transition-colors"
+                      className="flex-1 bg-[#f1b274] text-white py-2 px-4 md:py-3 rounded-lg font-semibold hover:bg-[#e5a066] transition-colors"
                     >
                       Schedule Test Drive
                     </motion.button>
@@ -352,7 +352,7 @@ export default function CarReview({ cars }: CarReviewProps) {
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="flex-1 border-2 border-[#f1b274] text-[#f1b274] py-2 md:py-3 rounded-lg font-semibold hover:bg-[#f1b274] hover:text-white transition-colors"
+                      className="flex-1 border-2 border-[#f1b274] text-[#f1b274] py-2 px-4 md:py-3 rounded-lg font-semibold hover:bg-[#f1b274] hover:text-white transition-colors"
                     >
                       Contact Dealer
                     </motion.button>
