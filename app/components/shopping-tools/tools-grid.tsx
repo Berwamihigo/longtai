@@ -83,12 +83,14 @@ export default function ToolsGrid() {
 
   // Mock AI and Cloudinary data for demo
   const aiParagraphs = [
-    "This vehicle has a clean history, with regular maintenance and no major accidents reported. It has been inspected by certified professionals and is in excellent condition, making it a reliable choice for your needs.",
-    "The previous owner took great care of this car, ensuring all services were up to date. With a detailed service record and a spotless interior, this vehicle stands out as a top pick in its class.",
+    "Step into the future with our cutting-edge selection of electric and hybrid vehicles — engineered for performance, built for sustainability, and designed to turn heads on every road.",
+    
+    "Experience silent power and dynamic efficiency. Our latest electric and hybrid models redefine the way you drive, with advanced technology and eco-conscious performance leading every journey.",
   ];
+  
   const cloudinaryImages = [
-    "https://res.cloudinary.com/demo/image/upload/car1.jpg",
-    "https://res.cloudinary.com/demo/image/upload/car2.jpg",
+    "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1746976359/cars/main/fgeo2nj3gixqewhsrqxb.jpg",
+    "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1746978219/cars/main/qnksz7odjwi0ea0wrxof.jpg",
   ];
 
   const handleCalculatorClick = () => {

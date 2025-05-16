@@ -9,7 +9,7 @@ import {
 } from "react-icons/ri";
 
 type Car = {
-  id: number;
+  id: string;
   make: string;
   model: string;
   year: number;
@@ -27,7 +27,7 @@ type Car = {
 export default function AdvancedCarSearch() {
   // Search filters
   const [make, setMake] = useState("");
-  const [priceRange, setPriceRange] = useState([5000, 50000]);
+  const [priceRange, setPriceRange] = useState([0, 500000000]);
   const [downPayment, setDownPayment] = useState("");
   const [monthlyPayment, setMonthlyPayment] = useState("");
   const [loanTerm, setLoanTerm] = useState(36);
@@ -35,9 +35,11 @@ export default function AdvancedCarSearch() {
   const [isSearching, setIsSearching] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [selectedCar, setSelectedCar] = useState<Car | null>(null);
+  const [allCars, setAllCars] = useState<Car[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Additional filters
-  const [yearRange, setYearRange] = useState([2015, 2023]);
+  const [yearRange, setYearRange] = useState([2015, 2025]);
   const [mileageRange, setMileageRange] = useState([0, 100000]);
   const [fuelType, setFuelType] = useState("");
   const [transmission, setTransmission] = useState("");
@@ -63,89 +65,69 @@ export default function AdvancedCarSearch() {
   ];
   const transmissions = ["Automatic", "Manual", "CVT"];
 
-  // Mock data - in a real app, you would fetch this from an API
-  const mockCars: Car[] = [
-    {
-      id: 1,
-      make: "Toyota",
-      model: "Camry",
-      year: 2022,
-      price: 28000,
-      monthlyPayment: 450,
-      downPayment: 5000,
-      image:
-        "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-      mileage: 15000,
-      color: "Silver",
-      fuelType: "Hybrid",
-      transmission: "Automatic",
-      features: ["Bluetooth", "Backup Camera", "Apple CarPlay", "Heated Seats"],
-    },
-    {
-      id: 2,
-      make: "Honda",
-      model: "Civic",
-      year: 2023,
-      price: 25000,
-      monthlyPayment: 380,
-      downPayment: 4000,
-      image:
-        "https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-      mileage: 5000,
-      color: "Blue",
-      fuelType: "Gasoline",
-      transmission: "CVT",
-      features: ["Android Auto", "Lane Assist", "Keyless Entry"],
-    },
-    {
-      id: 3,
-      make: "Ford",
-      model: "Mustang",
-      year: 2021,
-      price: 42000,
-      monthlyPayment: 650,
-      downPayment: 8000,
-      image:
-        "https://images.unsplash.com/photo-1621330396167-9b89c9e1d0f9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-      mileage: 22000,
-      color: "Red",
-      fuelType: "Gasoline",
-      transmission: "Automatic",
-      features: ["Leather Seats", "Premium Sound", "Navigation"],
-    },
-    {
-      id: 4,
-      make: "BMW",
-      model: "X5",
-      year: 2022,
-      price: 58000,
-      monthlyPayment: 850,
-      downPayment: 10000,
-      image:
-        "https://images.unsplash.com/photo-1555215695-3004980ad54e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-      mileage: 18000,
-      color: "Black",
-      fuelType: "Plug-in Hybrid",
-      transmission: "Automatic",
-      features: ["Panoramic Roof", "Heated Steering Wheel", "Parking Assist"],
-    },
-    {
-      id: 5,
-      make: "Tesla",
-      model: "Model 3",
-      year: 2023,
-      price: 48000,
-      monthlyPayment: 720,
-      downPayment: 6000,
-      image:
-        "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-      mileage: 8000,
-      color: "White",
-      fuelType: "Electric",
-      transmission: "Automatic",
-      features: ["Autopilot", "Over-the-air Updates", "Glass Roof"],
-    },
-  ];
+  // Fetch cars from API
+  useEffect(() => {
+    const fetchCars = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch("/api/getAllCars");
+        if (!response.ok) {
+          throw new Error("Failed to fetch cars");
+        }
+        const { cars: apiCars } = await response.json();
+
+        // Transform the API data to match our component's Car type
+        const transformedCars: Car[] = apiCars.map((car: any) => {
+          // Extract make and model from carName (assuming format "Make Model")
+          const [carMake = "", carModel = ""] = car.name ? car.name.split(" ") : ["", ""];
+          
+          return {
+            id: car.name || "unknown",
+            make: carMake,
+            model: carModel,
+            year: parseInt(car.year) || 0,
+            price: car.price || 0,
+            monthlyPayment: calculateMonthlyPayment(car.price || 0, 0.1, loanTerm),
+            downPayment: calculateDownPayment(car.price || 0, 0.1),
+            image: car.mainImageUrl || "https://via.placeholder.com/300x200?text=No+Image",
+            mileage: car.mileage || 0,
+            color: "N/A", // Not in API
+            fuelType: car.powerType || "N/A",
+            transmission: "Automatic", // Not in API
+            features: [
+              ...(car.seats ? [`${car.seats} seats`] : []),
+              ...(car.zeroToSixty ? [`0-60 in ${car.zeroToSixty}`] : []),
+              ...(car.mpgRange ? [`MPG: ${car.mpgRange.min}-${car.mpgRange.max}`] : []),
+            ],
+          };
+        });
+
+        setAllCars(transformedCars);
+        setSearchResults(transformedCars);
+      } catch (error) {
+        console.error("Error fetching cars:", error);
+        setSearchResults([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCars();
+  }, [loanTerm]);
+
+  // Helper functions for payment calculations
+  const calculateMonthlyPayment = (price: number, interestRate: number, term: number) => {
+    const principal = price * 0.9; // Assuming 10% down payment
+    const monthlyInterest = interestRate / 12;
+    return Math.round(
+      (principal * monthlyInterest * Math.pow(1 + monthlyInterest, term)) /
+        (Math.pow(1 + monthlyInterest, term) - 1)
+    );
+  };
+
+  const calculateDownPayment = (price: number, percent: number) => {
+    return Math.round(price * percent);
+  };
 
   // Perform search when filters change
   useEffect(() => {
@@ -169,38 +151,50 @@ export default function AdvancedCarSearch() {
   const performSearch = () => {
     setIsSearching(true);
 
-    // Simulate API call with timeout
-    setTimeout(() => {
-      // Filter mock data based on search criteria
-      const results = mockCars.filter((car) => {
-        return (
-          (!make || car.make === make) &&
-          car.price >= priceRange[0] &&
-          car.price <= priceRange[1] &&
-          (!downPayment || car.downPayment <= parseInt(downPayment || "0")) &&
-          (!monthlyPayment ||
-            car.monthlyPayment <= parseInt(monthlyPayment || "0")) &&
-          car.year >= yearRange[0] &&
-          car.year <= yearRange[1] &&
-          car.mileage >= mileageRange[0] &&
-          car.mileage <= mileageRange[1] &&
-          (!fuelType || car.fuelType === fuelType) &&
-          (!transmission || car.transmission === transmission)
-        );
-      });
+    // Filter cars based on search criteria
+    const results = allCars.filter((car) => {
+      const matchesMake =
+        !make || car.make.toLowerCase().includes(make.toLowerCase());
+      const matchesPrice =
+        car.price >= priceRange[0] && car.price <= priceRange[1];
+      const matchesDownPayment =
+        !downPayment || car.downPayment <= parseInt(downPayment || "0");
+      const matchesMonthlyPayment =
+        !monthlyPayment ||
+        car.monthlyPayment <= parseInt(monthlyPayment || "0");
+      const matchesYear = car.year >= yearRange[0] && car.year <= yearRange[1];
+      const matchesMileage =
+        car.mileage >= mileageRange[0] && car.mileage <= mileageRange[1];
+      const matchesFuelType =
+        !fuelType ||
+        car.fuelType.toLowerCase().includes(fuelType.toLowerCase());
+      const matchesTransmission =
+        !transmission ||
+        car.transmission.toLowerCase().includes(transmission.toLowerCase());
 
-      setSearchResults(results);
-      setIsSearching(false);
-    }, 300);
+      return (
+        matchesMake &&
+        matchesPrice &&
+        matchesDownPayment &&
+        matchesMonthlyPayment &&
+        matchesYear &&
+        matchesMileage &&
+        matchesFuelType &&
+        matchesTransmission
+      );
+    });
+
+    setSearchResults(results);
+    setIsSearching(false);
   };
 
   const resetFilters = () => {
     setMake("");
-    setPriceRange([5000, 50000]);
+    setPriceRange([0, 500000000]);
     setDownPayment("");
     setMonthlyPayment("");
     setLoanTerm(36);
-    setYearRange([2015, 2023]);
+    setYearRange([2015, 2025]);
     setMileageRange([0, 100000]);
     setFuelType("");
     setTransmission("");
@@ -287,9 +281,9 @@ export default function AdvancedCarSearch() {
               </div>
               <input
                 type="range"
-                min="5000"
-                max="100000"
-                step="1000"
+                min="0"
+                max="500000000"
+                step="100000"
                 value={priceRange[1]}
                 onChange={(e) =>
                   setPriceRange([priceRange[0], parseInt(e.target.value)])
@@ -326,7 +320,7 @@ export default function AdvancedCarSearch() {
               <input
                 type="range"
                 min="2000"
-                max="2023"
+                max="2025"
                 step="1"
                 value={yearRange[1]}
                 onChange={(e) =>
@@ -426,7 +420,12 @@ export default function AdvancedCarSearch() {
           </div>
 
           {/* Search Results */}
-          {isSearching ? (
+          {isLoading ? (
+            <div className="text-center py-12">
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+              <p className="text-gray-600">Loading vehicles...</p>
+            </div>
+          ) : isSearching ? (
             <div className="text-center py-12">
               <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
               <p className="text-gray-600">Finding matching vehicles...</p>

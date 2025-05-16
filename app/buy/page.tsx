@@ -3,6 +3,9 @@
 import { Suspense } from "react";
 import Navbar from "../components/navbar";
 import BuyContent from "./BuyContent";
+import Footer from "../components/footer";
+
+
 
 export default function BuyPage() {
 
@@ -15,6 +18,7 @@ export default function BuyPage() {
       >
         <BuyContent />
       </Suspense>
+      <Footer />
     </div>
   );
 }
