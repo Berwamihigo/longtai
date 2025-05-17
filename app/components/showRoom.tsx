@@ -6,6 +6,7 @@ import { FaBolt, FaLeaf, FaHeart } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import FavoriteButton from './FavoriteButton';
+import GlobalNotification from './GlobalNotification';
 
 type CarType = {
   id: string;
@@ -75,9 +76,11 @@ export default function CarFinderAndDisplay() {
           setFilteredCars(data.cars);
         } else {
           console.error("Failed to load cars");
+          showNotification("Failed to load cars", "error");
         }
       } catch (error) {
         console.error("Error fetching cars:", error);
+        showNotification("Error loading cars. Please try again.", "error");
       } finally {
         setLoading(false);
       }
@@ -167,7 +170,7 @@ export default function CarFinderAndDisplay() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-white">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-white min-h-screen">
       <div className="text-center mb-12">
         <h2 className="text-3xl font-bold text-gray-900 mb-4">Find Your Perfect Car</h2>
         <p className="text-gray-600 text-lg max-w-2xl mx-auto">
@@ -354,8 +357,8 @@ export default function CarFinderAndDisplay() {
         </div>
 
         {loading ? (
-          <div className="text-center py-12">
-            <p className="text-gray-600">Loading cars...</p>
+          <div className="flex items-center justify-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#f1b274]"></div>
           </div>
         ) : filteredCars.length === 0 ? (
           <div className="text-center py-12">
@@ -371,18 +374,19 @@ export default function CarFinderAndDisplay() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {filteredCars.map((car) => (
               <div key={car.id} className="flex justify-center">
-                <div
-                  onClick={() => router.push(`/view?name=${encodeURIComponent(car.name)}`)}
-                  className="relative cursor-pointer w-full max-w-sm bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white rounded-2xl overflow-hidden shadow-2xl hover:scale-105 transition-transform duration-300 group"
-                >
+                <div className="relative w-full max-w-sm bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white rounded-2xl overflow-hidden shadow-2xl hover:scale-105 transition-transform duration-300 group">
                   {/* Top Image Section */}
-                  <div className="relative">
+                  <div 
+                    className="relative cursor-pointer"
+                    onClick={() => router.push(`/view?name=${encodeURIComponent(car.name)}`)}
+                  >
                     <Image
                       src={car.mainImageUrl}
                       alt={car.name}
                       width={400}
                       height={200}
                       className="w-full h-48 object-cover"
+                      priority
                     />
                     <div className="absolute bottom-0 left-0 w-full h-20 bg-gradient-to-t from-gray-600 via-transparent to-transparent z-10" />
 
@@ -395,12 +399,15 @@ export default function CarFinderAndDisplay() {
                   </div>
 
                   {/* Price Label */}
-                  <div className="absolute top-44 left-4 bg-black/70 backdrop-blur-md px-4 py-1 rounded-md text-white text-sm shadow z-30">
+                  <div className="absolute top-44 left-4 bg-black/70 backdrop-blur-md px-4 py-1.5 rounded-md text-white text-sm shadow-lg z-30">
                     RWF {car.price.toLocaleString()}
                   </div>
 
                   {/* Info Section */}
-                  <div className="p-5 pt-10 z-20 relative space-y-3">
+                  <div 
+                    className="p-5 pt-10 z-20 relative space-y-3 cursor-pointer group-hover:bg-black/10 transition-colors"
+                    onClick={() => router.push(`/view?name=${encodeURIComponent(car.name)}`)}
+                  >
                     <h3 className="text-xl font-bold flex items-center gap-2">
                       {car.name}
                       {car.powerType === "Electric" && (
@@ -440,6 +447,9 @@ export default function CarFinderAndDisplay() {
           </div>
         )}
       </div>
+
+      {/* Global Notification */}
+      <GlobalNotification />
     </div>
   );
 }

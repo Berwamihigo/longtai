@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { RiHeartFill, RiHeartLine } from "react-icons/ri";
 import LoadingSpinner from "./LoadingSpinner";
-import { motion } from "framer-motion";
-import NotificationToast from "./NotificationToast";
+import { motion, AnimatePresence } from "framer-motion";
+import { useNotification } from "./GlobalNotification";
 
 type FavoriteButtonProps = {
   carName: string;
@@ -20,46 +20,54 @@ export default function FavoriteButton({
   const [isFavorite, setIsFavorite] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [isToggling, setIsToggling] = useState(false);
-  const [showNotification, setShowNotification] = useState(false);
-  const [notificationMessage, setNotificationMessage] = useState("");
-  const [notificationType, setNotificationType] = useState<"success" | "error">(
-    "success"
-  );
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const { showNotification } = useNotification();
+
+  const checkSession = useCallback(async () => {
+    try {
+      const sessionRes = await fetch("/api/session");
+      const sessionData = await sessionRes.json();
+
+      if (sessionData.loggedIn && sessionData.user?.email) {
+        setUserEmail(sessionData.user.email);
+        setIsAuthenticated(true);
+        await checkFavoriteStatus(sessionData.user.email);
+      } else {
+        setUserEmail(null);
+        setIsAuthenticated(false);
+        setIsFavorite(false);
+      }
+    } catch (error) {
+      console.error("Error checking session:", error);
+      setUserEmail(null);
+      setIsAuthenticated(false);
+      setIsFavorite(false);
+    }
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
+    let interval: NodeJS.Timeout;
 
-    const checkSession = async () => {
-      try {
-        const sessionRes = await fetch("/api/session");
-        const sessionData = await sessionRes.json();
-
-        if (!isMounted) return;
-
-        if (sessionData.loggedIn && sessionData.user?.email) {
-          setUserEmail(sessionData.user.email);
-          await checkFavoriteStatus(sessionData.user.email);
-        } else {
-          setUserEmail(null);
-          setIsFavorite(false);
-        }
-      } catch (error) {
-        console.error("Error checking session:", error);
+    const initializeSession = async () => {
+      if (isMounted) {
+        await checkSession();
+        // Set up interval only if component is still mounted
         if (isMounted) {
-          setUserEmail(null);
-          setIsFavorite(false);
+          interval = setInterval(checkSession, 30000);
         }
       }
     };
 
-    checkSession();
-    const interval = setInterval(checkSession, 30000); // Check every 30 seconds
+    initializeSession();
 
     return () => {
       isMounted = false;
-      clearInterval(interval);
+      if (interval) {
+        clearInterval(interval);
+      }
     };
-  }, [carName]);
+  }, [checkSession]);
 
   const checkFavoriteStatus = async (email: string) => {
     try {
@@ -81,12 +89,16 @@ export default function FavoriteButton({
     }
   };
 
-  const handleFavoriteClick = async () => {
+  const handleFavoriteClick = async (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent the click from bubbling up to the car card
+
+    // Only show login notification if we've confirmed user is not authenticated
+    if (isAuthenticated === false) {
+      showNotification("Please log in to add cars to your favorites", "error");
+      return;
+    }
+
     if (!userEmail) {
-      setNotificationMessage("Please log in to add cars to your favorites");
-      setNotificationType("error");
-      setShowNotification(true);
-      setTimeout(() => setShowNotification(false), 3000);
       return;
     }
 
@@ -114,10 +126,7 @@ export default function FavoriteButton({
         const data = await res.json();
         if (data.success) {
           setIsFavorite(false);
-          setNotificationMessage("Car removed from favorites");
-          setNotificationType("success");
-          setShowNotification(true);
-          setTimeout(() => setShowNotification(false), 3000);
+          showNotification("Car removed from favorites", "success");
           onFavoriteChange?.();
         }
       } else {
@@ -140,55 +149,64 @@ export default function FavoriteButton({
         const data = await res.json();
         if (data.success) {
           setIsFavorite(true);
-          setNotificationMessage("Car added to favorites");
-          setNotificationType("success");
-          setShowNotification(true);
-          setTimeout(() => setShowNotification(false), 3000);
+          showNotification("Car added to favorites", "success");
           onFavoriteChange?.();
         }
       }
     } catch (error) {
       console.error("Error toggling favorite:", error);
-      setNotificationMessage("Failed to update favorites");
-      setNotificationType("error");
-      setShowNotification(true);
-      setTimeout(() => setShowNotification(false), 3000);
+      showNotification("Failed to update favorites", "error");
     } finally {
       setIsToggling(false);
     }
   };
 
+  // Don't render anything until we know the authentication status
+  if (isAuthenticated === null) {
+    return null;
+  }
+
   return (
-    <>
-      <motion.button
-        onClick={handleFavoriteClick}
-        className={`p-2 rounded-full bg-white/80 hover:bg-white transition-colors ${className}`}
-        title={isFavorite ? "Remove from favorites" : "Add to favorites"}
-        disabled={isToggling}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
-      >
+    <motion.button
+      onClick={handleFavoriteClick}
+      className={`p-2.5 rounded-full bg-white/90 hover:bg-white shadow-lg backdrop-blur-sm transition-all duration-300 ${className}`}
+      title={isFavorite ? "Remove from favorites" : "Add to favorites"}
+      disabled={isToggling}
+      whileHover={{ scale: 1.1 }}
+      whileTap={{ scale: 0.9 }}
+      initial={false}
+    >
+      <AnimatePresence mode="wait">
         {isToggling ? (
-          <LoadingSpinner size="sm" />
+          <motion.div
+            key="loading"
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.5 }}
+          >
+            <LoadingSpinner size="sm" />
+          </motion.div>
         ) : isFavorite ? (
           <motion.div
+            key="favorite"
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
+            exit={{ scale: 0 }}
             transition={{ type: "spring", stiffness: 500, damping: 15 }}
           >
             <RiHeartFill className="text-red-500 text-xl" />
           </motion.div>
         ) : (
-          <RiHeartLine className="text-gray-600 text-xl hover:text-red-500 transition-colors" />
+          <motion.div
+            key="unfavorite"
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            exit={{ scale: 0 }}
+          >
+            <RiHeartLine className="text-gray-700 text-xl hover:text-red-500 transition-colors" />
+          </motion.div>
         )}
-      </motion.button>
-
-      <NotificationToast
-        show={showNotification}
-        message={notificationMessage}
-        type={notificationType}
-        onClose={() => setShowNotification(false)}
-      />
-    </>
+      </AnimatePresence>
+    </motion.button>
   );
 }
