@@ -25,7 +25,7 @@ export default function MaintenanceRequests() {
   ];
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-8">
+    <div className="bg-white rounded-2xl shadow-lg p-15">
       <h1 className="text-2xl font-bold text-blue-900 mb-6">
         Maintenance Requests
       </h1>

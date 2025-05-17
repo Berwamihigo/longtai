@@ -28,7 +28,7 @@ export default function CarsList() {
   ];
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-8">
+    <div className="bg-white rounded-2xl shadow-lg p-15">
       <h1 className="text-2xl font-bold text-blue-900 mb-6">All Cars</h1>
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-blue-200">

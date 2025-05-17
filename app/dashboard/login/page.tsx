@@ -28,7 +28,8 @@ export default function AdminLogin() {
 
       if (!data.success) throw new Error(data.message || 'Login failed');
 
-      router.push('/admin/dashboard');
+      // Redirect to dashboard on successful login
+      router.push('/dashboard');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An unknown error occurred');
     } finally {
@@ -37,7 +38,7 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-yellow-100 via-white to-yellow-50 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-yellow-100 via-white to-yellow-50">
       <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-xl space-y-6">
         <div className="text-center">
           <h2 className="text-3xl font-bold text-gray-800">Admin Dashboard Login</h2>

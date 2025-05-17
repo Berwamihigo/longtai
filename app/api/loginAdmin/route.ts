@@ -29,7 +29,7 @@ export async function POST(request: Request) {
         }
 
         // Fetch admin by email
-        const adminRef = doc(db, "admins", email);
+        const adminRef = doc(db, "admin", email);
         const adminSnap = await getDoc(adminRef);
 
         if (!adminSnap.exists()) {
@@ -69,7 +69,7 @@ export async function POST(request: Request) {
         }
 
         const cookieStore = await cookies();
-        cookieStore.set("admin_session", JSON.stringify({
+        cookieStore.set("adminSession", JSON.stringify({
             email: adminData.email,
             name: adminData.name,
             role: adminData.role || 'admin',
@@ -78,7 +78,7 @@ export async function POST(request: Request) {
             httpOnly: true,
             sameSite: "lax",
             secure: process.env.NODE_ENV === "production",
-            path: "/admin",
+            path: "/dashboard",
             maxAge: 60 * 60 * 24 * 7, // 1 week
         });
 

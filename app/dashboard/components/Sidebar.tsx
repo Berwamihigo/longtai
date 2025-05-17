@@ -7,6 +7,7 @@ import {
   FaTools,
   FaStar,
   FaSignOutAlt,
+  FaEnvelope,
 } from "react-icons/fa";
 
 
@@ -18,6 +19,16 @@ const navItems = [
     href: "/dashboard/maintenance",
     icon: <FaTools />,
   },
+  {
+    label: "Test Drive",
+    href: "/dashboard/test-drive",
+    icon: <FaCar />,
+  },
+  {
+    label: "Newsletter",
+    href: "/dashboard/newsletter",
+    icon: <FaEnvelope />,
+  },
   { label: "Recent Ratings", href: "/dashboard/ratings", icon: <FaStar /> },
 ];
 
@@ -25,10 +36,20 @@ export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const handleLogout = () => {
-    // Your logout logic here
-    alert("Logged out successfully!");
-    router.push("/login");
+  const handleLogout = async () => {
+    try {
+      const response = await fetch('/api/logoutAdmin', {
+        method: 'POST',
+      });
+      
+      if (response.ok) {
+        router.push('/dashboard/login');
+      } else {
+        console.error('Logout failed');
+      }
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
   };
 
   return (

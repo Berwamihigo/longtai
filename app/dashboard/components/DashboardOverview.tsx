@@ -17,7 +17,7 @@ export default function DashboardOverview() {
   ];
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-10 p-15">
       <h1 className="text-4xl font-extrabold text-blue-900 mb-6">
         Dashboard Overview
       </h1>
