@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import FavoriteButton from './FavoriteButton';
 import GlobalNotification from './GlobalNotification';
+import { useNotification } from './GlobalNotification';
 
 type CarType = {
   id: string;
@@ -65,6 +66,7 @@ export default function CarFinderAndDisplay() {
     transmission: ''
   });
   const router = useRouter();
+  const { showNotification } = useNotification();
 
   useEffect(() => {
     const fetchCars = async () => {
