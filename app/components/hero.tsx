@@ -28,6 +28,7 @@ const videos = ["/hero/hero1.webm", "/hero/hero1.mp4", "/hero/hero3.mp4"];
 
 export default function Hero() {
   const swiperRef = useRef<SwiperCore | null>(null);
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -89,13 +90,21 @@ export default function Hero() {
         pagination={{ clickable: true }}
         loop
         onSwiper={(swiper) => (swiperRef.current = swiper)}
-        onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
+        onSlideChange={(swiper) => {
+          setActiveIndex(swiper.realIndex);
+          const currentVideo = videoRefs.current[swiper.realIndex];
+          if (currentVideo) {
+            currentVideo.currentTime = 0;
+            currentVideo.play();
+          }
+        }}
         className="h-full w-full"
       >
         {videos.map((videoSrc, index) => (
           <SwiperSlide key={index}>
             <div className="relative h-full w-full">
               <video
+                ref={(el) => {videoRefs.current[index] = el}}
                 autoPlay
                 muted
                 playsInline
@@ -103,7 +112,7 @@ export default function Hero() {
                 className="absolute inset-0 h-full w-full object-cover"
                 onEnded={() => swiperRef.current?.slideNext()}
               >
-                <source src={videoSrc} type={`video/${videoSrc.endsWith('.webm') ? 'webm' : 'mp4'}`} />
+                <source src={videoSrc} type={`video/${videoSrc.endsWith(".webm") ? "webm" : "mp4"}`} />
                 {videoSrc.endsWith(".webm") && (
                   <source src={videoSrc.replace(".webm", ".mp4")} type="video/mp4" />
                 )}
@@ -213,7 +222,7 @@ export default function Hero() {
             </span>
           </Link>
 
-          <Link 
+          <Link
             className="linkable flex flex-col items-center justify-center w-full text-center shadow-md hover:shadow-lg rounded-[10px] bg-[rgba(100,100,100,0.60)] md:bg-[rgba(0,0,0,0.60)] backdrop-blur-md h-[132px] gap-2 min-[280px]:w-[calc(50%_-_10px)] min-[440px]:min-w-[132px] min-[440px]:max-w-[25%] bg-[radial-gradient(circle_at_top,_rgba(6,174,170,0.15)_0%,_rgba(230,230,230,0.1)_39%,_rgba(255,255,255,0)_100%)]"
             href="buy?type=hybrid"
           >
