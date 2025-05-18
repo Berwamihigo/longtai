@@ -112,7 +112,7 @@ const EditModal = ({ car, isOpen, onClose, onSave }: EditModalProps) => {
         className="bg-white rounded-2xl p-6 w-full max-w-7xl my-4 relative"
       >
         <div className="sticky top-0 bg-white z-10 pb-4 border-b mb-6">
-          <h2 className="text-2xl font-bold">{car ? 'Edit Car' : 'Add New Car'}</h2>
+          <h2 className="text-2xl font-bold">Edit Car</h2>
         </div>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -452,27 +452,34 @@ export default function CarsPage() {
     setIsModalOpen(true);
   };
 
-  const handleAddNewCar = () => {
-    setSelectedCar(null);
-    setIsModalOpen(true);
-  };
-
   const handleSaveCar = async (carData: Car) => {
     try {
-      const endpoint = carData.id ? `/api/updateCar/${carData.id}` : '/api/addCar';
-      const response = await fetch(endpoint, {
-        method: carData.id ? 'PUT' : 'POST',
+      const { carName, ...updateData } = carData;
+      const response = await fetch('/api/updateCar', {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(carData),
+        body: JSON.stringify({
+          carName,
+          ...updateData
+        }),
       });
 
-      if (!response.ok) throw new Error('Failed to save car');
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to update car');
+      }
 
+      // Close the modal
+      setIsModalOpen(false);
+      
+      // Show success message
+      alert('Car updated successfully');
+      
       // Refresh the cars list
       await fetchCars();
     } catch (error) {
-      console.error('Error saving car:', error);
-      throw error;
+      console.error('Error updating car:', error);
+      alert('Failed to update car: ' + (error as Error).message);
     }
   };
 
@@ -480,13 +487,6 @@ export default function CarsPage() {
     <div className="p-6 lg:p-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-800">Cars Management</h1>
-        <button
-          onClick={handleAddNewCar}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-        >
-          <FaPlus className="text-sm" />
-          Add New Car
-        </button>
       </div>
 
       <motion.div 

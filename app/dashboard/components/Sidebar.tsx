@@ -8,6 +8,7 @@ import {
   FaStar,
   FaSignOutAlt,
   FaEnvelope,
+  FaUpload,
 } from "react-icons/fa";
 
 
@@ -28,6 +29,11 @@ const navItems = [
     label: "Newsletter",
     href: "/dashboard/newsletter",
     icon: <FaEnvelope />,
+  },
+  {
+    label: "Upload Car",
+    href: "/dashboard/upload-car",
+    icon: <FaUpload />,
   },
   { label: "Recent Ratings", href: "/dashboard/ratings", icon: <FaStar /> },
 ];

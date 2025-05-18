@@ -13,6 +13,8 @@ import {
   RiSearchLine,
   RiPlugLine,
   RiLeafLine,
+  RiArrowLeftLine,
+  RiArrowRightLine,
 } from "react-icons/ri";
 
 interface SearchResult {
@@ -22,13 +24,14 @@ interface SearchResult {
   year: string;
 }
 
-const videos = ["/hero/thevid.webm"];
+const videos = ["/hero/hero1.webm", "/hero/hero1.mp4", "/hero/hero3.mp4"];
 
 export default function Hero() {
   const swiperRef = useRef<SwiperCore | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
   const searchRef = useRef<HTMLDivElement>(null);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -63,6 +66,9 @@ export default function Hero() {
     performSearch(searchQuery);
   };
 
+  const goToPrevSlide = () => swiperRef.current?.slidePrev();
+  const goToNextSlide = () => swiperRef.current?.slideNext();
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
@@ -83,25 +89,49 @@ export default function Hero() {
         pagination={{ clickable: true }}
         loop
         onSwiper={(swiper) => (swiperRef.current = swiper)}
+        onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
         className="h-full w-full"
       >
         {videos.map((videoSrc, index) => (
           <SwiperSlide key={index}>
             <div className="relative h-full w-full">
               <video
-                src={videoSrc}
                 autoPlay
-                loop
                 muted
                 playsInline
                 preload="auto"
                 className="absolute inset-0 h-full w-full object-cover"
-              />
+                onEnded={() => swiperRef.current?.slideNext()}
+              >
+                <source src={videoSrc} type={`video/${videoSrc.endsWith('.webm') ? 'webm' : 'mp4'}`} />
+                {videoSrc.endsWith(".webm") && (
+                  <source src={videoSrc.replace(".webm", ".mp4")} type="video/mp4" />
+                )}
+                Your browser does not support the video tag.
+              </video>
               <div className="absolute inset-0 bg-black/40" />
             </div>
           </SwiperSlide>
         ))}
       </Swiper>
+
+      {/* Navigation Arrows */}
+      <div className="absolute inset-0 flex items-center justify-between z-20 px-4">
+        <button
+          onClick={goToPrevSlide}
+          className="p-3 rounded-full bg-black/40 hover:bg-orange-500 text-white transition-all duration-200 shadow-xl hover:scale-110"
+          aria-label="Previous video"
+        >
+          <RiArrowLeftLine size={36} className="drop-shadow-md" />
+        </button>
+        <button
+          onClick={goToNextSlide}
+          className="p-3 rounded-full bg-black/40 hover:bg-orange-500 text-white transition-all duration-200 shadow-xl hover:scale-110"
+          aria-label="Next video"
+        >
+          <RiArrowRightLine size={36} className="drop-shadow-md" />
+        </button>
+      </div>
 
       {/* Overlay */}
       <div className="absolute inset-0 flex flex-col items-center justify-center text-white z-10 px-4">
@@ -199,9 +229,11 @@ export default function Hero() {
       <style jsx global>{`
         .swiper-pagination-bullet {
           background-color: #f1b274 !important;
+          transition: transform 0.3s;
         }
         .swiper-pagination-bullet-active {
           background-color: #f1b274 !important;
+          transform: scale(1.2);
         }
       `}</style>
     </div>
