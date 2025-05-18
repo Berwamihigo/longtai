@@ -125,20 +125,20 @@ export default function Hero() {
       </Swiper>
 
       {/* Navigation Arrows */}
-      <div className="absolute inset-0 flex items-center justify-between z-20 px-4">
+      <div className="absolute inset-0 flex items-center mt-10 justify-between z-20 px-4">
         <button
           onClick={goToPrevSlide}
           className="p-3 rounded-full bg-black/40 hover:bg-orange-500 text-white transition-all duration-200 shadow-xl hover:scale-110"
           aria-label="Previous video"
         >
-          <RiArrowLeftLine size={36} className="drop-shadow-md" />
+          <RiArrowLeftLine size={14} className="drop-shadow-md" />
         </button>
         <button
           onClick={goToNextSlide}
           className="p-3 rounded-full bg-black/40 hover:bg-orange-500 text-white transition-all duration-200 shadow-xl hover:scale-110"
           aria-label="Next video"
         >
-          <RiArrowRightLine size={36} className="drop-shadow-md" />
+          <RiArrowRightLine size={14} className="drop-shadow-md" />
         </button>
       </div>
 

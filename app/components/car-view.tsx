@@ -44,6 +44,11 @@ type CarData = {
     acceleration?: string;
     topSpeed?: string;
   };
+  engineSize?: string;
+  transmission?: string;
+  driveType?: string;
+  fullTank?: string;
+  weight?: string;
 };
 
 export default function CarCustomizer() {
@@ -283,6 +288,55 @@ export default function CarCustomizer() {
                 </div>
               </div>
 
+              {/* Additional Specifications */}
+              <div className="border-t border-gray-100 pt-6">
+                <h3 className="text-lg font-medium mb-4">Detailed Specifications</h3>
+                <div className="space-y-3">
+                  {car.engineSize && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Engine</span>
+                      <span className="font-medium">{car.engineSize}</span>
+                    </div>
+                  )}
+                  {car.transmission && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Transmission</span>
+                      <span className="font-medium">{car.transmission}</span>
+                    </div>
+                  )}
+                  {car.driveType && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Drive Type</span>
+                      <span className="font-medium">{car.driveType}</span>
+                    </div>
+                  )}
+                  {car.fullTank && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Fuel Tank Capacity</span>
+                      <span className="font-medium">{car.fullTank}L</span>
+                    </div>
+                  )}
+                  {car.weight && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Weight</span>
+                      <span className="font-medium">{car.weight} kg</span>
+                    </div>
+                  )}
+                  {car.powerType && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Power Type</span>
+                      <span className="font-medium">{car.powerType}</span>
+                    </div>
+                  )}
+                  {car.category && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Category</span>
+                      <span className="font-medium">{car.category}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
               {/* Pricing */}
               <div className="border-t border-gray-100 pt-6">
                 <div className="flex justify-between items-center mb-1">
@@ -298,9 +352,10 @@ export default function CarCustomizer() {
 
               {/* Actions */}
               <div className="grid grid-cols-2 gap-4">
-                <button className="w-full bg-white border border-gray-200 hover:bg-gray-50 py-3 rounded-lg font-medium flex items-center justify-center gap-2 transition-all">
-                  <FiShare2 size={18} /> Share
-                </button>
+                <ShareButton 
+                  url={window.location.href}
+                  className="w-full bg-white border border-gray-200 hover:bg-gray-50 py-3 rounded-lg font-medium flex items-center justify-center gap-2 transition-all"
+                />
                 <button className="w-full bg-gray-900 text-white hover:bg-gray-800 py-3 rounded-lg font-medium flex items-center justify-center gap-2 transition-all">
                   Book Test Drive <FiChevronRight size={18} />
                 </button>
