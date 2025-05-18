@@ -29,7 +29,7 @@ export default function PopularBrands() {
 
         <div className="relative w-full overflow-hidden">
           {/* Left Arrow */}
-          <ChevronLeft className="absolute left-4 top-1/2 -translate-y-1/2 text-yellow-600 w-10 h-10 drop-shadow-md animate-pulse z-10" />
+          
 
           {/* First Row - Left to Right */}
           <motion.div
@@ -44,8 +44,6 @@ export default function PopularBrands() {
         </div>
 
         <div className="relative w-full overflow-hidden mt-10">
-          {/* Right Arrow */}
-          <ChevronRight className="absolute right-4 top-1/2 -translate-y-1/2 text-yellow-600 w-10 h-10 drop-shadow-md animate-pulse z-10" />
 
           {/* Second Row - Right to Left */}
           <motion.div
