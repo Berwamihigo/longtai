@@ -261,23 +261,21 @@ export default function Footer() {
                 </svg>
               </motion.a>
             </div>
-            
+
             {/* Country Flags */}
-            <div className="flex flex-wrap gap-2 mt-4">
-              {countries.map((country, index) => (
-                <motion.div
-                  key={index}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  className="w-8 h-6"
-                >
+            <div className="grid grid-cols-2 grid-rows-3 gap-4 mt-4">
+              {countries.slice(0, 6).map((country, index) => (
+                <div key={index} className="flex gap-4 hover:cursor-pointer">
                   <img
-                    src={`https://flagcdn.com/w20/${country.code}.png`}
-                    srcSet={`https://flagcdn.com/w40/${country.code}.png 2x`}
+                    src={`https://flagcdn.com/w40/${country.code}.png`}
+                    srcSet={`https://flagcdn.com/w80/${country.code}.png 2x`}
                     alt={country.alt}
-                    className="w-full h-full object-cover rounded-sm"
+                    className="w-10 h-6 object-cover rounded-sm"
                   />
-                </motion.div>
+                  <span className="mt-1 text-center text-2xl text-white text-sm">
+                    {country.alt}
+                  </span>
+                </div>
               ))}
             </div>
           </motion.div>
