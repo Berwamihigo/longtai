@@ -180,6 +180,14 @@ export default function Footer() {
     }
   };
 
+  const countries = [
+    { code: "rw", alt: "Rwanda" },
+    { code: "ao", alt: "Angola" },
+    { code: "dj", alt: "Djibouti" },
+    { code: "et", alt: "Ethiopia" },
+    { code: "ir", alt: "Iran" },
+  ];
+
   return (
     <footer className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 w-full">
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -253,8 +261,28 @@ export default function Footer() {
                 </svg>
               </motion.a>
             </div>
+            
+            {/* Country Flags */}
+            <div className="flex flex-wrap gap-2 mt-4">
+              {countries.map((country, index) => (
+                <motion.div
+                  key={index}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="w-8 h-6"
+                >
+                  <img
+                    src={`https://flagcdn.com/w20/${country.code}.png`}
+                    srcSet={`https://flagcdn.com/w40/${country.code}.png 2x`}
+                    alt={country.alt}
+                    className="w-full h-full object-cover rounded-sm"
+                  />
+                </motion.div>
+              ))}
+            </div>
           </motion.div>
 
+          {/* Rest of the footer content remains the same */}
           {/* Quick Links */}
           <motion.div className="space-y-6" variants={itemVariants}>
             <h3 className="text-xl font-semibold text-[#f1b274]">
