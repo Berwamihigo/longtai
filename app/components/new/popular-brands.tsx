@@ -4,18 +4,21 @@ import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const brands = [
-  { image: "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1747572149/cars/main/xmc4evovsdx6gz9wm6jl.png" },
-  { image: "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1747572150/cars/sub/stqrsfevmd6gpbm5hzb2.png" },
-  { image: "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1747572152/cars/sub/bcytct8l8saw06wziacj.jpg" },
-  { image: "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1747572152/cars/sub/viwfd0rdoll2m7pfcdme.png" },
-  { image: "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1747572152/cars/sub/ag9usymagdntn61zz8h1.png" },
-  { image: "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1747572152/cars/sub/fdwqcingp1t4ogzncaob.png" },
-  { image: "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1747572152/cars/sub/gnlaochhxwmqiqsjzhpo.png" },
-  { image: "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1747572152/cars/sub/euctnhtvx5ysp1sdigse.jpg" },
-  { image: "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1747572152/cars/sub/fy2q0oumqbz4r8awap6n.jpg" },
-  { image: "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1747572152/cars/sub/ahit2qbswac4tbwqnxaz.png" },
-  { image: "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1747572153/cars/sub/w5ggkzranbazvxu2arel.jpg" },
+  { image: "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1747650956/cars/sub/mncbftv06l54bp4chu91.png" },
+  { image: "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1747650957/cars/sub/so9zw3nlchqobmw5fsui.png" },
+  { image: "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1747650957/cars/sub/dzwnyilvt1pbcah487nj.png" },
+  { image: "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1747650957/cars/sub/m7topwhakr3oji6zolhc.png" },
+  { image: "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1747650959/cars/sub/w2s6k3aftdlppt6f1qvx.png" },
+  { image: "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1747650963/cars/sub/haihtt1lhm9zcnalp7q2.png" },
+  { image: "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1747650959/cars/sub/ob6yan3m82zzhwnrld2l.png" },
+  { image: "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1747650957/cars/sub/c7i2yly6xlzb9tgb3vmp.png" },
+  { image: "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1747650958/cars/sub/ltsvxp8nhjdd9ayanxev.png" },
+  { image: "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1747650957/cars/sub/nmn4vbdmm7d8axwuujou.png" },
+  { image: "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1747650957/cars/sub/ux3blf9tfvt1k4rjzkyl.png" },
+  { image: "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1747650958/cars/sub/ldthdjz8llplmbwlzpat.png" },
+  { image: "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1747650957/cars/sub/qf7qxd0diwkk8ioxfdc6.png" },
 ];
+
 
 export default function PopularBrands() {
   const duplicated = [...brands, ...brands, ...brands, ...brands];
