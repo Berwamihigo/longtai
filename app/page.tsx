@@ -8,6 +8,7 @@ import PopularBrands from "./components/new/popular-brands";
 import ContactSection from "./components/new/contact-us";
 import CarReview from "./components/car-review";
 import dynamic from "next/dynamic";
+import FindUs from "./components/find-us";
 
 const WhyChooseUs = dynamic(() => import("./components/new/why-choose-us"), {
   ssr: false,
@@ -69,6 +70,7 @@ export default function Home() {
       <WhyChooseUs />
       <ServicesOffered />
       <PopularBrands />
+      <FindUs />
       <CarReview cars={sampleCars} />
       <ContactSection />
       <Footer />
