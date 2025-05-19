@@ -183,7 +183,7 @@ export default function Hero() {
               {isSearching ? (
                 <div className="p-4 text-center text-gray-700">
                   <span className="inline-block animate-spin rounded-full h-5 w-5 border-b-2 border-gray-700 mr-2"></span>
-                  Searching...
+                  Searching....
                 </div>
               ) : searchResults.length > 0 ? (
                 <ul className="max-h-60 overflow-y-auto">
