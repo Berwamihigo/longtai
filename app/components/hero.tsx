@@ -102,9 +102,11 @@ export default function Hero() {
       >
         {videos.map((videoSrc, index) => (
           <SwiperSlide key={index}>
-            <div className="relative h-full w-full">
+            <div className="relative h-full w-full pointer-events-none">
               <video
-                ref={(el) => {videoRefs.current[index] = el}}
+                ref={(el) => {
+                  videoRefs.current[index] = el;
+                }}
                 autoPlay
                 muted
                 playsInline
@@ -125,25 +127,25 @@ export default function Hero() {
       </Swiper>
 
       {/* Navigation Arrows */}
-      <div className="absolute inset-0 flex items-center mt-10 justify-between z-20 px-4">
+      <div className="absolute inset-0 flex items-center mt-10 justify-between z-20 px-4 pointer-events-none">
         <button
           onClick={goToPrevSlide}
-          className="p-3 rounded-full bg-black/40 hover:bg-orange-500 text-white transition-all duration-200 shadow-xl hover:scale-110"
+          className="p-3 rounded-full bg-black/40 hover:bg-orange-500 text-white transition-all duration-200 shadow-xl hover:scale-110 pointer-events-auto"
           aria-label="Previous video"
         >
           <RiArrowLeftLine size={14} className="drop-shadow-md" />
         </button>
         <button
           onClick={goToNextSlide}
-          className="p-3 rounded-full bg-black/40 hover:bg-orange-500 text-white transition-all duration-200 shadow-xl hover:scale-110"
+          className="p-3 rounded-full bg-black/40 hover:bg-orange-500 text-white transition-all duration-200 shadow-xl hover:scale-110 pointer-events-auto"
           aria-label="Next video"
         >
           <RiArrowRightLine size={14} className="drop-shadow-md" />
         </button>
       </div>
 
-      {/* Overlay */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-white z-10 px-4">
+      {/* Overlay Content */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-white z-30 px-4 pointer-events-auto">
         <h1 className="text-4xl md:text-6xl font-bold mb-4 text-center">
           <Typewriter
             options={{
@@ -177,13 +179,12 @@ export default function Hero() {
             </button>
           </form>
 
-          {/* Search Results */}
           {(searchResults.length > 0 || isSearching || (searchQuery && !isSearching)) && (
             <div className="absolute z-[6000] w-full mt-2 bg-white/90 backdrop-blur-md rounded-lg shadow-lg overflow-hidden">
               {isSearching ? (
                 <div className="p-4 text-center text-gray-700">
                   <span className="inline-block animate-spin rounded-full h-5 w-5 border-b-2 border-gray-700 mr-2"></span>
-                  Searching....
+                  Searching...
                 </div>
               ) : searchResults.length > 0 ? (
                 <ul className="max-h-60 overflow-y-auto">
@@ -214,7 +215,7 @@ export default function Hero() {
         <div className="mx-auto flex flex-wrap justify-center gap-3 min-[440px]:inline-flex min-[440px]:max-w-[330px] min-[640px]:flex-nowrap pt-3 pb-4">
           <Link
             className="linkable flex flex-col items-center justify-center w-full text-center shadow-md hover:shadow-lg rounded-[10px] bg-[rgba(100,100,100,0.60)] md:bg-[rgba(0,0,0,0.60)] backdrop-blur-md h-[132px] gap-2 min-[280px]:w-[calc(50%_-_10px)] min-[440px]:min-w-[132px] min-[440px]:max-w-[25%] bg-[radial-gradient(circle_at_top,_rgba(235,0,139,0.15)_0%,_rgba(230,230,230,0.1)_39%,_rgba(255,255,255,0)_100%)]"
-            href="buy?type=electric"
+            href="/buy?type=electric"
           >
             <RiPlugLine size={24} />
             <span className="text-white flex items-center">
@@ -224,7 +225,7 @@ export default function Hero() {
 
           <Link
             className="linkable flex flex-col items-center justify-center w-full text-center shadow-md hover:shadow-lg rounded-[10px] bg-[rgba(100,100,100,0.60)] md:bg-[rgba(0,0,0,0.60)] backdrop-blur-md h-[132px] gap-2 min-[280px]:w-[calc(50%_-_10px)] min-[440px]:min-w-[132px] min-[440px]:max-w-[25%] bg-[radial-gradient(circle_at_top,_rgba(6,174,170,0.15)_0%,_rgba(230,230,230,0.1)_39%,_rgba(255,255,255,0)_100%)]"
-            href="buy?type=hybrid"
+            href="/buy?type=hybrid"
           >
             <RiLeafLine size={24} />
             <span className="text-white flex items-center">
