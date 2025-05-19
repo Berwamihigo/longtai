@@ -24,7 +24,12 @@ interface SearchResult {
   year: string;
 }
 
-const videos = ["/hero/hero2.mp4", "/hero/hero1.mp4", "/hero/hero3.mp4", "/hero/wallpaper.mp4"];
+const videos = [
+  "/hero/hero2.mp4",
+  "/hero/hero1.mp4",
+  "/hero/hero3.mp4",
+  "/hero/wallpaper.mp4",
+];
 
 export default function Hero() {
   const swiperRef = useRef<SwiperCore | null>(null);
@@ -43,7 +48,9 @@ export default function Hero() {
     }
     setIsSearching(true);
     try {
-      const res = await fetch(`/api/customizedSearch?query=${encodeURIComponent(query)}`);
+      const res = await fetch(
+        `/api/customizedSearch?query=${encodeURIComponent(query)}`
+      );
       const data = await res.json();
       setSearchResults(data.results || []);
     } catch (error) {
@@ -72,7 +79,10 @@ export default function Hero() {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target as Node)
+      ) {
         setSearchResults([]);
       }
     };
@@ -102,7 +112,8 @@ export default function Hero() {
       >
         {videos.map((videoSrc, index) => (
           <SwiperSlide key={index}>
-            <div className="relative h-full w-full pointer-events-none">
+            <div className="relative h-full w-full">
+              {/* Background Video Layer */}
               <video
                 ref={(el) => {
                   videoRefs.current[index] = el;
@@ -111,41 +122,26 @@ export default function Hero() {
                 muted
                 playsInline
                 preload="auto"
-                className="absolute inset-0 h-full w-full object-cover"
+                className="absolute inset-0 h-full w-full object-cover pointer-events-none"
                 onEnded={() => swiperRef.current?.slideNext()}
               >
-                <source src={videoSrc} type={`video/${videoSrc.endsWith(".webm") ? "webm" : "mp4"}`} />
-                {videoSrc.endsWith(".webm") && (
-                  <source src={videoSrc.replace(".webm", ".mp4")} type="video/mp4" />
-                )}
+                <source
+                  src={videoSrc}
+                  type={`video/${videoSrc.endsWith(".webm") ? "webm" : "mp4"}`}
+                />
                 Your browser does not support the video tag.
               </video>
-              <div className="absolute inset-0 bg-black/40" />
+
+              {/* Dark Overlay */}
+              <div className="absolute inset-0 bg-black/40 pointer-events-none" />
             </div>
           </SwiperSlide>
         ))}
       </Swiper>
 
-      {/* Navigation Arrows */}
-      <div className="absolute inset-0 flex items-center mt-10 justify-between z-20 px-4 pointer-events-none">
-        <button
-          onClick={goToPrevSlide}
-          className="p-3 rounded-full bg-black/40 hover:bg-orange-500 text-white transition-all duration-200 shadow-xl hover:scale-110 pointer-events-auto"
-          aria-label="Previous video"
-        >
-          <RiArrowLeftLine size={14} className="drop-shadow-md" />
-        </button>
-        <button
-          onClick={goToNextSlide}
-          className="p-3 rounded-full bg-black/40 hover:bg-orange-500 text-white transition-all duration-200 shadow-xl hover:scale-110 pointer-events-auto"
-          aria-label="Next video"
-        >
-          <RiArrowRightLine size={14} className="drop-shadow-md" />
-        </button>
-      </div>
-
       {/* Overlay Content */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-white z-30 px-4 pointer-events-auto">
+      <div className="absolute inset-0 z-30 flex flex-col items-center justify-center text-white px-4 pointer-events-auto">
+        {/* Title */}
         <h1 className="text-4xl md:text-6xl font-bold mb-4 text-center">
           <Typewriter
             options={{
@@ -179,11 +175,12 @@ export default function Hero() {
             </button>
           </form>
 
-          {(searchResults.length > 0 || isSearching || (searchQuery && !isSearching)) && (
+          {searchResults.length > 0 ||
+          isSearching ||
+          (searchQuery && !isSearching) ? (
             <div className="absolute z-[6000] w-full mt-2 bg-white/90 backdrop-blur-md rounded-lg shadow-lg overflow-hidden">
               {isSearching ? (
                 <div className="p-4 text-center text-gray-700">
-                  <span className="inline-block animate-spin rounded-full h-5 w-5 border-b-2 border-gray-700 mr-2"></span>
                   Searching...
                 </div>
               ) : searchResults.length > 0 ? (
@@ -208,13 +205,13 @@ export default function Hero() {
                 </div>
               )}
             </div>
-          )}
+          ) : null}
         </div>
 
-        {/* Action Buttons */}
+        {/* Buttons */}
         <div className="mx-auto flex flex-wrap justify-center gap-3 min-[440px]:inline-flex min-[440px]:max-w-[330px] min-[640px]:flex-nowrap pt-3 pb-4">
           <Link
-            className="linkable flex flex-col items-center justify-center w-full text-center shadow-md hover:shadow-lg rounded-[10px] bg-[rgba(100,100,100,0.60)] md:bg-[rgba(0,0,0,0.60)] backdrop-blur-md h-[132px] gap-2 min-[280px]:w-[calc(50%_-_10px)] min-[440px]:min-w-[132px] min-[440px]:max-w-[25%] bg-[radial-gradient(circle_at_top,_rgba(235,0,139,0.15)_0%,_rgba(230,230,230,0.1)_39%,_rgba(255,255,255,0)_100%)]"
+            className="flex flex-col items-center justify-center w-full text-center shadow-md hover:shadow-lg rounded-[10px] bg-[rgba(100,100,100,0.60)] md:bg-[rgba(0,0,0,0.60)] backdrop-blur-md h-[132px] gap-2 min-[280px]:w-[calc(50%_-_10px)] min-[440px]:min-w-[132px] min-[440px]:max-w-[25%] bg-[radial-gradient(circle_at_top,_rgba(235,0,139,0.15)_0%,_rgba(230,230,230,0.1)_39%,_rgba(255,255,255,0)_100%)]"
             href="/buy?type=electric"
           >
             <RiPlugLine size={24} />
@@ -222,9 +219,8 @@ export default function Hero() {
               Shop Electric <RiArrowRightSLine />
             </span>
           </Link>
-
           <Link
-            className="linkable flex flex-col items-center justify-center w-full text-center shadow-md hover:shadow-lg rounded-[10px] bg-[rgba(100,100,100,0.60)] md:bg-[rgba(0,0,0,0.60)] backdrop-blur-md h-[132px] gap-2 min-[280px]:w-[calc(50%_-_10px)] min-[440px]:min-w-[132px] min-[440px]:max-w-[25%] bg-[radial-gradient(circle_at_top,_rgba(6,174,170,0.15)_0%,_rgba(230,230,230,0.1)_39%,_rgba(255,255,255,0)_100%)]"
+            className="flex flex-col items-center justify-center w-full text-center shadow-md hover:shadow-lg rounded-[10px] bg-[rgba(100,100,100,0.60)] md:bg-[rgba(0,0,0,0.60)] backdrop-blur-md h-[132px] gap-2 min-[280px]:w-[calc(50%_-_10px)] min-[440px]:min-w-[132px] min-[440px]:max-w-[25%] bg-[radial-gradient(circle_at_top,_rgba(6,174,170,0.15)_0%,_rgba(230,230,230,0.1)_39%,_rgba(255,255,255,0)_100%)]"
             href="/buy?type=hybrid"
           >
             <RiLeafLine size={24} />
@@ -235,7 +231,25 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Swiper Bullet Styling */}
+      {/* Navigation Arrows */}
+      <div className="absolute inset-0 flex items-center justify-between z-40 px-4 pointer-events-none">
+        <button
+          onClick={goToPrevSlide}
+          className="p-3 rounded-full bg-black/40 hover:bg-orange-500 text-white shadow-xl hover:scale-110 transition pointer-events-auto"
+          aria-label="Previous"
+        >
+          <RiArrowLeftLine size={20} />
+        </button>
+        <button
+          onClick={goToNextSlide}
+          className="p-3 rounded-full bg-black/40 hover:bg-orange-500 text-white shadow-xl hover:scale-110 transition pointer-events-auto"
+          aria-label="Next"
+        >
+          <RiArrowRightLine size={20} />
+        </button>
+      </div>
+
+      {/* Swiper Pagination Bullets Styling */}
       <style jsx global>{`
         .swiper-pagination-bullet {
           background-color: #f1b274 !important;
