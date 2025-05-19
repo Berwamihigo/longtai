@@ -24,7 +24,7 @@ interface SearchResult {
   year: string;
 }
 
-const videos = ["/hero/hero1.webm", "/hero/hero1.mp4", "/hero/hero3.mp4"];
+const videos = ["/hero/hero2.mp4", "/hero/hero1.mp4", "/hero/hero3.mp4", "/hero/wallpaper.mp4"];
 
 export default function Hero() {
   const swiperRef = useRef<SwiperCore | null>(null);

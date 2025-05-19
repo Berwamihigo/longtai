@@ -14,7 +14,7 @@ export default function BannerWani() {
         playsInline
         className="absolute inset-0 w-full h-full object-cover"
       >
-        <source src="/hero/hero3.mp4" type="video/mp4" />
+        <source src="/hero/wallpaper.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
       
