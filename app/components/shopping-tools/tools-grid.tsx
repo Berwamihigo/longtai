@@ -74,12 +74,39 @@ function useModalLock(isOpen: boolean) {
 export default function ToolsGrid() {
   const [showModal, setShowModal] = useState(false);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
-  const [price, setPrice] = useState("");
-  const [duration, setDuration] = useState("");
-  const [downPayment, setDownPayment] = useState(0);
-  const [monthlyPayment, setMonthlyPayment] = useState(0);
+  const [selectedDuration, setSelectedDuration] = useState("6");
+  const [carPrice, setCarPrice] = useState("");
+  const [calculation, setCalculation] = useState<{
+    totalWithInterest: number;
+    monthlyPayment: number;
+  } | null>(null);
 
-  useModalLock(showModal || showHistoryModal);
+  const durations = [6, 12, 18, 24, 30, 36];
+  const interestRate = 0.16; // 16% interest
+
+  const calculatePayment = () => {
+    const price = parseFloat(carPrice);
+    if (!isNaN(price) && price > 0) {
+      const totalWithInterest = price * (1 + interestRate);
+      const monthlyPayment = totalWithInterest / parseInt(selectedDuration);
+      setCalculation({
+        totalWithInterest,
+        monthlyPayment
+      });
+    } else {
+      setCalculation(null);
+    }
+  };
+
+  useEffect(() => {
+    calculatePayment();
+  }, [carPrice, selectedDuration]);
+
+  const handleCalculatorClick = () => {
+    setShowModal(true);
+    setCarPrice("");
+    setCalculation(null);
+  };
 
   // Mock AI and Cloudinary data for demo
   const aiParagraphs = [
@@ -92,26 +119,6 @@ export default function ToolsGrid() {
     "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1746976359/cars/main/fgeo2nj3gixqewhsrqxb.jpg",
     "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1746978219/cars/main/qnksz7odjwi0ea0wrxof.jpg",
   ];
-
-  const handleCalculatorClick = () => {
-    setShowModal(true);
-    setPrice("");
-    setDuration("");
-    setDownPayment(0);
-    setMonthlyPayment(0);
-  };
-
-  const handleCalculate = () => {
-    const carPrice = parseFloat(price);
-    const months = parseInt(duration);
-
-    if (!isNaN(carPrice) && !isNaN(months) && months > 0) {
-      const down = carPrice * 0.3;
-      const monthly = (carPrice - down) / months;
-      setDownPayment(down);
-      setMonthlyPayment(monthly);
-    }
-  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -165,7 +172,7 @@ export default function ToolsGrid() {
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0  bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-[5000]">
+        <div className="fixed inset-0 bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-[5000]">
           <div className="bg-white rounded-lg p-8 w-full max-w-md relative shadow-lg">
             <button
               onClick={() => setShowModal(false)}
@@ -176,48 +183,64 @@ export default function ToolsGrid() {
             <h2 className="text-2xl font-bold mb-4 text-gray-900">
               Payment Calculator
             </h2>
+            
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Car Price (RWF)
                 </label>
                 <input
                   type="number"
-                  value={price}
-                  onChange={(e) => setPrice(e.target.value)}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-[#f1b274] focus:border-[#f1b274]"
-                  placeholder="e.g. 20000"
+                  value={carPrice}
+                  onChange={(e) => setCarPrice(e.target.value)}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-[#f1b274] p-3 focus:border-[#f1b274]"
+                  placeholder="Enter car price"
                 />
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Duration (Months)
-                </label>
-                <input
-                  type="number"
-                  value={duration}
-                  onChange={(e) => setDuration(e.target.value)}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-[#f1b274] focus:border-[#f1b274]"
-                  placeholder="e.g. 24"
-                />
-              </div>
-              <button
-                onClick={handleCalculate}
-                className="w-full bg-[#f1b274] text-white py-2 px-4 rounded-md hover:bg-[#e5a666] transition-colors"
-              >
-                Calculate
-              </button>
 
-              {downPayment > 0 && (
-                <div className="mt-4 space-y-2">
-                  <p className="text-gray-700">
-                    Down Payment (30%):{" "}
-                    <strong>RWF {downPayment.toFixed(2)}</strong>
-                  </p>
-                  <p className="text-gray-700">
-                    Monthly Payment:{" "}
-                    <strong>RWF {monthlyPayment.toFixed(2)}</strong>
-                  </p>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Select Payment Duration
+                </label>
+                <select
+                  value={selectedDuration}
+                  onChange={(e) => setSelectedDuration(e.target.value)}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-[#f1b274] p-3 focus:border-[#f1b274]"
+                >
+                  {durations.map((duration) => (
+                    <option key={duration} value={duration}>
+                      {duration} Months
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {calculation && (
+                <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Payment Breakdown</h3>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Car Price:</span>
+                      <span className="font-semibold">RWF {parseFloat(carPrice).toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Interest (16%):</span>
+                      <span className="font-semibold">RWF {(parseFloat(carPrice) * interestRate).toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Total Amount:</span>
+                      <span className="font-semibold">RWF {calculation.totalWithInterest.toLocaleString()}</span>
+                    </div>
+                    <div className="border-t border-gray-200 my-3"></div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Duration:</span>
+                      <span className="font-semibold">{selectedDuration} months</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Monthly Payment:</span>
+                      <span className="font-semibold">RWF {calculation.monthlyPayment.toLocaleString()}</span>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
