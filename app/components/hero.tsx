@@ -13,10 +13,10 @@ import {
   RiSearchLine,
   RiPlugLine,
   RiLeafLine,
-  RiArrowLeftLine,
-  RiArrowRightLine,
   RiLineChartLine,
+
 } from "react-icons/ri";
+import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
 
 interface SearchResult {
   id: string;
@@ -24,6 +24,7 @@ interface SearchResult {
   model: string;
   year: string;
 }
+
 
 const videos = [
   "/hero/hero2.mp4",
@@ -243,21 +244,21 @@ export default function Hero() {
 
       {/* Navigation Arrows */}
       <div className="absolute inset-0 flex items-center justify-between z-40 px-4 pointer-events-none">
-        <button
-          onClick={goToPrevSlide}
-          className="p-3 rounded-full bg-black/40 hover:bg-orange-500 text-white text-xl font-bold shadow-xl hover:scale-110 transition pointer-events-auto"
-          aria-label="Previous"
-        >
-          &lt;
-        </button>
-        <button
-          onClick={goToNextSlide}
-          className="p-3 rounded-full bg-black/40 hover:bg-orange-500 text-white text-xl font-bold shadow-xl hover:scale-110 transition pointer-events-auto"
-          aria-label="Next"
-        >
-          &gt;
-        </button>
-      </div>
+  <button
+    onClick={goToPrevSlide}
+    className="p-3 rounded-full bg-black/40 hover:bg-orange-500 text-white shadow-xl hover:scale-110 transition pointer-events-auto"
+    aria-label="Previous"
+  >
+    <HiChevronLeft size={28} />
+  </button>
+  <button
+    onClick={goToNextSlide}
+    className="p-3 rounded-full bg-black/40 hover:bg-orange-500 text-white shadow-xl hover:scale-110 transition pointer-events-auto"
+    aria-label="Next"
+  >
+    <HiChevronRight size={28} />
+  </button>
+</div>
 
       {/* Swiper Pagination Bullets Styling */}
       <style jsx global>{`
