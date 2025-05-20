@@ -24,7 +24,7 @@ export default function ProductCard({
   const handleAddToCart = async () => {
     setIsLoading(true);
     try {
-      await addToCart({ id, name, price, image });
+      await addToCart({ id, name, price, image, quantity: 1 });
     } finally {
       setIsLoading(false);
     }

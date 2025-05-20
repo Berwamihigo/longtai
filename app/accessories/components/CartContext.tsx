@@ -1,7 +1,8 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
+import LoginPopup from './LoginPopup';
 
 interface CartItem {
   id: number;
@@ -13,59 +14,104 @@ interface CartItem {
 
 interface CartContextType {
   items: CartItem[];
-  addToCart: (item: Omit<CartItem, 'quantity'>) => void;
+  addToCart: (item: CartItem) => void;
   removeFromCart: (id: number) => void;
-  clearCart: () => void;
   total: number;
+  isLoggedIn: boolean;
+  setIsLoggedIn: (value: boolean) => void;
+  pendingItems: CartItem[];
+  clearPendingItems: () => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-export function CartProvider({ children }: { children: ReactNode }) {
+export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showLoginPopup, setShowLoginPopup] = useState(false);
+  const [pendingItems, setPendingItems] = useState<CartItem[]>([]);
 
-  // Check if user is logged in (you can replace this with your actual auth check)
   useEffect(() => {
-    const checkLoginStatus = () => {
-      const userSession = sessionStorage.getItem('userSession');
-      setIsLoggedIn(!!userSession);
-    };
-    checkLoginStatus();
+    // Load cart items from localStorage
+    const savedItems = localStorage.getItem('cartItems');
+    if (savedItems) {
+      setItems(JSON.parse(savedItems));
+    }
+
+    // Load login state from localStorage
+    const savedLoginState = localStorage.getItem('isLoggedIn');
+    if (savedLoginState) {
+      setIsLoggedIn(JSON.parse(savedLoginState));
+    }
   }, []);
 
-  const addToCart = (item: Omit<CartItem, 'quantity'>) => {
+  useEffect(() => {
+    // Save cart items to localStorage
+    localStorage.setItem('cartItems', JSON.stringify(items));
+  }, [items]);
+
+  useEffect(() => {
+    // Save login state to localStorage
+    localStorage.setItem('isLoggedIn', JSON.stringify(isLoggedIn));
+  }, [isLoggedIn]);
+
+  const handleLoginSuccess = () => {
+    setIsLoggedIn(true);
+    if (pendingItems.length > 0) {
+      addToCart(pendingItems[0]);
+      setPendingItems([]);
+    }
+  };
+
+  const addToCart = (item: CartItem) => {
     if (!isLoggedIn) {
-      toast.error('Please log in to add items to cart');
+      setPendingItems(prev => [...prev, item]);
+      setShowLoginPopup(true);
       return;
     }
 
-    setItems(currentItems => {
-      const existingItem = currentItems.find(i => i.id === item.id);
+    setItems(prevItems => {
+      const existingItem = prevItems.find(i => i.id === item.id);
       if (existingItem) {
-        return currentItems.map(i =>
+        return prevItems.map(i =>
           i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
         );
       }
-      return [...currentItems, { ...item, quantity: 1 }];
+      return [...prevItems, { ...item, quantity: 1 }];
     });
     toast.success('Item added to cart');
   };
 
   const removeFromCart = (id: number) => {
-    setItems(currentItems => currentItems.filter(item => item.id !== id));
+    setItems(prevItems => prevItems.filter(item => item.id !== id));
     toast.success('Item removed from cart');
   };
 
-  const clearCart = () => {
-    setItems([]);
+  const clearPendingItems = () => {
+    setPendingItems([]);
   };
 
-  const total = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
-    <CartContext.Provider value={{ items, addToCart, removeFromCart, clearCart, total }}>
+    <CartContext.Provider
+      value={{
+        items,
+        addToCart,
+        removeFromCart,
+        total,
+        isLoggedIn,
+        setIsLoggedIn,
+        pendingItems,
+        clearPendingItems,
+      }}
+    >
       {children}
+      <LoginPopup
+        isOpen={showLoginPopup}
+        onClose={() => setShowLoginPopup(false)}
+        onLoginSuccess={handleLoginSuccess}
+      />
     </CartContext.Provider>
   );
 }

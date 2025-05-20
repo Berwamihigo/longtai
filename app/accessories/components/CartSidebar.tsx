@@ -4,6 +4,7 @@ import { FaTimes, FaTrash } from 'react-icons/fa';
 import { useCart } from './CartContext';
 import Image from 'next/image';
 import { useState } from 'react';
+import { toast } from 'react-hot-toast';
 
 interface CartSidebarProps {
   isOpen: boolean;
@@ -11,17 +12,38 @@ interface CartSidebarProps {
 }
 
 export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
-  const { items, removeFromCart, total } = useCart();
+  const { items, removeFromCart, total, isLoggedIn } = useCart();
   const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleImageError = (id: number) => {
     setImageErrors(prev => ({ ...prev, [id]: true }));
   };
 
+  const handleSendRequest = async () => {
+    if (!isLoggedIn) {
+      toast.error('Please log in to send item requests');
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      // Here you would typically send the request to your backend
+      // For now, we'll just simulate a successful request
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      toast.success('Item request sent successfully!');
+      onClose();
+    } catch (error) {
+      toast.error('Failed to send item request. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0  z-50">
+    <div className="fixed inset-0 z-50">
       <div className="absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-xl">
         <div className="flex flex-col h-full">
           {/* Header */}
@@ -87,10 +109,13 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
               </span>
             </div>
             <button
-              className="w-full bg-[#e5a666] text-white py-3 rounded-lg hover:bg-[#d88f44] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled={items.length === 0}
+              onClick={handleSendRequest}
+              disabled={items.length === 0 || isSubmitting}
+              className={`w-full bg-[#e5a666] text-white py-3 rounded-lg hover:bg-[#d88f44] transition-colors ${
+                (items.length === 0 || isSubmitting) ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
             >
-              Proceed to Checkout
+              {isSubmitting ? 'Sending Request...' : 'Send Item Request'}
             </button>
           </div>
         </div>

@@ -1,15 +1,24 @@
 "use client";
 
-import React from 'react';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Autoplay } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/autoplay';
-import Image from 'next/image';
-import { FaCar, FaTools, FaKey, FaPhone, FaEnvelope } from 'react-icons/fa';
+import React, { useRef, useEffect } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Autoplay } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/autoplay";
+import Image from "next/image";
+import {
+  FaCar,
+  FaTools,
+  FaKey,
+  FaArrowLeft,
+  FaArrowRight,
+} from "react-icons/fa";
 
 export default function FindUs() {
+  const prevRef = useRef<HTMLDivElement>(null);
+  const nextRef = useRef<HTMLDivElement>(null);
+
   const locations = [
     {
       country: "Rwanda",
@@ -18,7 +27,7 @@ export default function FindUs() {
       image: "/assets/back.png",
       phone: "+250788123456",
       email: "info@rwanda.autozone.com",
-      services: ["Car Sales", "Accessories Shopping"]
+      services: ["Car Sales", "Accessories Shopping"],
     },
     {
       country: "Djibouti",
@@ -27,7 +36,7 @@ export default function FindUs() {
       image: "/countries/djibouti.jpg",
       phone: "+25377123456",
       email: "contact@djibouti.autozone.com",
-      services: ["Car Sales", "Car Rentals", "Accessories Shopping"]
+      services: ["Car Sales", "Car Rentals", "Accessories Shopping"],
     },
     {
       country: "Angola",
@@ -36,7 +45,7 @@ export default function FindUs() {
       image: "/countries/angola.jpg",
       phone: "+244923123456",
       email: "sales@angola.autozone.com",
-      services: ["Car Sales", "Car Rentals", "Accessories Shopping"]
+      services: ["Car Sales", "Car Rentals", "Accessories Shopping"],
     },
     {
       country: "Iran",
@@ -45,7 +54,7 @@ export default function FindUs() {
       image: "/countries/iran.jpg",
       phone: "+982112345678",
       email: "support@iran.autozone.com",
-      services: ["Car Sales", "Car Rentals", "Accessories Shopping"]
+      services: ["Car Sales", "Car Rentals", "Accessories Shopping"],
     },
     {
       country: "Ethiopia",
@@ -54,7 +63,7 @@ export default function FindUs() {
       image: "/countries/ethiopia.jpg",
       phone: "+251911123456",
       email: "info@ethiopia.autozone.com",
-      services: ["Car Sales", "Car Rentals", "Accessories Shopping"]
+      services: ["Car Sales", "Car Rentals", "Accessories Shopping"],
     },
   ];
 
@@ -65,14 +74,22 @@ export default function FindUs() {
   };
 
   return (
-    <div className="py-20 px-4 sm:px-6 lg:px-10 bg-gradient-to-br from-gray-50 to-gray-200">
-      <div className="max-w-7xl mx-auto">
+    <div className="py-20 px-4 sm:px-6 lg:px-10 bg-gradient-to-br from-gray-50 to-gray-200 relative overflow-hidden">
+      <div className="max-w-7xl mx-auto relative">
         <h2 className="text-4xl font-bold text-center mb-14 text-gray-800 relative">
           <span className="inline-block relative pb-2">
             Our Global Presence
             <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-2/3 h-1 bg-gradient-to-r from-[#f1b274] to-[#e5a666] rounded-full"></span>
           </span>
         </h2>
+
+        {/* Custom Navigation Arrows */}
+        <div ref={prevRef} className="custom-swiper-nav left-4">
+          <FaArrowLeft />
+        </div>
+        <div ref={nextRef} className="custom-swiper-nav right-4">
+          <FaArrowRight />
+        </div>
 
         <Swiper
           modules={[Navigation, Autoplay]}
@@ -84,21 +101,34 @@ export default function FindUs() {
             768: { slidesPerView: 2 },
             1024: { slidesPerView: 3 },
           }}
-          navigation
+          navigation={{
+            prevEl: prevRef.current,
+            nextEl: nextRef.current,
+          }}
+          onBeforeInit={(swiper) => {
+            if (
+              typeof swiper.params.navigation !== "boolean" &&
+              swiper.params.navigation
+            ) {
+              swiper.params.navigation.prevEl = prevRef.current;
+              swiper.params.navigation.nextEl = nextRef.current;
+            }
+          }}
           autoplay={{
             delay: 5000,
             disableOnInteraction: false,
           }}
-          className="global-presence-swiper"
+          className="global-presence-swiper px-12"
         >
           {locations.map((location, index) => (
             <SwiperSlide key={index}>
               <div className="group relative bg-white p-6 rounded-2xl shadow-lg transition-all duration-500 hover:shadow-xl h-full transform hover:-translate-y-2">
                 <div className="flex flex-col items-center h-full space-y-4">
-
                   {/* Flag and Title */}
                   <div className="flex items-center justify-center space-x-3">
-                    <span className="text-5xl animate-pulse">{location.flag}</span>
+                    <span className="text-5xl animate-pulse">
+                      {location.flag}
+                    </span>
                     <h3 className="text-2xl font-bold text-gray-800 bg-white/80 px-4 py-2 rounded-lg shadow-sm">
                       {location.country}
                     </h3>
@@ -129,13 +159,17 @@ export default function FindUs() {
                     </div>
                   </div>
 
-
                   {/* Services Offered */}
                   <div className="w-full mt-3 text-sm">
-                    <h4 className="text-gray-700 font-semibold text-center mb-2">Services Offered</h4>
+                    <h4 className="text-gray-700 font-semibold text-center mb-2">
+                      Services Offered
+                    </h4>
                     <ul className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-center justify-between">
                       {location.services.map((service, i) => (
-                        <li key={i} className="flex items-center justify-center gap-2 bg-gray-100 rounded-lg px-3 py-2 text-gray-600 text-sm font-medium shadow-sm">
+                        <li
+                          key={i}
+                          className="flex items-center justify-center gap-2 bg-gray-100 rounded-lg px-3 py-2 text-gray-600 text-sm font-medium shadow-sm"
+                        >
                           {serviceIcons[service]} {service}
                         </li>
                       ))}
@@ -144,12 +178,12 @@ export default function FindUs() {
 
                   {/* Explore Button */}
                   <a
-                    href={`https://maps.google.com?q=${location.country}`}
+                    href={`https://longtaiafc.com/inventory`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="mt-auto w-full bg-gradient-to-r from-[#f1b274] to-[#e5a666] text-white py-3 px-6 rounded-xl text-center font-semibold shadow-md hover:shadow-lg transition-all duration-300 hover:from-[#e5a666] hover:to-[#d88f44] transform hover:-translate-y-1"
                   >
-                    Explore Location →
+                    Explore Inventory →
                   </a>
                 </div>
               </div>
@@ -158,32 +192,38 @@ export default function FindUs() {
         </Swiper>
       </div>
 
+      {/* Custom arrow styles */}
       <style jsx global>{`
-        .global-presence-swiper {
-          padding: 20px 10px 40px;
-        }
-
-        .global-presence-swiper .swiper-button-next,
-        .global-presence-swiper .swiper-button-prev {
-          color: #f1b274;
-          background: #ffffff;
-          width: 48px;
-          height: 48px;
+        .custom-swiper-nav {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          z-index: 10;
+          background: white;
+          width: 40px;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
           border-radius: 50%;
-          box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+          cursor: pointer;
           transition: all 0.3s ease;
+          color: #f1b274;
         }
 
-        .global-presence-swiper .swiper-button-next:hover,
-        .global-presence-swiper .swiper-button-prev:hover {
-          transform: scale(1.1);
-          background: #f9fafb;
+        .custom-swiper-nav:hover {
+          background: #fef7f1;
+          transform: translateY(-50%) scale(1.05);
         }
 
-        .global-presence-swiper .swiper-button-next:after,
-        .global-presence-swiper .swiper-button-prev:after {
-          font-size: 18px;
-          font-weight: bold;
+        .custom-swiper-nav svg {
+          width: 16px;
+          height: 16px;
+        }
+
+        .global-presence-swiper {
+          padding: 20px 0 40px;
         }
 
         .global-presence-swiper .swiper-slide {
@@ -192,6 +232,18 @@ export default function FindUs() {
 
         .global-presence-swiper .swiper-slide:hover {
           transform: translateY(-6px);
+        }
+
+        @media (max-width: 640px) {
+          .custom-swiper-nav {
+            width: 32px;
+            height: 32px;
+          }
+          
+          .custom-swiper-nav svg {
+            width: 14px;
+            height: 14px;
+          }
         }
       `}</style>
     </div>
