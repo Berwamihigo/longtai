@@ -1,206 +1,197 @@
 "use client";
 
+import React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/autoplay';
+import Image from 'next/image';
+import { FaCar, FaTools, FaKey, FaPhone, FaEnvelope } from 'react-icons/fa';
 
 export default function FindUs() {
   const locations = [
     {
       country: "Rwanda",
       flag: "🇷🇼",
-      address: "Longtai auto 51 KN 1 Rd, Kigali",
-      phone: "+250 795 570 900",
-      email: "info@longtai.com",
-      hours: {
-        weekdays: "8AM - 6PM",
-        saturday: "9AM - 4PM",
-        sunday: "Closed"
-      }
+      mapUrl: "https://www.google.com/maps/embed?pb=...",
+      image: "/assets/back.png",
+      phone: "+250788123456",
+      email: "info@rwanda.autozone.com",
+      services: ["Car Sales", "Accessories Shopping"]
     },
     {
-      country: "Kenya",
-      flag: "🇰🇪",
-      address: "Longtai auto, Mombasa Road, Nairobi",
-      phone: "+254 712 345 678",
-      email: "info.ke@longtai.com",
-      hours: {
-        weekdays: "8AM - 6PM",
-        saturday: "9AM - 4PM",
-        sunday: "Closed"
-      }
+      country: "Djibouti",
+      flag: "🇩🇯",
+      mapUrl: "https://www.google.com/maps/embed?pb=...",
+      image: "/countries/djibouti.jpg",
+      phone: "+25377123456",
+      email: "contact@djibouti.autozone.com",
+      services: ["Car Sales", "Car Rentals", "Accessories Shopping"]
     },
     {
-      country: "Uganda",
-      flag: "🇺🇬",
-      address: "Longtai auto, Entebbe Road, Kampala",
-      phone: "+256 712 345 678",
-      email: "info.ug@longtai.com",
-      hours: {
-        weekdays: "8AM - 6PM",
-        saturday: "9AM - 4PM",
-        sunday: "Closed"
-      }
+      country: "Angola",
+      flag: "🇦🇴",
+      mapUrl: "https://www.google.com/maps/embed?pb=...",
+      image: "/countries/angola.jpg",
+      phone: "+244923123456",
+      email: "sales@angola.autozone.com",
+      services: ["Car Sales", "Car Rentals", "Accessories Shopping"]
     },
     {
-      country: "Tanzania",
-      flag: "🇹🇿",
-      address: "Longtai auto, Morogoro Road, Dar es Salaam",
-      phone: "+255 712 345 678",
-      email: "info.tz@longtai.com",
-      hours: {
-        weekdays: "8AM - 6PM",
-        saturday: "9AM - 4PM",
-        sunday: "Closed"
-      }
+      country: "Iran",
+      flag: "🇮🇷",
+      mapUrl: "https://www.google.com/maps/embed?pb=...",
+      image: "/countries/iran.jpg",
+      phone: "+982112345678",
+      email: "support@iran.autozone.com",
+      services: ["Car Sales", "Car Rentals", "Accessories Shopping"]
     },
     {
       country: "Ethiopia",
       flag: "🇪🇹",
-      address: "Longtai auto, Bole Road, Addis Ababa",
-      phone: "+251 912 345 678",
-      email: "info.et@longtai.com",
-      hours: {
-        weekdays: "8AM - 6PM",
-        saturday: "9AM - 4PM",
-        sunday: "Closed"
-      }
-    }
+      mapUrl: "https://www.google.com/maps/embed?pb=...",
+      image: "/countries/ethiopia.jpg",
+      phone: "+251911123456",
+      email: "info@ethiopia.autozone.com",
+      services: ["Car Sales", "Car Rentals", "Accessories Shopping"]
+    },
   ];
 
+  const serviceIcons: Record<string, React.ReactElement> = {
+    "Car Sales": <FaCar className="text-[#e5a666]" />,
+    "Car Rentals": <FaKey className="text-[#e5a666]" />,
+    "Accessories Shopping": <FaTools className="text-[#e5a666]" />,
+  };
+
   return (
-    <div className="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="py-20 px-4 sm:px-6 lg:px-10 bg-gradient-to-br from-gray-50 to-gray-200">
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-4xl font-bold text-center mb-16 text-gray-800 relative">
-          Where To Find Us
+        <h2 className="text-4xl font-bold text-center mb-14 text-gray-800 relative">
+          <span className="inline-block relative pb-2">
+            Our Global Presence
+            <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-2/3 h-1 bg-gradient-to-r from-[#f1b274] to-[#e5a666] rounded-full"></span>
+          </span>
         </h2>
 
-        <div className="relative">
-          <Swiper
-            modules={[Navigation, Autoplay]}
-            spaceBetween={30}
-            slidesPerView={1}
-            navigation
-            autoplay={{
-              delay: 5000,
-              disableOnInteraction: false,
-            }}
-            className="find-us-swiper"
-          >
-            {locations.map((location, index) => (
-              <SwiperSlide key={index}>
-                <div className="bg-white p-8 rounded-2xl shadow-xl">
-                  <div className="flex items-center justify-center mb-8">
-                    <span className="text-6xl mr-4">{location.flag}</span>
-                    <h3 className="text-3xl font-bold text-gray-800">{location.country}</h3>
+        <Swiper
+          modules={[Navigation, Autoplay]}
+          spaceBetween={30}
+          slidesPerView={1}
+          loop
+          breakpoints={{
+            640: { slidesPerView: 1 },
+            768: { slidesPerView: 2 },
+            1024: { slidesPerView: 3 },
+          }}
+          navigation
+          autoplay={{
+            delay: 5000,
+            disableOnInteraction: false,
+          }}
+          className="global-presence-swiper"
+        >
+          {locations.map((location, index) => (
+            <SwiperSlide key={index}>
+              <div className="group relative bg-white p-6 rounded-2xl shadow-lg transition-all duration-500 hover:shadow-xl h-full transform hover:-translate-y-2">
+                <div className="flex flex-col items-center h-full space-y-4">
+
+                  {/* Flag and Title */}
+                  <div className="flex items-center justify-center space-x-3">
+                    <span className="text-5xl animate-pulse">{location.flag}</span>
+                    <h3 className="text-2xl font-bold text-gray-800 bg-white/80 px-4 py-2 rounded-lg shadow-sm">
+                      {location.country}
+                    </h3>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {/* Map Section */}
-                    <div className="min-h-[350px] relative group">
-                      <div className="absolute inset-0 overflow-hidden rounded-xl shadow-lg">
-                        <iframe
-                          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3987.5328508467974!2d30.056249275049804!3d-1.939409498042992!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x19dca5b36bbb7c65%3A0x111d633f0fdd9f4c!2sLongtai%20auto!5e0!3m2!1sen!2srw!4v1746631686784!5m2!1sen!2srw"
-                          width="100%"
-                          height="100%"
-                          className="border-0"
-                          loading="lazy"
-                          allowFullScreen
-                          referrerPolicy="no-referrer-when-downgrade"
-                        />
-                      </div>
+                  {/* Image / Map Transition */}
+                  <div className="relative w-full h-64 rounded-xl overflow-hidden shadow-md transition-all duration-500">
+                    <div className="absolute inset-0 z-0 transition-opacity duration-500 group-hover:opacity-0">
+                      <Image
+                        src={location.image}
+                        alt={`Image of ${location.country}`}
+                        fill
+                        className="object-cover"
+                        placeholder="blur"
+                        blurDataURL="/placeholder.jpg"
+                      />
                     </div>
-
-                    {/* Contact & Hours Section */}
-                    <div className="space-y-8">
-                      {/* Contact Info */}
-                      <div className="bg-gradient-to-br from-blue-50 to-gray-50 p-6 rounded-xl">
-                        <h4 className="text-xl font-semibold mb-4 text-gray-800">Contact Information</h4>
-                        <div className="space-y-3 text-gray-600">
-                          <p className="flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
-                            {location.address}
-                          </p>
-                          <p className="flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                            </svg>
-                            {location.phone}
-                          </p>
-                          <p className="flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                            </svg>
-                            {location.email}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Working Hours */}
-                      <div className="bg-gradient-to-br from-blue-50 to-gray-50 p-6 rounded-xl">
-                        <h4 className="text-xl font-semibold mb-4 text-gray-800">Working Hours</h4>
-                        <div className="space-y-3 text-gray-600">
-                          <p className="flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            Monday - Friday: {location.hours.weekdays}
-                          </p>
-                          <p className="flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            Saturday: {location.hours.saturday}
-                          </p>
-                          <p className="flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            Sunday: {location.hours.sunday}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Contact Button */}
-                      <button className="w-full bg-[#f1b274] text-white py-3 px-6 rounded-lg hover:bg-[#e5a666] transition-colors duration-300 flex items-center justify-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                        </svg>
-                        Contact Us
-                      </button>
+                    <div className="absolute inset-0 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                      <iframe
+                        src={location.mapUrl}
+                        width="100%"
+                        height="100%"
+                        className="border-0"
+                        loading="lazy"
+                        allowFullScreen
+                        referrerPolicy="no-referrer-when-downgrade"
+                      />
                     </div>
                   </div>
+
+
+                  {/* Services Offered */}
+                  <div className="w-full mt-3 text-sm">
+                    <h4 className="text-gray-700 font-semibold text-center mb-2">Services Offered</h4>
+                    <ul className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-center justify-between">
+                      {location.services.map((service, i) => (
+                        <li key={i} className="flex items-center justify-center gap-2 bg-gray-100 rounded-lg px-3 py-2 text-gray-600 text-sm font-medium shadow-sm">
+                          {serviceIcons[service]} {service}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Explore Button */}
+                  <a
+                    href={`https://maps.google.com?q=${location.country}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-auto w-full bg-gradient-to-r from-[#f1b274] to-[#e5a666] text-white py-3 px-6 rounded-xl text-center font-semibold shadow-md hover:shadow-lg transition-all duration-300 hover:from-[#e5a666] hover:to-[#d88f44] transform hover:-translate-y-1"
+                  >
+                    Explore Location →
+                  </a>
                 </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        </div>
+              </div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
       </div>
 
       <style jsx global>{`
-        .find-us-swiper {
-          padding: 20px 0;
+        .global-presence-swiper {
+          padding: 20px 10px 40px;
         }
-        .find-us-swiper .swiper-button-next,
-        .find-us-swiper .swiper-button-prev {
+
+        .global-presence-swiper .swiper-button-next,
+        .global-presence-swiper .swiper-button-prev {
           color: #f1b274;
-          background: white;
-          width: 40px;
-          height: 40px;
+          background: #ffffff;
+          width: 48px;
+          height: 48px;
           border-radius: 50%;
-          box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+          box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+          transition: all 0.3s ease;
         }
-        .find-us-swiper .swiper-button-next:after,
-        .find-us-swiper .swiper-button-prev:after {
+
+        .global-presence-swiper .swiper-button-next:hover,
+        .global-presence-swiper .swiper-button-prev:hover {
+          transform: scale(1.1);
+          background: #f9fafb;
+        }
+
+        .global-presence-swiper .swiper-button-next:after,
+        .global-presence-swiper .swiper-button-prev:after {
           font-size: 18px;
+          font-weight: bold;
         }
-        .find-us-swiper .swiper-button-disabled {
-          opacity: 0.35;
+
+        .global-presence-swiper .swiper-slide {
+          transition: transform 0.4s ease, box-shadow 0.3s ease;
+        }
+
+        .global-presence-swiper .swiper-slide:hover {
+          transform: translateY(-6px);
         }
       `}</style>
     </div>

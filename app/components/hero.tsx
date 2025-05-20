@@ -15,6 +15,7 @@ import {
   RiLeafLine,
   RiArrowLeftLine,
   RiArrowRightLine,
+  RiLineChartLine,
 } from "react-icons/ri";
 
 interface SearchResult {
@@ -226,6 +227,15 @@ export default function Hero() {
             <RiLeafLine size={24} />
             <span className="text-white flex items-center">
               Shop Hybrid <RiArrowRightSLine />
+            </span>
+          </Link>
+          <Link
+            className="flex flex-col items-center justify-center w-full text-center shadow-md hover:shadow-lg rounded-[10px] bg-[rgba(100,100,100,0.60)] md:bg-[rgba(0,0,0,0.60)] backdrop-blur-md h-[132px] gap-2 min-[280px]:w-[calc(50%_-_10px)] min-[440px]:min-w-[132px] min-[440px]:max-w-[25%] bg-[radial-gradient(circle_at_top,_rgba(6,174,170,0.15)_0%,_rgba(230,230,230,0.1)_39%,_rgba(255,255,255,0)_100%)]"
+            href="/accessories"
+          >
+            <RiLineChartLine size={24} />
+            <span className="text-white flex items-center">
+              Accessories <RiArrowRightSLine />
             </span>
           </Link>
         </div>
