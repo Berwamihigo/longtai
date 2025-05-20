@@ -245,17 +245,17 @@ export default function Hero() {
       <div className="absolute inset-0 flex items-center justify-between z-40 px-4 pointer-events-none">
         <button
           onClick={goToPrevSlide}
-          className="p-3 rounded-full bg-black/40 hover:bg-orange-500 text-white shadow-xl hover:scale-110 transition pointer-events-auto"
+          className="p-3 rounded-full bg-black/40 hover:bg-orange-500 text-white text-xl font-bold shadow-xl hover:scale-110 transition pointer-events-auto"
           aria-label="Previous"
         >
-          <RiArrowLeftLine size={20} />
+          &lt;
         </button>
         <button
           onClick={goToNextSlide}
-          className="p-3 rounded-full bg-black/40 hover:bg-orange-500 text-white shadow-xl hover:scale-110 transition pointer-events-auto"
+          className="p-3 rounded-full bg-black/40 hover:bg-orange-500 text-white text-xl font-bold shadow-xl hover:scale-110 transition pointer-events-auto"
           aria-label="Next"
         >
-          <RiArrowRightLine size={20} />
+          &gt;
         </button>
       </div>
 
