@@ -16,6 +16,7 @@ import AuthModals from "../../components/auth/auth-modals";
 import FavoriteTray from "../../components/favorites";
 import ProfilePopup from "../../components/ProfilePopup";
 import NotificationToast from "../../components/NotificationToast";
+import CartSidebar from "./CartSidebar";
 
 interface CarData {
   id: string;
@@ -45,6 +46,7 @@ export default function DesktopNav() {
   );
   const searchRef = useRef<HTMLDivElement>(null);
   const [showMobileDiscover, setShowMobileDiscover] = useState(false);
+  const [showCart, setShowCart] = useState(false);
 
   // Check user session on component mount
   useEffect(() => {
@@ -149,6 +151,24 @@ export default function DesktopNav() {
       setIsMobileMenuOpen(false); // Close mobile nav when opening favorites
     } else {
       setNotificationMessage("Please log in to view your favorites");
+      setNotificationType("error");
+      setShowNotification(true);
+      setTimeout(() => setShowNotification(false), 3000);
+      setShowDialog(true); // Show login dialog
+    }
+  };
+
+  // Add new handler for cart click
+  const handleCartClick = async () => {
+    // Check if user is logged in
+    const res = await fetch("/api/session");
+    const data = await res.json();
+
+    if (data.loggedIn) {
+      setShowCart(true);
+      setIsMobileMenuOpen(false); // Close mobile nav when opening cart
+    } else {
+      setNotificationMessage("Please log in to view your cart");
       setNotificationType("error");
       setShowNotification(true);
       setTimeout(() => setShowNotification(false), 3000);
@@ -304,7 +324,7 @@ export default function DesktopNav() {
               <li className="ic text-5xl">
                 <RiShoppingCartLine
                   className="ri-heart-line"
-                  onClick={handleFavoritesClick}
+                  onClick={handleCartClick}
                   style={{ cursor: "pointer" }}
                 />
               </li>
@@ -434,6 +454,9 @@ export default function DesktopNav() {
         type={notificationType}
         onClose={() => setShowNotification(false)}
       />
+
+      {/* Add CartSidebar */}
+      <CartSidebar isOpen={showCart} onClose={() => setShowCart(false)} />
 
       <style jsx>{`
         @keyframes fadeIn {
