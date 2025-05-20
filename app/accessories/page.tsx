@@ -5,6 +5,8 @@ import Navbar from '../components/navbar';
 import Footer from '../components/footer';
 import FilterBar from './components/FilterBar';
 import ProductCard from './components/ProductCard';
+import { CartProvider } from './components/CartContext';
+import { Toaster } from 'react-hot-toast';
 
 interface Accessory {
   id: number;
@@ -18,56 +20,56 @@ const accessories: Accessory[] = [
   {
     id: 1,
     name: "Premium Seat Covers",
-    price: 89.99,
+    price: 180000,
     image: "/assets/accessories/car-seats.jpg",
     category: "Interior"
   },
   {
     id: 2,
     name: "All-Weather Floor Mats",
-    price: 49.99,
+    price: 35000,
     image: "/assets/accessories/car-mats.jpg",
     category: "Interior"
   },
   {
     id: 3,
     name: "Leather Steering Wheel Cover",
-    price: 29.99,
+    price: 12000,
     image: "/assets/accessories/steering-cover.jpg",
     category: "Interior"
   },
   {
     id: 4,
     name: "Universal Sunshade",
-    price: 19.99,
+    price: 40000,
     image: "/assets/accessories/sunshade.jpg",
     category: "Exterior"
   },
   {
     id: 5,
     name: "HD Dash Cam",
-    price: 129.99,
+    price: 120000,
     image: "/assets/accessories/dash-cam.jpg",
     category: "Electronics"
   },
   {
     id: 6,
     name: "Fast Wireless Car Charger",
-    price: 39.99,
+    price: 12000,
     image: "/assets/accessories/car-charger.jpg",
     category: "Electronics"
   },
   {
     id: 7,
     name: "Ambient LED Interior Kit",
-    price: 59.99,
+    price: 65000,
     image: "/assets/accessories/led-lights.jpg",
     category: "Interior"
   },
   {
     id: 8,
     name: "Universal Phone Mount",
-    price: 24.99,
+    price: 8000,
     image: "/assets/accessories/phone-mount.jpg",
     category: "Electronics"
   }
@@ -85,38 +87,35 @@ export default function AccessoriesPage() {
     return matchesCategory && matchesSearch;
   });
 
-  const handleAddToCart = (id: number) => {
-    // TODO: Implement cart functionality
-    console.log(`Added product ${id} to cart`);
-  };
-
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar />
-      
-      <main className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">Vehicle Accessories</h1>
+    <CartProvider>
+      <div className="min-h-screen bg-gray-50">
+        <Navbar />
         
-        <FilterBar
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-          categories={categories}
-          selectedCategory={selectedCategory}
-          onCategoryChange={setSelectedCategory}
-        />
+        <main className="container mx-auto px-4 py-8">
+          <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">Vehicle Accessories</h1>
+          
+          <FilterBar
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            categories={categories}
+            selectedCategory={selectedCategory}
+            onCategoryChange={setSelectedCategory}
+          />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredAccessories.map((accessory) => (
-            <ProductCard
-              key={accessory.id}
-              {...accessory}
-              onAddToCart={handleAddToCart}
-            />
-          ))}
-        </div>
-      </main>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {filteredAccessories.map((accessory) => (
+              <ProductCard
+                key={accessory.id}
+                {...accessory}
+              />
+            ))}
+          </div>
+        </main>
 
-      <Footer />
-    </div>
+        <Footer />
+        <Toaster position="top-right" />
+      </div>
+    </CartProvider>
   );
 } 

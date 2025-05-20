@@ -1,9 +1,12 @@
+"use client";
+
+import { useCart } from './CartContext';
+
 interface ProductCardProps {
   id: number;
   name: string;
   price: number;
   image: string;
-  onAddToCart: (id: number) => void;
 }
 
 export default function ProductCard({
@@ -11,8 +14,13 @@ export default function ProductCard({
   name,
   price,
   image,
-  onAddToCart,
 }: ProductCardProps) {
+  const { addToCart } = useCart();
+
+  const handleAddToCart = () => {
+    addToCart({ id, name, price, image });
+  };
+
   return (
     <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
       <div className="relative h-48">
@@ -24,9 +32,9 @@ export default function ProductCard({
       </div>
       <div className="p-4">
         <h3 className="text-lg font-semibold text-gray-800 mb-2">{name}</h3>
-        <p className="text-[#e5a666] font-bold text-xl">${price.toFixed(2)}</p>
+        <p className="text-[#e5a666] font-bold text-xl">RWF {price.toLocaleString()}</p>
         <button
-          onClick={() => onAddToCart(id)}
+          onClick={handleAddToCart}
           className="mt-4 w-full bg-[#e5a666] text-white py-2 rounded-lg hover:bg-[#d88f44] transition-colors"
         >
           Add to Cart
