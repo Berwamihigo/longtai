@@ -80,12 +80,18 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       }
       return [...prevItems, { ...item, quantity: 1 }];
     });
-    toast.success('Item added to cart');
+    toast.success('Item added to cart', {
+      position: 'bottom-right',
+      duration: 3000
+    });
   };
 
   const removeFromCart = (id: number) => {
     setItems(prevItems => prevItems.filter(item => item.id !== id));
-    toast.success('Item removed from cart');
+    toast.success('Item removed from cart', {
+      position: 'bottom-right',
+      duration: 3000
+    });
   };
 
   const updateQuantity = (id: number, quantity: number) => {

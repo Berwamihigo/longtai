@@ -11,6 +11,7 @@ import {
   RiAccountCircleLine,
   RiSearchLine,
   RiShoppingCartLine,
+  RiLoader4Line,
 } from "react-icons/ri";
 import AuthModals from "../../components/auth/auth-modals";
 import FavoriteTray from "../../components/favorites";
@@ -18,6 +19,8 @@ import ProfilePopup from "../../components/ProfilePopup";
 import NotificationToast from "../../components/NotificationToast";
 import CartSidebar from "./CartSidebar";
 import { useCart } from './CartContext';
+import LoadingOverlay from "../../components/LoadingOverlay";
+import NProgress from 'nprogress';
 
 interface CarData {
   id: string;
@@ -50,6 +53,8 @@ export default function DesktopNav() {
   const [showCart, setShowCart] = useState(false);
   const { items } = useCart();
   const cartItemsCount = items.reduce((sum, item) => sum + item.quantity, 0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [loadingLink, setLoadingLink] = useState<string | null>(null);
 
   // Check user session on component mount
   useEffect(() => {
@@ -163,19 +168,24 @@ export default function DesktopNav() {
 
   // Add new handler for cart click
   const handleCartClick = async () => {
-    // Check if user is logged in
-    const res = await fetch("/api/session");
-    const data = await res.json();
+    setIsLoading(true);
+    try {
+      // Check if user is logged in
+      const res = await fetch("/api/session");
+      const data = await res.json();
 
-    if (data.loggedIn) {
-      setShowCart(true);
-      setIsMobileMenuOpen(false); // Close mobile nav when opening cart
-    } else {
-      setNotificationMessage("Please log in to view your cart");
-      setNotificationType("error");
-      setShowNotification(true);
-      setTimeout(() => setShowNotification(false), 3000);
-      setShowDialog(true); // Show login dialog
+      if (data.loggedIn) {
+        setShowCart(true);
+        setIsMobileMenuOpen(false); // Close mobile nav when opening cart
+      } else {
+        setNotificationMessage("Please log in to view your cart");
+        setNotificationType("error");
+        setShowNotification(true);
+        setTimeout(() => setShowNotification(false), 3000);
+        setShowDialog(true); // Show login dialog
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -209,11 +219,27 @@ export default function DesktopNav() {
     };
   }
 
+  // Handle link click with loading state
+  const handleLinkClick = (path: string) => {
+    setLoadingLink(path);
+    setIsLoading(true);
+    NProgress.start(); // Start progress bar immediately on click
+    
+    // Reset loading state after navigation
+    setTimeout(() => {
+      setIsLoading(false);
+      setLoadingLink(null);
+      NProgress.done(); // Complete progress bar
+    }, 1000);
+  };
+
   return (
     <>
+      <LoadingOverlay isLoading={isLoading} message="Loading..." />
+      
       {/* Desktop header */}
       <header className="desktop md:display-none">
-        <Link href="/">
+        <Link href="/" onClick={() => handleLinkClick('/')}>
           <div className="image">
             <img className="logo" src="/assets/longtai.png" alt="Longtai" />
           </div>
@@ -222,13 +248,13 @@ export default function DesktopNav() {
         <div className="links">
           <ul className="nav-links">
             <li className="linked flex items-center gap-1.5">
-              <Link href="/">Home</Link>
+              <Link href="/" onClick={() => handleLinkClick('/')}>Home</Link>
             </li>
             <li className="linked flex items-center gap-1.5">
-              <Link href="/shopping-tools">Shop</Link>
+              <Link href="/shopping-tools" onClick={() => handleLinkClick('/shopping-tools')}>Shop</Link>
             </li>
             <li className="linked">
-              <Link href="/inventory">Inventory</Link>
+              <Link href="/inventory" onClick={() => handleLinkClick('/inventory')}>Inventory</Link>
             </li>
             <li
               className="linked relative flex items-center align-center justify-center gap-1.5"
@@ -241,24 +267,28 @@ export default function DesktopNav() {
                 <div className="absolute top-full left-0 bg-white shadow-lg rounded-lg py-2 min-w-[200px] z-6000">
                   <Link
                     href="/owners"
+                    onClick={() => handleLinkClick('/owners')}
                     className="block px-4 py-2 hover:bg-gray-100"
                   >
                     About Us
                   </Link>
                   <Link
                     href="/owners/services"
+                    onClick={() => handleLinkClick('/owners/services')}
                     className="block px-4 py-2 hover:bg-gray-100"
                   >
                     Our Services
                   </Link>
                   <Link
                     href="/owners/contact-us"
+                    onClick={() => handleLinkClick('/owners/contact-us')}
                     className="block px-4 py-2 hover:bg-gray-100"
                   >
                     Contact Us
                   </Link>
                   <Link
                     href="/maintenance"
+                    onClick={() => handleLinkClick('/maintenance')}
                     className="block px-4 py-2 hover:bg-gray-100"
                   >
                     Maintenance
@@ -345,7 +375,7 @@ export default function DesktopNav() {
 
       {/* Mobile nav */}
       <header className="mobile md:display-none flex justify-between items-center px-4 py-3 bg-white">
-        <Link href="/">
+        <Link href="/" onClick={() => handleLinkClick('/')}>
           <div className="image">
             <img src="/assets/longtai.png" alt="Longtai" className="h-10" />
           </div>
@@ -382,12 +412,18 @@ export default function DesktopNav() {
           </div>
           <div className="flex flex-col gap-6 mt-10 text-lg font-medium text-gray-800">
             <span className="flex justify-between items-center cursor-pointer">
-              <Link href="/">Home</Link>
+              <Link href="/" onClick={() => handleLinkClick('/')}>Home</Link>
             </span>
             <span className="flex justify-between items-center cursor-pointer">
-              <Link href="/shopping-tools">Shop</Link>
+              <Link href="/shopping-tools" onClick={() => handleLinkClick('/shopping-tools')}>Shop</Link>
             </span>
-            <Link href="/inventory" onClick={() => setIsMobileMenuOpen(false)}>
+            <Link 
+              href="/inventory" 
+              onClick={() => {
+                handleLinkClick('/inventory');
+                setIsMobileMenuOpen(false);
+              }}
+            >
               Inventory
             </Link>
             <span
@@ -469,6 +505,7 @@ export default function DesktopNav() {
         message={notificationMessage}
         type={notificationType}
         onClose={() => setShowNotification(false)}
+        position="bottom-right"
       />
 
       {/* Add CartSidebar */}
@@ -487,6 +524,12 @@ export default function DesktopNav() {
         }
         .animate-fadeIn {
           animation: fadeIn 0.3s ease;
+        }
+
+        /* Add loading state styles */
+        .loading {
+          pointer-events: none;
+          opacity: 0.7;
         }
       `}</style>
     </>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import ProgressBar from "./components/ProgressBar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,7 +32,7 @@ export default function RootLayout({
       <head>
         <meta
           name="description"
-          content="Longtai Auto is Rwanda’s trusted destination for quality car sales. Find affordable new and used vehicles, expert service, and unbeatable deals tailored to your needs."
+          content="Longtai Auto is Rwanda's trusted destination for quality car sales. Find affordable new and used vehicles, expert service, and unbeatable deals tailored to your needs."
         />
         <meta
           name="google-site-verification"
@@ -64,10 +65,12 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Orbitron:wght@400..900&display=swap"
           rel="stylesheet"
         />
+        <link rel="stylesheet" href="/app/styles/nprogress.css" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <ProgressBar />
         {children}
       </body>
     </html>
