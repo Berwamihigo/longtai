@@ -126,26 +126,6 @@ export default function DesktopNav() {
     }
   }, [search, debouncedSearch]);
 
-  // Add effect to update cart count
-  useEffect(() => {
-    const updateCartCount = async () => {
-      try {
-        const res = await fetch("/api/cart/count");
-        const data = await res.json();
-        if (data.success) {
-          setCartItemsCount(data.count);
-        }
-      } catch (error) {
-        console.error("Error fetching cart count:", error);
-      }
-    };
-
-    updateCartCount();
-    // Set up an interval to periodically update the cart count
-    const interval = setInterval(updateCartCount, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
   // Handler for account icon click (desktop or mobile)
   const handleAccountClick = async () => {
     // Check session
