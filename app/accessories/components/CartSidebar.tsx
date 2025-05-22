@@ -12,7 +12,7 @@ interface CartSidebarProps {
 }
 
 export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
-  const { items, removeFromCart, updateQuantity, total, isLoggedIn } = useCart();
+  const { items, removeFromCart, updateQuantity, total, isLoggedIn, clearCart } = useCart();
   const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -34,6 +34,7 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
     try {
       await new Promise(resolve => setTimeout(resolve, 1000));
       toast.success('Item request sent successfully!');
+      clearCart();
       onClose();
     } catch (error) {
       toast.error('Failed to send item request. Please try again.');

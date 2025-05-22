@@ -8,6 +8,7 @@ interface AuthModalsProps {
   isOpen: boolean;
   onClose: () => void;
   initialMode?: "login" | "signup";
+  onLoginSuccess?: () => void;
 }
 
 function useModalLock(isOpen: boolean) {
@@ -27,6 +28,7 @@ const AuthModals = ({
   isOpen,
   onClose,
   initialMode = "login",
+  onLoginSuccess,
 }: AuthModalsProps) => {
   const router = useRouter();
   const [mode, setMode] = useState<"login" | "signup">(initialMode);
@@ -117,6 +119,7 @@ const AuthModals = ({
             name: "",
             confirmPassword: "",
           });
+          onLoginSuccess?.();
           setTimeout(() => {
             onClose();
             router.push('/dashboard');

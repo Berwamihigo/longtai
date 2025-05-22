@@ -22,6 +22,7 @@ interface CartContextType {
   setIsLoggedIn: (value: boolean) => void;
   pendingItems: CartItem[];
   clearPendingItems: () => void;
+  clearCart: () => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -121,6 +122,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setPendingItems([]);
   };
 
+  const clearCart = () => {
+    setItems([]);
+    localStorage.removeItem('cartItems');
+    toast.success('Cart cleared successfully', {
+      position: 'bottom-right',
+      duration: 3000
+    });
+  };
+
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
@@ -135,6 +145,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         setIsLoggedIn,
         pendingItems,
         clearPendingItems,
+        clearCart,
       }}
     >
       {children}
