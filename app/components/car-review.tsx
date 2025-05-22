@@ -24,6 +24,7 @@ interface CarReviewProps {
   cars: {
     id: string;
     name: string;
+    carName?: string;
     model: string;
     year: number;
     price: number;
@@ -199,7 +200,7 @@ export default function CarReview({ cars }: CarReviewProps) {
                     </p>
                   </div>
                   <button
-                    onClick={() => handleFavoriteClick(car.id, car.name)}
+                    onClick={() => handleFavoriteClick(car.id, car.name || "")}
                     className="text-2xl text-red-500 hover:scale-110 transition-transform relative"
                     disabled={loadingHearts[car.id]}
                   >

@@ -22,6 +22,8 @@ interface SearchResult {
   make: string;
   model: string;
   year: string;
+  carName?: string;
+  name?: string;
 }
 
 
@@ -192,9 +194,9 @@ export default function Hero() {
                         href={`/view?name=${result.id}`}
                         className="block p-4 hover:bg-gray-100 text-gray-800"
                       >
-                        <div className="font-medium">{result.make}</div>
+                        <div className="font-medium">{result.carName || result.name}</div>
                         <div className="text-sm text-gray-600">
-                          {result.model} • {result.year}
+                          {result.make} • {result.year}
                         </div>
                       </a>
                     </li>

@@ -7,34 +7,53 @@ interface Car {
   price: number;
   category?: string;
   powerType?: string;
+  carName?: string;
+  make?: string;
+  model?: string;
+  year?: number;
   createdAt: string;
-  [key: string]: any; // for other car properties
+  [key: string]: any;
 }
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
+    const searchQuery = searchParams.get('query');
     const category = searchParams.get('category');
     const minPrice = searchParams.get('minPrice');
     const maxPrice = searchParams.get('maxPrice');
     const powerType = searchParams.get('powerType');
 
+    console.log('Search params:', { searchQuery, category, minPrice, maxPrice, powerType });
+
     let q = query(collection(db, 'cardata'));
-
-    if (category) {
-      q = query(q, where('category', '==', category));
-    }
-
-    if (powerType) {
-      q = query(q, where('powerType', '==', powerType));
-    }
-
     const querySnapshot = await getDocs(q);
     let cars = querySnapshot.docs.map(doc => ({
       id: doc.id,
       ...doc.data(),
       createdAt: doc.data().createdAt?.toDate?.() || new Date().toISOString()
     })) as Car[];
+
+    // Filter by search query if provided
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      cars = cars.filter(car => {
+        const carName = (car.carName || '').toLowerCase();
+        const make = (car.make || '').toLowerCase();
+        const model = (car.model || '').toLowerCase();
+        return carName.includes(query) || make.includes(query) || model.includes(query);
+      });
+    }
+
+    // Filter by category if provided
+    if (category) {
+      cars = cars.filter(car => car.category?.toLowerCase() === category.toLowerCase());
+    }
+
+    // Filter by power type if provided
+    if (powerType) {
+      cars = cars.filter(car => car.powerType?.toLowerCase() === powerType.toLowerCase());
+    }
 
     // Filter by price range if provided
     if (minPrice || maxPrice) {
@@ -51,9 +70,11 @@ export async function GET(request: NextRequest) {
       });
     }
 
+    console.log('Search results:', cars.length);
+
     return NextResponse.json({
       success: true,
-      cars
+      results: cars
     });
   } catch (error) {
     console.error('Error performing customized search:', error);

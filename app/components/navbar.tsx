@@ -21,6 +21,8 @@ interface CarData {
   make: string;
   model: string;
   year: number;
+  carName?: string;
+  name?: string;
   // Add other car properties as needed
 }
 
@@ -282,10 +284,10 @@ export default function DesktopNav() {
                                 }}
                               >
                                 <div className="font-medium">
-                                  {car.make} {car.model}
+                                  {car.carName || car.name}
                                 </div>
                                 <div className="text-sm text-gray-500">
-                                  {car.year}
+                                  {car.make} • {car.year}
                                 </div>
                               </Link>
                             </li>
