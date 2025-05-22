@@ -19,6 +19,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { useNotification } from "./GlobalNotification";
+import { useProgressBar } from "../hooks/useProgressBar";
 
 interface CarReviewProps {
   cars: {
@@ -86,6 +87,7 @@ export default function CarReview({ cars }: CarReviewProps) {
   const [activeTab, setActiveTab] = useState("overview");
   const [isMobile, setIsMobile] = useState(false);
   const { showNotification } = useNotification();
+  const handleNavigation = useProgressBar();
 
   useEffect(() => {
     const handleResize = () => {
@@ -347,7 +349,7 @@ export default function CarReview({ cars }: CarReviewProps) {
 
                 {/* Action Buttons */}
                 <div className="flex flex-col sm:flex-row gap-3 md:gap-4 pt-4 md:pt-6">
-                  <Link href="/test-drive">
+                  <Link href="/test-drive" onClick={() => handleNavigation('/test-drive')}>
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}

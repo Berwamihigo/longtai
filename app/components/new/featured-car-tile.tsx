@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FaHeart, FaBolt, FaLeaf } from "react-icons/fa";
 import { RiArrowRightSLine } from "react-icons/ri";
+import { useProgressBar } from "../../hooks/useProgressBar";
+import Link from "next/link";
 
 type CarType = {
   name: string;
@@ -25,6 +27,7 @@ type CarType = {
 
 export default function FeaturedCars() {
   const router = useRouter();
+  const handleNavigation = useProgressBar();
   const [cars, setCars] = useState<CarType[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState("All");
@@ -56,10 +59,6 @@ export default function FeaturedCars() {
 
     fetchCars();
   }, [activeCategory]);
-
-  const redirectTo = (carName: string) => {
-    router.push(`/view?name=${encodeURIComponent(carName)}`);
-  };
 
   return (
     <section className="flex flex-col gap-6 px-6 py-30 bg-gray-300">
@@ -105,9 +104,9 @@ export default function FeaturedCars() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {cars.map((car, index) => (
             <div key={index} className="flex justify-center">
-              <div
-                onClick={() => redirectTo(car.name)}
-                className="relative cursor-pointer w-full max-w-sm bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white rounded-2xl overflow-hidden shadow-2xl hover:scale-105 transition-transform duration-300 group"
+              <Link
+                href={`/view?name=${encodeURIComponent(car.name)}`}
+                className="relative cursor-pointer w-full max-w-sm bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white rounded-2xl overflow-hidden shadow-2xl hover:scale-105 transition-all duration-300 group hover:shadow-[#f1b274]/20"
               >
                 {/* Image Section */}
                 <div className="relative">
@@ -163,7 +162,7 @@ export default function FeaturedCars() {
                     {car.seats && <span>Seats: {car.seats}</span>}
                   </div>
                 </div>
-              </div>
+              </Link>
             </div>
           ))}
         </div>
@@ -171,12 +170,12 @@ export default function FeaturedCars() {
 
       {/* Explore More Button */}
       <div className="newone mt-8 flex justify-center">
-        <button
-          onClick={() => router.push("/inventory")}
-          className="text-gray-900 flex items-center gap-2 hover:underline hover:text-black font-semibold"
+        <Link
+          href="/inventory"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-[#f1b274] text-white rounded-lg hover:bg-[#e5a066] transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
         >
           Explore More Vehicles <RiArrowRightSLine size={20} />
-        </button>
+        </Link>
       </div>
     </section>
   );

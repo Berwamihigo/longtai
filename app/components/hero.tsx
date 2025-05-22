@@ -16,6 +16,7 @@ import {
   RiLineChartLine,
 } from "react-icons/ri";
 import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
+import { useProgressBar } from "../hooks/useProgressBar";
 
 interface SearchResult {
   id: string;
@@ -43,6 +44,7 @@ export default function Hero() {
   const [activeIndex, setActiveIndex] = useState(0);
   const searchRef = useRef<HTMLDivElement>(null);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const handleNavigation = useProgressBar();
 
   const performSearch = useCallback(async (query: string) => {
     if (!query.trim()) {
@@ -216,6 +218,7 @@ export default function Hero() {
           <Link
             className="flex flex-col items-center justify-center w-full text-center shadow-md hover:shadow-lg rounded-[10px] bg-[rgba(100,100,100,0.60)] md:bg-[rgba(0,0,0,0.60)] backdrop-blur-md h-[132px] gap-2 min-[280px]:w-[calc(50%_-_10px)] min-[440px]:min-w-[132px] min-[440px]:max-w-[25%] bg-[radial-gradient(circle_at_top,_rgba(235,0,139,0.15)_0%,_rgba(230,230,230,0.1)_39%,_rgba(255,255,255,0)_100%)]"
             href="/buy?type=electric"
+            onClick={() => handleNavigation('/buy?type=electric')}
           >
             <RiPlugLine size={24} />
             <span className="text-white flex items-center">
@@ -225,6 +228,7 @@ export default function Hero() {
           <Link
             className="flex flex-col items-center justify-center w-full text-center shadow-md hover:shadow-lg rounded-[10px] bg-[rgba(100,100,100,0.60)] md:bg-[rgba(0,0,0,0.60)] backdrop-blur-md h-[132px] gap-2 min-[280px]:w-[calc(50%_-_10px)] min-[440px]:min-w-[132px] min-[440px]:max-w-[25%] bg-[radial-gradient(circle_at_top,_rgba(6,174,170,0.15)_0%,_rgba(230,230,230,0.1)_39%,_rgba(255,255,255,0)_100%)]"
             href="/buy?type=hybrid"
+            onClick={() => handleNavigation('/buy?type=hybrid')}
           >
             <RiLeafLine size={24} />
             <span className="text-white flex items-center">

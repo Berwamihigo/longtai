@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { RiCloseLine, RiDeleteBin6Line } from "react-icons/ri";
+import { RiCloseLine, RiDeleteBin6Line, RiLoader4Line } from "react-icons/ri";
 import { FaBolt, FaLeaf } from "react-icons/fa";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import LoadingSpinner from "./LoadingSpinner";
 import NotificationToast from "./NotificationToast";
+import Link from "next/link";
+import { motion } from "framer-motion";
 
 type FavoriteCar = {
   carName: string;
@@ -158,110 +160,71 @@ export default function FavoriteTray({
   if (!open) return null;
 
   return (
-    <>
-      <div className="fixed inset-0 z-[50000] bg-white">
-        {/* Header */}
-        <div className="sticky top-0 z-10 bg-white border-b border-gray-200 px-6 py-4">
-          <div className="max-w-7xl mx-auto flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-[#f1b274]">Favorite Cars</h2>
+    <div className="fixed inset-0 z-[50000] flex justify-end">
+      <div
+        className="fixed inset-0 bg-black/50"
+        onClick={onClose}
+      />
+      <motion.div
+        initial={{ x: "100%" }}
+        animate={{ x: 0 }}
+        exit={{ x: "100%" }}
+        transition={{ type: "spring", damping: 20 }}
+        className="relative w-full max-w-md bg-white shadow-xl h-full overflow-y-auto"
+      >
+        <div className="p-6">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold text-gray-900">Favorites</h2>
             <button
-              className="text-2xl text-gray-400 hover:text-[#f1b274] transition"
               onClick={onClose}
+              className="text-gray-500 hover:text-gray-700"
             >
-              <RiCloseLine />
+              <RiCloseLine size={24} />
             </button>
           </div>
-        </div>
 
-        {/* Content */}
-        <div className="h-[calc(100vh-73px)] overflow-y-auto">
-          <div className="max-w-7xl mx-auto px-6 py-8">
-            {loading ? (
-              <div className="flex justify-center items-center min-h-[200px]">
-                <LoadingSpinner
-                  size="lg"
-                  text="Loading your favorite cars..."
-                />
-              </div>
-            ) : favorites.length === 0 ? (
-              <div className="text-center text-gray-500 py-12">
-                <p className="text-lg">No favorite cars yet</p>
-                <p className="text-sm mt-2">
-                  Add cars to your favorites to see them here
-                </p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {favorites.map((fav) => {
-                  console.log('Rendering favorite:', fav);
-                  console.log('Car details for favorite:', carDetails[fav.carName]);
-                  const car = carDetails[fav.carName];
-                  if (!car) {
-                    console.log('No car details found for:', fav.carName);
-                    return null;
-                  }
-
-                  return (
-                    <div
-                      key={fav.carName}
-                      className="relative group bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300"
+          {favorites.length === 0 ? (
+            <div className="text-center py-8">
+              <p className="text-gray-500">No favorites yet</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {favorites.map((car) => (
+                <div
+                  key={car.carName}
+                  className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg"
+                >
+                  <img
+                    src={carDetails[car.carName]?.mainImageUrl}
+                    alt={car.carName}
+                    className="w-20 h-20 object-cover rounded"
+                  />
+                  <div className="flex-1">
+                    <Link
+                      href={`/view?name=${encodeURIComponent(car.carName)}`}
+                      className="text-lg font-semibold text-gray-900 hover:text-[#f1b274] transition-colors duration-300 inline-block hover:translate-x-1"
                     >
-                      <div className="relative aspect-[4/3]">
-                        <Image
-                          src={car.mainImageUrl}
-                          alt={car.name}
-                          fill
-                          className="object-cover"
-                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        />
-                        <button
-                          onClick={() => handleRemoveFavorite(car.name)}
-                          className="absolute top-2 right-2 p-2 bg-white/80 rounded-full hover:bg-white transition-colors"
-                          title="Remove from favorites"
-                          disabled={removingFavorite === car.name}
-                        >
-                          {removingFavorite === car.name ? (
-                            <LoadingSpinner size="sm" />
-                          ) : (
-                            <RiDeleteBin6Line className="text-red-500 text-xl" />
-                          )}
-                        </button>
-                      </div>
-                      <div
-                        className="p-4 cursor-pointer"
-                        onClick={() => handleCarClick(car.name)}
-                      >
-                        <div className="flex items-center justify-between mb-2">
-                          <h3 className="font-semibold text-lg">{car.name}</h3>
-                          {car.powerType && (
-                            <div className="flex items-center gap-1">
-                              {car.powerType === "Electric" ? (
-                                <FaBolt
-                                  className="text-blue-500"
-                                  title="Electric Vehicle"
-                                />
-                              ) : car.powerType === "Hybrid" ? (
-                                <FaLeaf
-                                  className="text-green-500"
-                                  title="Hybrid Vehicle"
-                                />
-                              ) : null}
-                            </div>
-                          )}
-                        </div>
-                        <p className="text-gray-600">{car.year}</p>
-                        <p className="text-[#f1b274] font-semibold mt-2">
-                          RWF {Number(car.price).toLocaleString()}
-                        </p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
+                      {car.carName}
+                    </Link>
+                    <p className="text-sm text-gray-500">{carDetails[car.carName]?.powerType === "Electric" ? "Electric" : carDetails[car.carName]?.powerType === "Hybrid" ? "Hybrid" : "Gas"} • {carDetails[car.carName]?.year}</p>
+                  </div>
+                  <button
+                    onClick={() => handleRemoveFavorite(car.carName)}
+                    disabled={removingFavorite === car.carName}
+                    className="text-red-500 hover:text-red-700 disabled:opacity-50"
+                  >
+                    {removingFavorite === car.carName ? (
+                      <RiLoader4Line className="animate-spin" />
+                    ) : (
+                      <RiCloseLine size={20} />
+                    )}
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
-      </div>
+      </motion.div>
 
       <NotificationToast
         show={showNotification}
@@ -269,6 +232,6 @@ export default function FavoriteTray({
         type={notificationType}
         onClose={() => setShowNotification(false)}
       />
-    </>
+    </div>
   );
 }

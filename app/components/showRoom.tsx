@@ -8,6 +8,7 @@ import Image from 'next/image';
 import FavoriteButton from './FavoriteButton';
 import GlobalNotification from './GlobalNotification';
 import { useNotification } from './GlobalNotification';
+import Link from 'next/link';
 
 type CarType = {
   id: string;
@@ -169,6 +170,10 @@ export default function CarFinderAndDisplay() {
       transmission: ''
     });
     setSearchQuery('');
+  };
+
+  const handleNavigation = (url: string) => {
+    router.push(url);
   };
 
   return (
@@ -378,16 +383,16 @@ export default function CarFinderAndDisplay() {
               <div key={car.id} className="flex justify-center">
                 <div className="relative w-full max-w-sm bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white rounded-2xl overflow-hidden shadow-2xl hover:scale-105 transition-transform duration-300 group">
                   {/* Top Image Section */}
-                  <div 
-                    className="relative cursor-pointer"
-                    onClick={() => router.push(`/view?name=${encodeURIComponent(car.name)}`)}
+                  <Link 
+                    href={`/view?name=${encodeURIComponent(car.name)}`}
+                    className="relative cursor-pointer group"
                   >
                     <Image
                       src={car.mainImageUrl}
                       alt={car.name}
                       width={400}
                       height={200}
-                      className="w-full h-48 object-cover"
+                      className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
                       priority
                     />
                     <div className="absolute bottom-0 left-0 w-full h-20 bg-gradient-to-t from-gray-600 via-transparent to-transparent z-10" />
@@ -398,7 +403,7 @@ export default function CarFinderAndDisplay() {
                         onFavoriteChange={() => {}}
                       />
                     </div>
-                  </div>
+                  </Link>
 
                   {/* Price Label */}
                   <div className="absolute top-44 left-4 bg-black/70 backdrop-blur-md px-4 py-1.5 rounded-md text-white text-sm shadow-lg z-30">
@@ -406,9 +411,9 @@ export default function CarFinderAndDisplay() {
                   </div>
 
                   {/* Info Section */}
-                  <div 
-                    className="p-5 pt-10 z-20 relative space-y-3 cursor-pointer group-hover:bg-black/10 transition-colors"
-                    onClick={() => router.push(`/view?name=${encodeURIComponent(car.name)}`)}
+                  <Link 
+                    href={`/view?name=${encodeURIComponent(car.name)}`}
+                    className="p-5 pt-10 z-20 relative space-y-3 cursor-pointer group-hover:bg-black/10 transition-all duration-300 hover:shadow-lg"
                   >
                     <h3 className="text-xl font-bold flex items-center gap-2">
                       {car.name}
@@ -426,9 +431,7 @@ export default function CarFinderAndDisplay() {
                     <hr className="border-gray-700" />
 
                     <div className="flex flex-col gap-1 text-sm text-gray-400">
-                      {car.zeroToSixty && (
-                        <span>0-60 mph in {car.zeroToSixty}s</span>
-                      )}
+                      {car.mileage && <span>Mileage: {car.mileage} km</span>}
                       {car.range && car.powerType === "Electric" && (
                         <span>Range: {car.range}</span>
                       )}
@@ -437,12 +440,12 @@ export default function CarFinderAndDisplay() {
                       )}
                       {car.mpgRange && car.powerType !== "Electric" && (
                         <span>
-                          MPG: {car.mpgRange.min} - {car.mpgRange.max}
+                          Range(km): {car.mpgRange.min} - {car.mpgRange.max}
                         </span>
                       )}
                       {car.seats && <span>Seats: {car.seats}</span>}
                     </div>
-                  </div>
+                  </Link>
                 </div>
               </div>
             ))}

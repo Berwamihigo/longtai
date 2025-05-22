@@ -2,14 +2,11 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { RiArrowRightSLine } from "react-icons/ri";
-import { useRouter } from "next/navigation";
-
+import Link from "next/link";
+import { useProgressBar } from "../../hooks/useProgressBar";
 
 const ServicesOffered = () => {
-  
-
-  const router = useRouter();
-
+  const handleNavigation = useProgressBar();
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -123,14 +120,13 @@ const ServicesOffered = () => {
         </motion.div>
 
         <div className="newone mt-8 flex justify-center">
-        <button
-          onClick={() => router.push("/maintenance")}
-          className="text-gray-900 flex items-center gap-2 hover:underline hover:text-black font-semibold"
-        >
-          Request Maintenance <RiArrowRightSLine size={20} />
-        </button>
-      </div>
-
+          <Link 
+            href="/maintenance" 
+            className="inline-flex items-center gap-2 px-6 py-3 bg-[#f1b274] text-white rounded-lg hover:bg-[#e5a066] transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+          >
+            Request Maintenance <RiArrowRightSLine size={20} />
+          </Link>
+        </div>
       </div>
     </section>
   );
