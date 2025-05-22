@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
-import LoginPopup from './LoginPopup';
+import AuthModals from '../../components/auth/auth-modals';
 
 interface CartItem {
   id: number;
@@ -29,7 +29,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [showLoginPopup, setShowLoginPopup] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const [pendingItems, setPendingItems] = useState<CartItem[]>([]);
 
   useEffect(() => {
@@ -58,16 +58,26 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const handleLoginSuccess = () => {
     setIsLoggedIn(true);
+    setShowAuthModal(false);
     if (pendingItems.length > 0) {
       addToCart(pendingItems[0]);
       setPendingItems([]);
+      toast.success('Item added to cart', {
+        position: 'bottom-right',
+        duration: 3000
+      });
     }
+  };
+
+  const handleCloseAuthModal = () => {
+    setShowAuthModal(false);
+    clearPendingItems();
   };
 
   const addToCart = (item: CartItem) => {
     if (!isLoggedIn) {
       setPendingItems(prev => [...prev, item]);
-      setShowLoginPopup(true);
+      setShowAuthModal(true);
       return;
     }
 
@@ -128,9 +138,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       }}
     >
       {children}
-      <LoginPopup
-        isOpen={showLoginPopup}
-        onClose={() => setShowLoginPopup(false)}
+      <AuthModals 
+        isOpen={showAuthModal} 
+        onClose={handleCloseAuthModal}
         onLoginSuccess={handleLoginSuccess}
       />
     </CartContext.Provider>
