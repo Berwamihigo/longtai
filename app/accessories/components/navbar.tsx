@@ -415,8 +415,8 @@ export default function DesktopNav() {
             )}
           </div>
           <div className="flex justify-center gap-10 mt-10 text-2xl text-gray-700">
-            <RiHeartLine
-              onClick={handleFavoritesClick}
+            <RiShoppingCartLine
+              onClick={handleCartClick}
               style={{ cursor: "pointer" }}
             />
             <RiAccountCircleLine
