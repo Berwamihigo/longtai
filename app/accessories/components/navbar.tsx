@@ -354,12 +354,17 @@ export default function DesktopNav() {
                   )}
                 </div>
               </li>
-              <li className="ic text-5xl">
+              <li className="ic text-5xl relative">
                 <RiShoppingCartLine
                   className="ri-heart-line"
                   onClick={handleCartClick}
                   style={{ cursor: "pointer" }}
                 />
+                {cartItemsCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    {cartItemsCount}
+                  </span>
+                )}
               </li>
               <li className="ic">
                 <RiAccountCircleLine

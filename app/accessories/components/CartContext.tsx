@@ -75,26 +75,36 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     clearPendingItems();
   };
 
-  const addToCart = (item: CartItem) => {
-    if (!isLoggedIn) {
-      setPendingItems(prev => [...prev, item]);
-      setShowAuthModal(true);
-      return;
-    }
+  const addToCart = async (item: CartItem) => {
+    try {
+      // Check session first
+      const sessionRes = await fetch("/api/session");
+      const sessionData = await sessionRes.json();
 
-    setItems(prevItems => {
-      const existingItem = prevItems.find(i => i.id === item.id);
-      if (existingItem) {
-        return prevItems.map(i =>
-          i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
-        );
+      if (!sessionData.loggedIn) {
+        setPendingItems(prev => [...prev, item]);
+        setShowAuthModal(true);
+        return;
       }
-      return [...prevItems, { ...item, quantity: 1 }];
-    });
-    toast.success('Item added to cart', {
-      position: 'bottom-right',
-      duration: 3000
-    });
+
+      // If logged in, add to cart
+      setItems(prevItems => {
+        const existingItem = prevItems.find(i => i.id === item.id);
+        if (existingItem) {
+          return prevItems.map(i =>
+            i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
+          );
+        }
+        return [...prevItems, { ...item, quantity: 1 }];
+      });
+      toast.success('Item added to cart', {
+        position: 'bottom-right',
+        duration: 3000
+      });
+    } catch (error) {
+      console.error('Error checking session:', error);
+      toast.error('Failed to add item to cart. Please try again.');
+    }
   };
 
   const removeFromCart = (id: number) => {

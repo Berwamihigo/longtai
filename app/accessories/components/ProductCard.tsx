@@ -25,6 +25,8 @@ export default function ProductCard({
     setIsLoading(true);
     try {
       await addToCart({ id, name, price, image, quantity: 1 });
+    } catch (error) {
+      console.error('Error adding to cart:', error);
     } finally {
       setIsLoading(false);
     }

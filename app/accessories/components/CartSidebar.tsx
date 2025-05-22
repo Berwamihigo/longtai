@@ -68,22 +68,25 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
               </div>
             ) : (
               <div className="space-y-4">
-                {items.map((item) => (
+                {items.map((item, index) => (
                   <div key={item.id} className="flex items-center gap-4 bg-gray-50 p-3 rounded-lg">
-                    <div className="relative w-20 h-20 bg-gray-200 rounded-md overflow-hidden">
+                    <div className="relative w-20 h-20 flex-shrink-0">
                       {!imageErrors[item.id] ? (
                         <Image
                           src={item.image}
                           alt={item.name}
                           fill
-                          className="object-cover"
+                          className="object-cover rounded"
                           onError={() => handleImageError(item.id)}
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-gray-400">
+                        <div className="w-full h-full flex items-center justify-center bg-gray-200 rounded text-gray-400 text-sm">
                           No Image
                         </div>
                       )}
+                      <div className="absolute -top-2 -left-2 bg-[#e5a666] text-white text-xs rounded-full w-6 h-6 flex items-center justify-center font-semibold">
+                        {index + 1}
+                      </div>
                     </div>
                     <div className="flex-1">
                       <h3 className="font-medium text-gray-800">{item.name}</h3>
