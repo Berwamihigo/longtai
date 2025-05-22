@@ -7,20 +7,27 @@ export async function PUT(request: NextRequest) {
     const data = await request.json();
     const { id, ...updateData } = data;
 
-    const maintenanceRef = doc(db, 'maintenance', id);
-    await updateDoc(maintenanceRef, {
+    if (!id) {
+      return NextResponse.json(
+        { success: false, message: 'Subscriber ID is required' },
+        { status: 400 }
+      );
+    }
+
+    const subscriberRef = doc(db, 'newsletter', id);
+    await updateDoc(subscriberRef, {
       ...updateData,
       updatedAt: new Date()
     });
 
     return NextResponse.json({
       success: true,
-      message: 'Maintenance request updated successfully'
+      message: 'Subscriber updated successfully'
     });
   } catch (error) {
-    console.error('Error updating maintenance request:', error);
+    console.error('Error updating subscriber:', error);
     return NextResponse.json(
-      { success: false, message: 'Failed to update maintenance request' },
+      { success: false, message: 'Failed to update subscriber' },
       { status: 500 }
     );
   }

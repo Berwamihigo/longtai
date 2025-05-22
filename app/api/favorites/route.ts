@@ -1,88 +1,116 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { doc, setDoc, getDoc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs, deleteDoc, doc } from 'firebase/firestore';
 
 // Add a car to favorites
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
     try {
-        const { email, carName } = await request.json();
+        const data = await request.json();
+        const { userId, carId } = data;
 
-        if (!email || !carName) {
-            return NextResponse.json({ success: false, message: 'Email and car name are required' }, { status: 400 });
+        if (!userId || !carId) {
+            return NextResponse.json(
+                { success: false, message: 'User ID and car ID are required' },
+                { status: 400 }
+            );
         }
 
-        const favRef = doc(db, 'favorites', email);
-        const favDoc = await getDoc(favRef);
+        const favoritesRef = collection(db, 'favorites');
+        const q = query(
+            favoritesRef,
+            where('userId', '==', userId),
+            where('carId', '==', carId)
+        );
+        const querySnapshot = await getDocs(q);
 
-        if (favDoc.exists()) {
-            // Document exists, add to the cars array
-            await updateDoc(favRef, {
-                cars: arrayUnion(carName)
-            });
-        } else {
-            // Document doesn't exist, create new with initial car
-            await setDoc(favRef, {
-                cars: [carName]
-            });
+        if (!querySnapshot.empty) {
+            return NextResponse.json(
+                { success: false, message: 'Car is already in favorites' },
+                { status: 400 }
+            );
         }
 
-        return NextResponse.json({ success: true, message: 'Car added to favorites' });
+        const docRef = await addDoc(favoritesRef, {
+            userId,
+            carId,
+            createdAt: new Date()
+        });
+
+        return NextResponse.json({
+            success: true,
+            id: docRef.id,
+            message: 'Car added to favorites'
+        });
     } catch (error) {
         console.error('Error adding to favorites:', error);
-        return NextResponse.json({ success: false, message: 'Failed to add to favorites' }, { status: 500 });
+        return NextResponse.json(
+            { success: false, message: 'Failed to add to favorites' },
+            { status: 500 }
+        );
     }
 }
 
 // Get user's favorites
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.url);
-        const email = searchParams.get('email');
+        const userId = searchParams.get('userId');
 
-        if (!email) {
-            return NextResponse.json({ success: false, message: 'Email is required' }, { status: 400 });
+        if (!userId) {
+            return NextResponse.json(
+                { success: false, message: 'User ID is required' },
+                { status: 400 }
+            );
         }
 
-        const favRef = doc(db, 'favorites', email);
-        const favDoc = await getDoc(favRef);
+        const favoritesRef = collection(db, 'favorites');
+        const q = query(favoritesRef, where('userId', '==', userId));
+        const querySnapshot = await getDocs(q);
 
-        if (!favDoc.exists()) {
-            return NextResponse.json({ success: true, favorites: [] });
-        }
+        const favorites = querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+            createdAt: doc.data().createdAt?.toDate?.() || new Date().toISOString()
+        }));
 
-        const data = favDoc.data();
-        const favorites = data.cars.map((carName: string) => ({ carName }));
-
-        return NextResponse.json({ success: true, favorites });
+        return NextResponse.json({
+            success: true,
+            favorites
+        });
     } catch (error) {
-        console.error('Error getting favorites:', error);
-        return NextResponse.json({ success: false, message: 'Failed to get favorites' }, { status: 500 });
+        console.error('Error fetching favorites:', error);
+        return NextResponse.json(
+            { success: false, message: 'Failed to fetch favorites' },
+            { status: 500 }
+        );
     }
 }
 
 // Remove a car from favorites
-export async function DELETE(request: Request) {
+export async function DELETE(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.url);
-        const email = searchParams.get('email');
-        const carName = searchParams.get('carName');
+        const id = searchParams.get('id');
 
-        if (!email || !carName) {
-            return NextResponse.json({ success: false, message: 'Email and car name are required' }, { status: 400 });
+        if (!id) {
+            return NextResponse.json(
+                { success: false, message: 'Favorite ID is required' },
+                { status: 400 }
+            );
         }
 
-        const favRef = doc(db, 'favorites', email);
-        const favDoc = await getDoc(favRef);
+        const favoriteRef = doc(db, 'favorites', id);
+        await deleteDoc(favoriteRef);
 
-        if (favDoc.exists()) {
-            await updateDoc(favRef, {
-                cars: arrayRemove(carName)
-            });
-        }
-
-        return NextResponse.json({ success: true, message: 'Car removed from favorites' });
+        return NextResponse.json({
+            success: true,
+            message: 'Car removed from favorites'
+        });
     } catch (error) {
         console.error('Error removing from favorites:', error);
-        return NextResponse.json({ success: false, message: 'Failed to remove from favorites' }, { status: 500 });
+        return NextResponse.json(
+            { success: false, message: 'Failed to remove from favorites' },
+            { status: 500 }
+        );
     }
 } 

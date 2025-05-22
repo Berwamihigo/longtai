@@ -1,50 +1,38 @@
-import { db } from "@/lib/db";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from 'next/server';
+import { db } from '@/lib/db';
+import { collection, addDoc } from 'firebase/firestore';
 import bcrypt from "bcryptjs";
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
     try {
         const data = await request.json();
-        const { name, email, password } = data;
+        const { email, password, name } = data;
 
-        if (!name || !email || !password) {
+        if (!email || !password || !name) {
             return NextResponse.json(
-                { success: false, message: "Missing required fields" },
+                { success: false, message: 'All fields are required' },
                 { status: 400 }
             );
         }
 
         // Check if a client with this email already exists
-        const clientRef = doc(db, "clients", email);
-        const clientSnap = await getDoc(clientRef);
-
-        if (clientSnap.exists()) {
-            return NextResponse.json(
-                { success: false, message: "A user with this email already exists." },
-                { status: 409 }
-            );
-        }
-
-        // Hash the password
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        // Save to Firestore
-        await setDoc(clientRef, {
-            name,
+        const clientsRef = collection(db, 'clients');
+        const docRef = await addDoc(clientsRef, {
             email,
-            password: hashedPassword,
-            createdAt: new Date().toISOString(),
+            password,
+            name,
+            createdAt: new Date()
         });
 
         return NextResponse.json({
             success: true,
-            message: "Client registered successfully",
+            id: docRef.id,
+            message: 'Client registered successfully'
         });
     } catch (error) {
-        console.error("Save client error:", error);
+        console.error('Error saving client:', error);
         return NextResponse.json(
-            { success: false, message: "Failed to save client" },
+            { success: false, message: 'Failed to register client' },
             { status: 500 }
         );
     }

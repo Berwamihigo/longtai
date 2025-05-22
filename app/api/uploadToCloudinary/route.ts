@@ -1,46 +1,36 @@
-import { v2 as cloudinary } from "cloudinary";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from 'next/server';
+import { v2 as cloudinary } from 'cloudinary';
 
 cloudinary.config({
-    cloud_name: process.env.NEXT_CLOUD_NAME,
-    api_key: process.env.NEXT_CLOUDINARY_API_KEY,
-    api_secret: process.env.NEXT_CLOUDINARY_SECRET,
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
     try {
-        const { mainImage, subImages } = await request.json();
+        const data = await request.json();
+        const { image } = data;
 
-        if (!mainImage) {
+        if (!image) {
             return NextResponse.json(
-                { success: false, message: "Main image is required" },
+                { success: false, message: 'No image provided' },
                 { status: 400 }
             );
         }
 
-        // Upload main image
-        const mainImageResult = await cloudinary.uploader.upload(mainImage, {
-            folder: "cars/main",
+        const result = await cloudinary.uploader.upload(image, {
+            folder: 'longtai',
         });
-
-        // Upload sub images
-        const subImagePromises = subImages.map((image: string) =>
-            cloudinary.uploader.upload(image, {
-                folder: "cars/sub",
-            })
-        );
-
-        const subImageResults = await Promise.all(subImagePromises);
 
         return NextResponse.json({
             success: true,
-            mainImageUrl: mainImageResult.secure_url,
-            subImageUrls: subImageResults.map((result) => result.secure_url),
+            url: result.secure_url,
         });
     } catch (error) {
-        console.error("Upload error:", error);
+        console.error('Error uploading to Cloudinary:', error);
         return NextResponse.json(
-            { success: false, message: "Failed to upload images" },
+            { success: false, message: 'Failed to upload image' },
             { status: 500 }
         );
     }

@@ -7,20 +7,27 @@ export async function PUT(request: NextRequest) {
     const data = await request.json();
     const { id, ...updateData } = data;
 
-    const maintenanceRef = doc(db, 'maintenance', id);
-    await updateDoc(maintenanceRef, {
+    if (!id) {
+      return NextResponse.json(
+        { success: false, message: 'Test drive ID is required' },
+        { status: 400 }
+      );
+    }
+
+    const testDriveRef = doc(db, 'test-drives', id);
+    await updateDoc(testDriveRef, {
       ...updateData,
       updatedAt: new Date()
     });
 
     return NextResponse.json({
       success: true,
-      message: 'Maintenance request updated successfully'
+      message: 'Test drive updated successfully'
     });
   } catch (error) {
-    console.error('Error updating maintenance request:', error);
+    console.error('Error updating test drive:', error);
     return NextResponse.json(
-      { success: false, message: 'Failed to update maintenance request' },
+      { success: false, message: 'Failed to update test drive' },
       { status: 500 }
     );
   }

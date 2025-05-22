@@ -1,41 +1,36 @@
 //save the data to the firebase database as they will be passed as in this way 
-import { db } from "@/lib/db";
-import { doc, setDoc } from "firebase/firestore";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from 'next/server';
+import { db } from '@/lib/db';
+import { collection, addDoc } from 'firebase/firestore';
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
     try {
         const data = await request.json();
+        const { collectionName, ...documentData } = data;
         
-        if (!data.carName) {
+        if (!collectionName) {
             return NextResponse.json(
-                { success: false, message: "Car name is required" },
+                { success: false, message: 'Collection name is required' },
                 { status: 400 }
             );
         }
 
-        // Create a document reference with carName as the ID
-        const carRef = doc(db, "cardata", data.carName);
-
-        // Structure the data with images in a hierarchical form
-        const carData = {
-            ...data,
-            createdAt: new Date().toISOString()
-        };
-
-        // Save to Firestore
-        await setDoc(carRef, carData);
+        const collectionRef = collection(db, collectionName);
+        const docRef = await addDoc(collectionRef, {
+            ...documentData,
+            createdAt: new Date()
+        });
 
         return NextResponse.json({
             success: true,
-            message: "Car data saved successfully",
-            documentId: data.carName
+            id: docRef.id,
+            message: 'Document saved successfully'
         });
 
     } catch (error) {
-        console.error("Save error:", error);
+        console.error('Error saving to Firebase:', error);
         return NextResponse.json(
-            { success: false, message: "Failed to save car data" },
+            { success: false, message: 'Failed to save document' },
             { status: 500 }
         );
     }

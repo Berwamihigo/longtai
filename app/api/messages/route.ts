@@ -1,25 +1,37 @@
-import { db } from "@/lib/db";
-import { collection, addDoc } from "firebase/firestore";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from 'next/server';
+import { db } from '@/lib/db';
+import { collection, addDoc } from 'firebase/firestore';
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     const data = await request.json();
-    if (!data.name || !data.email || !data.message) {
+    const { name, email, message } = data;
+
+    if (!name || !email || !message) {
       return NextResponse.json(
-        { success: false, message: "Name, email, and message are required." },
+        { success: false, message: 'All fields are required' },
         { status: 400 }
       );
     }
-    await addDoc(collection(db, "messages"), {
-      ...data,
-      createdAt: new Date().toISOString(),
+
+    const messagesRef = collection(db, 'messages');
+    const docRef = await addDoc(messagesRef, {
+      name,
+      email,
+      message,
+      createdAt: new Date(),
+      status: 'unread'
     });
-    return NextResponse.json({ success: true, message: "Message saved successfully." });
+
+    return NextResponse.json({
+      success: true,
+      id: docRef.id,
+      message: 'Message sent successfully'
+    });
   } catch (error) {
-    console.error("Message save error:", error);
+    console.error('Error saving message:', error);
     return NextResponse.json(
-      { success: false, message: "Failed to save message." },
+      { success: false, message: 'Failed to send message' },
       { status: 500 }
     );
   }

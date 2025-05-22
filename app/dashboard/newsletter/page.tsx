@@ -48,10 +48,13 @@ export default function NewsletterPage() {
 
   const handleUnsubscribe = async (subscriberId: string) => {
     try {
-      const response = await fetch(`/api/updateNewsletterSubscriber/${subscriberId}`, {
+      const response = await fetch('/api/updateNewsletterSubscriber', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: 'unsubscribed' }),
+        body: JSON.stringify({ 
+          id: subscriberId,
+          status: 'unsubscribed' 
+        }),
       });
 
       if (!response.ok) throw new Error('Failed to update subscriber status');

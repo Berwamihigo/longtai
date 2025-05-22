@@ -1,39 +1,64 @@
-import { db } from "@/lib/db";
-import { collection, getDocs } from "firebase/firestore";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from 'next/server';
+import { db } from '@/lib/db';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 
-export async function GET(request: Request) {
+interface Car {
+  id: string;
+  price: number;
+  category?: string;
+  powerType?: string;
+  createdAt: string;
+  [key: string]: any; // for other car properties
+}
+
+export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const query = searchParams.get("query")?.toLowerCase() || "";
+    const category = searchParams.get('category');
+    const minPrice = searchParams.get('minPrice');
+    const maxPrice = searchParams.get('maxPrice');
+    const powerType = searchParams.get('powerType');
 
-    if (!query) {
-      return NextResponse.json({ results: [] }, { status: 200 });
+    let q = query(collection(db, 'cardata'));
+
+    if (category) {
+      q = query(q, where('category', '==', category));
     }
 
-    const carsCollection = collection(db, "cardata");
-    const snapshot = await getDocs(carsCollection);
+    if (powerType) {
+      q = query(q, where('powerType', '==', powerType));
+    }
 
-    const results = snapshot.docs
-      .map(doc => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          make: data.carName || doc.id,
-          model: data.model || "",
-          year: data.year || "Unknown",
-        };
-      })
-      .filter(car =>
-        car.id.toLowerCase().includes(query) ||
-        car.model.toLowerCase().includes(query)
-      );
+    const querySnapshot = await getDocs(q);
+    let cars = querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+      createdAt: doc.data().createdAt?.toDate?.() || new Date().toISOString()
+    })) as Car[];
 
-    return NextResponse.json({ results }, { status: 200 });
+    // Filter by price range if provided
+    if (minPrice || maxPrice) {
+      cars = cars.filter(car => {
+        const price = Number(car.price || 0);
+        if (minPrice && maxPrice) {
+          return price >= Number(minPrice) && price <= Number(maxPrice);
+        } else if (minPrice) {
+          return price >= Number(minPrice);
+        } else if (maxPrice) {
+          return price <= Number(maxPrice);
+        }
+        return true;
+      });
+    }
+
+    return NextResponse.json({
+      success: true,
+      cars
+    });
   } catch (error) {
-    console.error("Search error:", error);
+    console.error('Error performing customized search:', error);
     return NextResponse.json(
-      { error: "Failed to search cars" },
+      { success: false, message: 'Failed to perform search' },
       { status: 500 }
     );
   }

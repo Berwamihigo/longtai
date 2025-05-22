@@ -161,10 +161,13 @@ export default function TestDrivePage() {
 
   const handleSaveTestDrive = async (testDriveData: TestDriveRequest) => {
     try {
-      const response = await fetch(`/api/updateTestDrive/${testDriveData.id}`, {
+      const response = await fetch('/api/updateTestDrive', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(testDriveData),
+        body: JSON.stringify({
+          id: testDriveData.id,
+          status: testDriveData.status
+        }),
       });
 
       if (!response.ok) throw new Error('Failed to update test drive status');
