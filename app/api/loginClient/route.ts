@@ -2,7 +2,7 @@
 // export const runtime = "edge";
 
 import { db } from "@/lib/db";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
@@ -31,10 +31,11 @@ export async function POST(request: Request) {
         }
 
         // Fetch client by email
-        const clientRef = doc(db, "clients", email);
-        const clientSnap = await getDoc(clientRef);
+        const clientsRef = collection(db, "clients");
+        const q = query(clientsRef, where("email", "==", email));
+        const querySnapshot = await getDocs(q);
 
-        if (!clientSnap.exists()) {
+        if (querySnapshot.empty) {
             console.error("Client not found for email:", email);
             return NextResponse.json(
                 { success: false, message: "Client not found" },
@@ -42,7 +43,8 @@ export async function POST(request: Request) {
             );
         }
 
-        const clientData = clientSnap.data();
+        const clientDoc = querySnapshot.docs[0];
+        const clientData = clientDoc.data();
         if (!clientData.password) {
             console.error("No password field in client data:", clientData);
             return NextResponse.json(

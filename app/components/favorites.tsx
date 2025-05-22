@@ -81,21 +81,25 @@ export default function FavoriteTray({
 
   const fetchFavorites = async (email: string) => {
     try {
-      const favRes = await fetch(`/api/favorites?email=${email}`);
+      const favRes = await fetch(`/api/favorites?email=${encodeURIComponent(email)}`);
       const favData = await favRes.json();
+      console.log('Favorites API response:', favData);
 
       if (favData.success) {
         setFavorites(favData.favorites);
         const details: Record<string, CarDetails> = {};
         for (const fav of favData.favorites) {
+          console.log('Processing favorite:', fav);
           const carRes = await fetch(
             `/api/getparticular?name=${encodeURIComponent(fav.carName)}`
           );
           const carData = await carRes.json();
+          console.log('Car details response:', carData);
           if (carData.success) {
             details[fav.carName] = carData.data;
           }
         }
+        console.log('Final car details:', details);
         setCarDetails(details);
       }
     } catch (error) {
@@ -123,9 +127,7 @@ export default function FavoriteTray({
       }
 
       const res = await fetch(
-        `/api/favorites?email=${
-          sessionData.user.email
-        }&carName=${encodeURIComponent(carName)}`,
+        `/api/favorites?email=${encodeURIComponent(sessionData.user.email)}&carName=${encodeURIComponent(carName)}`,
         { method: "DELETE" }
       );
       const data = await res.json();
@@ -191,8 +193,13 @@ export default function FavoriteTray({
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {favorites.map((fav) => {
+                  console.log('Rendering favorite:', fav);
+                  console.log('Car details for favorite:', carDetails[fav.carName]);
                   const car = carDetails[fav.carName];
-                  if (!car) return null;
+                  if (!car) {
+                    console.log('No car details found for:', fav.carName);
+                    return null;
+                  }
 
                   return (
                     <div

@@ -16,7 +16,7 @@ export default function NotificationToast({
   message,
   type,
   onClose,
-  position = "top-right"
+  position = "bottom-right"
 }: NotificationToastProps) {
   if (!show) return null;
 

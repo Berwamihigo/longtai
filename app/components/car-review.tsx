@@ -18,6 +18,7 @@ import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import { useNotification } from "./GlobalNotification";
 
 interface CarReviewProps {
   cars: {
@@ -80,11 +81,10 @@ const sampleReviews = [
 
 export default function CarReview({ cars }: CarReviewProps) {
   const [favorites, setFavorites] = useState<Record<string, boolean>>({});
-  const [loadingHearts, setLoadingHearts] = useState<Record<string, boolean>>(
-    {}
-  );
+  const [loadingHearts, setLoadingHearts] = useState<Record<string, boolean>>({});
   const [activeTab, setActiveTab] = useState("overview");
   const [isMobile, setIsMobile] = useState(false);
+  const { showNotification } = useNotification();
 
   useEffect(() => {
     const handleResize = () => {
@@ -102,23 +102,30 @@ export default function CarReview({ cars }: CarReviewProps) {
       const sessionRes = await fetch("/api/session");
       const sessionData = await sessionRes.json();
       if (!sessionData.loggedIn || !sessionData.user?.email) {
-        alert("You must be logged in to favorite a car.");
-        setLoadingHearts((prev) => ({ ...prev, [carId]: false }));
+        showNotification("Please log in to favorite a car", "error");
         return;
       }
+
       // Add to favorites
       const res = await fetch("/api/favorites", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: sessionData.user.email, carName }),
+        body: JSON.stringify({ 
+          email: sessionData.user.email, 
+          carName 
+        }),
       });
-      if (res.ok) {
+      
+      const data = await res.json();
+      if (data.success) {
         setFavorites((prev) => ({ ...prev, [carId]: true }));
+        showNotification("Car added to favorites", "success");
       } else {
-        alert("Failed to add to favorites.");
+        showNotification(data.message || "Failed to add to favorites", "error");
       }
     } catch (err) {
-      alert("An error occurred.");
+      console.error("Error adding to favorites:", err);
+      showNotification("An error occurred while updating favorites", "error");
     } finally {
       setLoadingHearts((prev) => ({ ...prev, [carId]: false }));
     }

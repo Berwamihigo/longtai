@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
 import bcrypt from "bcryptjs";
 
 export async function POST(request: NextRequest) {
@@ -17,9 +17,23 @@ export async function POST(request: NextRequest) {
 
         // Check if a client with this email already exists
         const clientsRef = collection(db, 'clients');
+        const q = query(clientsRef, where('email', '==', email));
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+            return NextResponse.json(
+                { success: false, message: 'Email already registered' },
+                { status: 400 }
+            );
+        }
+
+        // Hash the password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Save the client with hashed password
         const docRef = await addDoc(clientsRef, {
             email,
-            password,
+            password: hashedPassword,
             name,
             createdAt: new Date()
         });

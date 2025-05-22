@@ -1,44 +1,48 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { collection, addDoc, query, where, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import { collection, doc, setDoc, getDoc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 
 // Add a car to favorites
 export async function POST(request: NextRequest) {
     try {
         const data = await request.json();
-        const { userId, carId } = data;
+        const { email, carName } = data;
 
-        if (!userId || !carId) {
+        if (!email || !carName) {
             return NextResponse.json(
-                { success: false, message: 'User ID and car ID are required' },
+                { success: false, message: 'Email and car name are required' },
                 { status: 400 }
             );
         }
 
-        const favoritesRef = collection(db, 'favorites');
-        const q = query(
-            favoritesRef,
-            where('userId', '==', userId),
-            where('carId', '==', carId)
-        );
-        const querySnapshot = await getDocs(q);
+        const userFavoritesRef = doc(db, 'favorites', email);
+        const userFavoritesDoc = await getDoc(userFavoritesRef);
 
-        if (!querySnapshot.empty) {
-            return NextResponse.json(
-                { success: false, message: 'Car is already in favorites' },
-                { status: 400 }
-            );
+        if (!userFavoritesDoc.exists()) {
+            // Create new document with initial car
+            await setDoc(userFavoritesRef, {
+                email,
+                carNames: [carName],
+                updatedAt: new Date()
+            });
+        } else {
+            // Add car to existing array if not already present
+            const userData = userFavoritesDoc.data();
+            if (!userData.carNames.includes(carName)) {
+                await updateDoc(userFavoritesRef, {
+                    carNames: arrayUnion(carName),
+                    updatedAt: new Date()
+                });
+            } else {
+                return NextResponse.json(
+                    { success: false, message: 'Car is already in favorites' },
+                    { status: 400 }
+                );
+            }
         }
-
-        const docRef = await addDoc(favoritesRef, {
-            userId,
-            carId,
-            createdAt: new Date()
-        });
 
         return NextResponse.json({
             success: true,
-            id: docRef.id,
             message: 'Car added to favorites'
         });
     } catch (error) {
@@ -54,28 +58,32 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.url);
-        const userId = searchParams.get('userId');
+        const email = searchParams.get('email');
 
-        if (!userId) {
+        if (!email) {
             return NextResponse.json(
-                { success: false, message: 'User ID is required' },
+                { success: false, message: 'Email is required' },
                 { status: 400 }
             );
         }
 
-        const favoritesRef = collection(db, 'favorites');
-        const q = query(favoritesRef, where('userId', '==', userId));
-        const querySnapshot = await getDocs(q);
+        const userFavoritesRef = doc(db, 'favorites', email);
+        const userFavoritesDoc = await getDoc(userFavoritesRef);
 
-        const favorites = querySnapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data(),
-            createdAt: doc.data().createdAt?.toDate?.() || new Date().toISOString()
-        }));
+        if (!userFavoritesDoc.exists()) {
+            return NextResponse.json({
+                success: true,
+                favorites: []
+            });
+        }
 
+        const userData = userFavoritesDoc.data();
         return NextResponse.json({
             success: true,
-            favorites
+            favorites: userData.carNames.map((carName: string) => ({
+                carName,
+                createdAt: userData.updatedAt?.toDate?.() || new Date().toISOString()
+            }))
         });
     } catch (error) {
         console.error('Error fetching favorites:', error);
@@ -90,17 +98,30 @@ export async function GET(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.url);
-        const id = searchParams.get('id');
+        const email = searchParams.get('email');
+        const carName = searchParams.get('carName');
 
-        if (!id) {
+        if (!email || !carName) {
             return NextResponse.json(
-                { success: false, message: 'Favorite ID is required' },
+                { success: false, message: 'Email and car name are required' },
                 { status: 400 }
             );
         }
 
-        const favoriteRef = doc(db, 'favorites', id);
-        await deleteDoc(favoriteRef);
+        const userFavoritesRef = doc(db, 'favorites', email);
+        const userFavoritesDoc = await getDoc(userFavoritesRef);
+
+        if (!userFavoritesDoc.exists()) {
+            return NextResponse.json(
+                { success: false, message: 'No favorites found for this user' },
+                { status: 404 }
+            );
+        }
+
+        await updateDoc(userFavoritesRef, {
+            carNames: arrayRemove(carName),
+            updatedAt: new Date()
+        });
 
         return NextResponse.json({
             success: true,
