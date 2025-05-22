@@ -12,12 +12,16 @@ interface CartSidebarProps {
 }
 
 export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
-  const { items, removeFromCart, total, isLoggedIn } = useCart();
+  const { items, removeFromCart, updateQuantity, total, isLoggedIn } = useCart();
   const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleImageError = (id: number) => {
     setImageErrors(prev => ({ ...prev, [id]: true }));
+  };
+
+  const handleQuantityChange = (id: number, newQuantity: number) => {
+    updateQuantity(id, newQuantity);
   };
 
   const handleSendRequest = async () => {
@@ -28,8 +32,6 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
 
     setIsSubmitting(true);
     try {
-      // Here you would typically send the request to your backend
-      // For now, we'll just simulate a successful request
       await new Promise(resolve => setTimeout(resolve, 1000));
       toast.success('Item request sent successfully!');
       onClose();
@@ -85,7 +87,21 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                     <div className="flex-1">
                       <h3 className="font-medium text-gray-800">{item.name}</h3>
                       <p className="text-[#e5a666] font-bold">RWF {item.price.toLocaleString()}</p>
-                      <p className="text-sm text-gray-500">Quantity: {item.quantity}</p>
+                      <div className="flex items-center gap-2 mt-2">
+                        <button
+                          onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
+                          className="w-6 h-6 flex items-center justify-center bg-gray-200 rounded-full hover:bg-gray-300"
+                        >
+                          -
+                        </button>
+                        <span className="w-8 text-center">{item.quantity}</span>
+                        <button
+                          onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
+                          className="w-6 h-6 flex items-center justify-center bg-gray-200 rounded-full hover:bg-gray-300"
+                        >
+                          +
+                        </button>
+                      </div>
                     </div>
                     <button
                       onClick={() => removeFromCart(item.id)}

@@ -17,6 +17,7 @@ import FavoriteTray from "../../components/favorites";
 import ProfilePopup from "../../components/ProfilePopup";
 import NotificationToast from "../../components/NotificationToast";
 import CartSidebar from "./CartSidebar";
+import { useCart } from './CartContext';
 
 interface CarData {
   id: string;
@@ -47,6 +48,8 @@ export default function DesktopNav() {
   const searchRef = useRef<HTMLDivElement>(null);
   const [showMobileDiscover, setShowMobileDiscover] = useState(false);
   const [showCart, setShowCart] = useState(false);
+  const { items } = useCart();
+  const cartItemsCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
   // Check user session on component mount
   useEffect(() => {
@@ -122,6 +125,26 @@ export default function DesktopNav() {
       setIsSearching(false);
     }
   }, [search, debouncedSearch]);
+
+  // Add effect to update cart count
+  useEffect(() => {
+    const updateCartCount = async () => {
+      try {
+        const res = await fetch("/api/cart/count");
+        const data = await res.json();
+        if (data.success) {
+          setCartItemsCount(data.count);
+        }
+      } catch (error) {
+        console.error("Error fetching cart count:", error);
+      }
+    };
+
+    updateCartCount();
+    // Set up an interval to periodically update the cart count
+    const interval = setInterval(updateCartCount, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Handler for account icon click (desktop or mobile)
   const handleAccountClick = async () => {
@@ -347,11 +370,24 @@ export default function DesktopNav() {
             <img src="/assets/longtai.png" alt="Longtai" className="h-10" />
           </div>
         </Link>
-        <div className="icon">
-          <RiMenuLine
-            className="ri-menu-line text-3xl"
-            onClick={() => setIsMobileMenuOpen(true)}
-          />
+        <div className="flex items-center gap-4">
+          <div className="relative">
+            <RiShoppingCartLine
+              className="text-3xl cursor-pointer"
+              onClick={handleCartClick}
+            />
+            {cartItemsCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                {cartItemsCount}
+              </span>
+            )}
+          </div>
+          <div className="icon">
+            <RiMenuLine
+              className="ri-menu-line text-3xl"
+              onClick={() => setIsMobileMenuOpen(true)}
+            />
+          </div>
         </div>
       </header>
 

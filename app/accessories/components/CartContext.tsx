@@ -16,6 +16,7 @@ interface CartContextType {
   items: CartItem[];
   addToCart: (item: CartItem) => void;
   removeFromCart: (id: number) => void;
+  updateQuantity: (id: number, quantity: number) => void;
   total: number;
   isLoggedIn: boolean;
   setIsLoggedIn: (value: boolean) => void;
@@ -87,6 +88,19 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     toast.success('Item removed from cart');
   };
 
+  const updateQuantity = (id: number, quantity: number) => {
+    if (quantity < 1) {
+      removeFromCart(id);
+      return;
+    }
+    
+    setItems(prevItems =>
+      prevItems.map(item =>
+        item.id === id ? { ...item, quantity } : item
+      )
+    );
+  };
+
   const clearPendingItems = () => {
     setPendingItems([]);
   };
@@ -99,6 +113,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         items,
         addToCart,
         removeFromCart,
+        updateQuantity,
         total,
         isLoggedIn,
         setIsLoggedIn,
