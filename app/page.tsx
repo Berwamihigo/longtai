@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Footer from "./components/footer";
 import HomeSlider from "./components/hero";
 import DesktopNav from "./components/navbar";
@@ -9,6 +10,7 @@ import ContactSection from "./components/new/contact-us";
 import CarReview from "./components/car-review";
 import dynamic from "next/dynamic";
 import FindUs from "./components/find-us";
+import Preloader from "./components/preloader";
 
 const WhyChooseUs = dynamic(() => import("./components/new/why-choose-us"), {
   ssr: false,
@@ -62,18 +64,50 @@ const sampleCars = [
 ];
 
 export default function Home() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Wait for all images to load
+    const loadImages = async () => {
+      const imagePromises = sampleCars.flatMap(car => 
+        car.images.map(src => {
+          return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.src = src;
+            img.onload = resolve;
+            img.onerror = reject;
+          });
+        })
+      );
+
+      try {
+        await Promise.all(imagePromises);
+        // Add a small delay to ensure smooth transition
+        setTimeout(() => setIsLoading(false), 500);
+      } catch (error) {
+        console.error('Error loading images:', error);
+        setIsLoading(false);
+      }
+    };
+
+    loadImages();
+  }, []);
+
   return (
-    <div className="bg-gray-100">
-      <DesktopNav />
-      <HomeSlider />
-      <FeaturedCarTile />
-      <WhyChooseUs />
-      <ServicesOffered />
-      <PopularBrands />
-      <FindUs />
-      <CarReview cars={sampleCars} />
-      <ContactSection />
-      <Footer />
-    </div>
+    <>
+      <Preloader />
+      <div className={`bg-gray-100 ${isLoading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-500`}>
+        <DesktopNav />
+        <HomeSlider />
+        <FeaturedCarTile />
+        <WhyChooseUs />
+        <ServicesOffered />
+        <PopularBrands />
+        <FindUs />
+        <CarReview cars={sampleCars} />
+        <ContactSection />
+        <Footer />
+      </div>
+    </>
   );
 }
