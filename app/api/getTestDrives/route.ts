@@ -1,13 +1,14 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/app/firebase/config';
 import { collection, getDocs } from 'firebase/firestore';
+import { db } from "../../../lib/db";
+
 
 export async function GET() {
   try {
-    const maintenanceRef = collection(db, 'maintenance');
-    const snapshot = await getDocs(maintenanceRef);
+    const testDrivesRef = collection(db, 'test-drives');
+    const snapshot = await getDocs(testDrivesRef);
     
-    const maintenanceRequests = snapshot.docs.map(doc => ({
+    const testDrives = snapshot.docs.map(doc => ({
       id: doc.id,
       ...doc.data(),
       createdAt: doc.data().createdAt?.toDate?.() || new Date().toISOString(),
@@ -15,12 +16,12 @@ export async function GET() {
 
     return NextResponse.json({
       success: true,
-      maintenanceRequests
+      testDrives
     });
   } catch (error) {
-    console.error('Error fetching maintenance requests:', error);
+    console.error('Error fetching test drives:', error);
     return NextResponse.json(
-      { success: false, message: 'Failed to fetch maintenance requests' },
+      { success: false, message: 'Failed to fetch test drives' },
       { status: 500 }
     );
   }

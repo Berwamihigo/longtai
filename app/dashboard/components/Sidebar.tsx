@@ -32,10 +32,10 @@ const navItems = [
   },
   {
     label: "Upload Car",
-    href: "/dashboard/upload-car",
+    href: "/dashboard/upload",
     icon: <FaUpload />,
   },
-  { label: "Recent Ratings", href: "/dashboard/ratings", icon: <FaStar /> },
+  // { label: "Recent Ratings", href: "/dashboard/ratings", icon: <FaStar /> },
 ];
 
 export default function Sidebar() {

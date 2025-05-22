@@ -14,6 +14,8 @@ export async function GET(request: Request) {
     const cars = snapshot.docs.map(doc => {
       const data = doc.data();
       return {
+        id: doc.id,
+        carName: data.carName || doc.id,
         name: data.carName || doc.id,
         year: data.year || "Unknown",
         price: data.price || 0,

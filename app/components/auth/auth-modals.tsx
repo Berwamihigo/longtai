@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import NotificationToast from "../NotificationToast";
+import { useRouter } from "next/navigation";
 
 interface AuthModalsProps {
   isOpen: boolean;
@@ -27,6 +28,7 @@ const AuthModals = ({
   onClose,
   initialMode = "login",
 }: AuthModalsProps) => {
+  const router = useRouter();
   const [mode, setMode] = useState<"login" | "signup">(initialMode);
   const [formData, setFormData] = useState({
     email: "",
@@ -115,7 +117,10 @@ const AuthModals = ({
             name: "",
             confirmPassword: "",
           });
-          setTimeout(() => onClose(), 1000);
+          setTimeout(() => {
+            onClose();
+            router.push('/dashboard');
+          }, 1000);
         } else {
           showErrorNotification(data.message || "Login failed");
         }
