@@ -63,10 +63,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     if (pendingItems.length > 0) {
       addToCart(pendingItems[0]);
       setPendingItems([]);
-      toast.success('Item added to cart', {
-        position: 'bottom-right',
-        duration: 3000
-      });
     }
   };
 
@@ -91,16 +87,24 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       setItems(prevItems => {
         const existingItem = prevItems.find(i => i.id === item.id);
         if (existingItem) {
-          return prevItems.map(i =>
-            i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
-          );
+          return prevItems;
         }
         return [...prevItems, { ...item, quantity: 1 }];
       });
-      toast.success('Item added to cart', {
-        position: 'bottom-right',
-        duration: 3000
-      });
+
+      // Check if item was added (not already in cart)
+      const wasAdded = !items.some(i => i.id === item.id);
+      if (wasAdded) {
+        toast.success('Item added to cart', {
+          position: 'bottom-right',
+          duration: 3000
+        });
+      } else {
+        toast.error('Item is already in your cart', {
+          position: 'bottom-right',
+          duration: 3000
+        });
+      }
     } catch (error) {
       console.error('Error checking session:', error);
       toast.error('Failed to add item to cart. Please try again.');
