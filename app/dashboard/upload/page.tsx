@@ -153,7 +153,7 @@ export default function CarUploadPage() {
         carData.engineSize = engineSize;
       }
 
-      const saveRes = await fetch("/api/saveToFirebase", {
+      const saveRes = await fetch("/api/saveCarToFirebase", {
         method: "POST",
         body: JSON.stringify(carData),
       });
