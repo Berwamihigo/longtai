@@ -269,12 +269,15 @@ export default function MaintenancePage() {
   const handleSaveMaintenance = async (maintenanceData: MaintenanceRequest) => {
     try {
       const response = await fetch('/api/updateMaintenance', {
-        method: 'PUT',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(maintenanceData),
       });
 
-      if (!response.ok) throw new Error('Failed to update maintenance status');
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to update maintenance status');
+      }
 
       setSuccessMessage('Maintenance status updated successfully');
       
