@@ -9,6 +9,7 @@ interface ProfilePopupProps {
   user: {
     name: string;
     email: string;
+    createdAt?: string;
   };
   onLogout: () => void;
   onEditPassword: () => void;
@@ -159,7 +160,7 @@ const ProfilePopup = ({
                   transition={{ duration: 0.3, delay: 0.2 }}
                   className="text-center text-sm text-gray-500"
                 >
-                  <p>Member since {new Date().toLocaleDateString()}</p>
+                  <p>Member since {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}</p>
                 </motion.div>
               </div>
             </div>

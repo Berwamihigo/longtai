@@ -2,7 +2,7 @@
 // export const runtime = "edge";
 
 import { db } from "@/lib/db";
-import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
+import { doc, getDoc, collection, query, where, getDocs, Timestamp } from "firebase/firestore";
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
@@ -53,6 +53,11 @@ export async function POST(request: Request) {
             );
         }
 
+        // Convert Firestore Timestamp to JavaScript Date
+        const createdAt = clientData.createdAt instanceof Timestamp 
+            ? clientData.createdAt.toDate().toISOString()
+            : new Date().toISOString();
+
         let passwordMatch = false;
         try {
             passwordMatch = await bcrypt.compare(password, clientData.password);
@@ -76,6 +81,7 @@ export async function POST(request: Request) {
         cookieStore.set("session", JSON.stringify({
             email: clientData.email,
             name: clientData.name,
+            createdAt: createdAt
         }), {
             httpOnly: true,
             sameSite: "lax",
@@ -89,6 +95,7 @@ export async function POST(request: Request) {
             user: {
                 name: clientData.name,
                 email: clientData.email,
+                createdAt: createdAt
             },
         });
     } catch (error) {
