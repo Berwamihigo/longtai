@@ -3,8 +3,9 @@
 import { FaTimes, FaTrash } from 'react-icons/fa';
 import { useCart } from './CartContext';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 interface CartSidebarProps {
   isOpen: boolean;
@@ -15,35 +16,90 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
   const { items, removeFromCart, updateQuantity, total, isLoggedIn, clearCart } = useCart();
   const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const router = useRouter();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      if (isOpen) {
+        setIsCheckingAuth(true);
+        try {
+          const res = await fetch("/api/session");
+          const data = await res.json();
+          
+          if (!data.loggedIn) {
+            toast.error('Please log in to access your cart');
+            clearCart();
+            onClose();
+            router.push('/login');
+          }
+        } catch (error) {
+          console.error('Error checking authentication:', error);
+          toast.error('Failed to verify authentication');
+          onClose();
+        } finally {
+          setIsCheckingAuth(false);
+        }
+      }
+    };
+
+    checkAuth();
+  }, [isOpen, clearCart, onClose, router]);
 
   const handleImageError = (id: number) => {
     setImageErrors(prev => ({ ...prev, [id]: true }));
   };
 
   const handleQuantityChange = (id: number, newQuantity: number) => {
+    if (newQuantity < 1) return;
     updateQuantity(id, newQuantity);
   };
 
   const handleSendRequest = async () => {
-    if (!isLoggedIn) {
-      toast.error('Please log in to send item requests');
-      return;
-    }
-
     setIsSubmitting(true);
     try {
       await new Promise(resolve => setTimeout(resolve, 1000));
-      toast.success('Item request sent successfully!');
+      
+      // Show success notification for request
+      toast.success('Item request sent successfully!', {
+        position: 'bottom-right',
+        duration: 2000,
+      });
+
+      // Wait for the first notification to be visible
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Show cart cleared notification
+      toast.success('Cart cleared', {
+        position: 'bottom-right',
+        duration: 2000,
+      });
+
       clearCart();
       onClose();
     } catch (error) {
-      toast.error('Failed to send item request. Please try again.');
+      toast.error('Failed to send item request. Please try again.', {
+        position: 'bottom-right',
+        duration: 3000,
+      });
     } finally {
       setIsSubmitting(false);
     }
   };
 
   if (!isOpen) return null;
+
+  if (isCheckingAuth) {
+    return (
+      <div className="fixed inset-0 z-50">
+        <div className="absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-xl">
+          <div className="flex items-center justify-center h-full">
+            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#e5a666]"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-50">
