@@ -3,6 +3,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { sign } from 'jsonwebtoken';
+import { cookies } from 'next/headers';
+import bcrypt from 'bcryptjs';
 
 export async function POST(request: NextRequest) {
     try {
@@ -15,27 +17,33 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const adminsRef = collection(db, 'admins');
+        // Search for admin by email
+        const adminsRef = collection(db, 'admin');
         const q = query(adminsRef, where('email', '==', email));
         const querySnapshot = await getDocs(q);
 
         if (querySnapshot.empty) {
             return NextResponse.json(
                 { success: false, message: 'Invalid credentials' },
-                { status: 401 }
+                { status: 403 }
             );
         }
 
         const adminDoc = querySnapshot.docs[0];
         const adminData = adminDoc.data();
 
-        if (adminData.password !== password) {
+        
+
+        //verify password using bcrypt
+        const isPasswordValid = await bcrypt.compare(password, adminData.password);
+        if (!isPasswordValid) {
             return NextResponse.json(
-                { success: false, message: 'Invalid credentials' },
-                { status: 401 }
+                { success: false, message: 'Wrong password' },
+                { status: 405 }
             );
         }
 
+        // Create JWT token
         const token = sign(
             { 
                 id: adminDoc.id,
@@ -46,7 +54,8 @@ export async function POST(request: NextRequest) {
             { expiresIn: '1d' }
         );
 
-        return NextResponse.json({
+        // Set admin session cookie
+        const response = NextResponse.json({
             success: true,
             token,
             user: {
@@ -55,6 +64,21 @@ export async function POST(request: NextRequest) {
                 name: adminData.name
             }
         });
+
+        response.cookies.set("adminSession", JSON.stringify({
+            id: adminDoc.id,
+            email: adminData.email,
+            name: adminData.name,
+            role: 'admin'
+        }), {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            path: '/dashboard',
+            maxAge: 60 * 60 * 24 // 1 day
+        });
+
+        return response;
     } catch (error) {
         console.error('Login error:', error);
         return NextResponse.json(
