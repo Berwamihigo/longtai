@@ -26,6 +26,12 @@ type ActionModalProps = {
   onSave: (testDrive: TestDriveRequest) => Promise<void>;
 };
 
+type TestDriveDetailsModalProps = {
+  testDrive: TestDriveRequest;
+  isOpen: boolean;
+  onClose: () => void;
+};
+
 const ActionModal = ({ testDrive, isOpen, onClose, onSave }: ActionModalProps) => {
   const [status, setStatus] = useState<TestDriveStatus>(testDrive.status || 'pending');
   const [saving, setSaving] = useState(false);
@@ -112,16 +118,113 @@ const ActionModal = ({ testDrive, isOpen, onClose, onSave }: ActionModalProps) =
   );
 };
 
+const TestDriveDetailsModal = ({ testDrive, isOpen, onClose }: TestDriveDetailsModalProps) => {
+  if (!isOpen) return null;
+
+  return (
+    <div 
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+      onClick={onClose}
+    >
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        className="bg-white rounded-2xl p-6 w-full max-w-2xl shadow-xl"
+        onClick={e => e.stopPropagation()}
+      >
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold text-gray-800">Test Drive Details</h2>
+          <button
+            onClick={onClose}
+            className="text-gray-400 hover:text-gray-600 transition-colors"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <div className="space-y-6">
+          {/* Customer Information */}
+          <div>
+            <h3 className="text-lg font-semibold text-gray-800 mb-3">Customer Information</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm text-gray-500">Name</p>
+                <p className="font-medium">{testDrive.name}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Email</p>
+                <p className="font-medium">{testDrive.email}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Phone</p>
+                <p className="font-medium">{testDrive.phone}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Request Date</p>
+                <p className="font-medium">{new Date(testDrive.createdAt).toLocaleDateString()}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Vehicle Information */}
+          <div>
+            <h3 className="text-lg font-semibold text-gray-800 mb-3">Vehicle Information</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm text-gray-500">Car Model</p>
+                <p className="font-medium">{testDrive.carName}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Preferred Date</p>
+                <p className="font-medium">{new Date(testDrive.preferredDate).toLocaleDateString()}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Status</p>
+                <p className="font-medium capitalize">{testDrive.status || 'pending'}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Additional Notes */}
+          {testDrive.additionalNotes && (
+            <div>
+              <h3 className="text-lg font-semibold text-gray-800 mb-3">Additional Notes</h3>
+              <p className="text-gray-600 bg-gray-50 p-4 rounded-lg">
+                {testDrive.additionalNotes}
+              </p>
+            </div>
+          )}
+        </div>
+      </motion.div>
+    </div>
+  );
+};
+
 export default function TestDrivePage() {
   const [testDrives, setTestDrives] = useState<TestDriveRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [selectedTestDrive, setSelectedTestDrive] = useState<TestDriveRequest | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [selectedTestDriveForDetails, setSelectedTestDriveForDetails] = useState<TestDriveRequest | null>(null);
+  const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
     fetchTestDrives();
   }, []);
+
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => {
+        setSuccessMessage('');
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage]);
 
   const fetchTestDrives = async () => {
     try {
@@ -162,16 +265,17 @@ export default function TestDrivePage() {
   const handleSaveTestDrive = async (testDriveData: TestDriveRequest) => {
     try {
       const response = await fetch('/api/updateTestDrive', {
-        method: 'PUT',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id: testDriveData.id,
-          status: testDriveData.status
-        }),
+        body: JSON.stringify(testDriveData),
       });
 
-      if (!response.ok) throw new Error('Failed to update test drive status');
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to update test drive status');
+      }
 
+      setSuccessMessage('Test drive status updated successfully');
       await fetchTestDrives();
     } catch (error) {
       console.error('Error updating test drive:', error);
@@ -194,11 +298,30 @@ export default function TestDrivePage() {
     }
   };
 
+  const handleRowClick = (testDrive: TestDriveRequest) => {
+    setSelectedTestDriveForDetails(testDrive);
+    setIsDetailsModalOpen(true);
+  };
+
   return (
     <div className="p-6 lg:p-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-800">Test Drive Requests</h1>
       </div>
+
+      {successMessage && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          className="mb-6 bg-green-50 border border-green-200 rounded-lg p-4 text-green-600 flex items-center gap-2"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
+          {successMessage}
+        </motion.div>
+      )}
 
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
@@ -231,14 +354,18 @@ export default function TestDrivePage() {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Preferred Date</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Notes</th>
+                  {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Notes</th> */}
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {testDrives.map((testDrive) => (
-                  <tr key={testDrive.id} className="hover:bg-gray-50 transition-colors">
+                  <tr 
+                    key={testDrive.id} 
+                    className="hover:bg-gray-50 transition-colors cursor-pointer"
+                    onClick={() => handleRowClick(testDrive)}
+                  >
                     <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{testDrive.carName}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-gray-600">
                       {new Date(testDrive.preferredDate).toLocaleDateString()}
@@ -248,7 +375,7 @@ export default function TestDrivePage() {
                       <div className="text-gray-500 text-sm">{testDrive.email}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-gray-600">{testDrive.phone}</td>
-                    <td className="px-6 py-4 text-gray-600 max-w-md truncate">{testDrive.additionalNotes}</td>
+                    {/* <td className="px-6 py-4 text-gray-600 max-w-md truncate">{testDrive.additionalNotes}</td> */}
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(testDrive.status)}`}>
                         {(testDrive.status || 'pending').charAt(0).toUpperCase() + (testDrive.status || 'pending').slice(1)}
@@ -256,9 +383,12 @@ export default function TestDrivePage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <button
-                        onClick={() => handleEditTestDrive(testDrive)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEditTestDrive(testDrive);
+                        }}
                         className="text-blue-600 hover:text-blue-800 transition-colors p-2 rounded-lg hover:bg-blue-50"
-                        title="View Details"
+                        title="Update Status"
                       >
                         <FaPen className="w-4 h-4" />
                       </button>
@@ -281,6 +411,19 @@ export default function TestDrivePage() {
               setSelectedTestDrive(null);
             }}
             onSave={handleSaveTestDrive}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {selectedTestDriveForDetails && (
+          <TestDriveDetailsModal
+            testDrive={selectedTestDriveForDetails}
+            isOpen={isDetailsModalOpen}
+            onClose={() => {
+              setIsDetailsModalOpen(false);
+              setSelectedTestDriveForDetails(null);
+            }}
           />
         )}
       </AnimatePresence>
