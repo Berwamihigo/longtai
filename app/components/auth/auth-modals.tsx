@@ -122,7 +122,7 @@ const AuthModals = ({
           onLoginSuccess?.();
           setTimeout(() => {
             onClose();
-            router.push('/dashboard');
+            router.push('/');
           }, 1000);
         } else {
           showErrorNotification(data.message || "Login failed");

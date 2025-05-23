@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Sidebar from './components/Sidebar';
 import { FaCar, FaUsers } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 

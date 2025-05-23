@@ -1,8 +1,10 @@
 "use client";
 import React, { useState } from "react";
 import NotificationToast from "../components/NotificationToast";
+import { useRouter } from "next/navigation";
 
 export default function AuthenticatePage() {
+  const router = useRouter();
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [formData, setFormData] = useState({
     email: "",
@@ -87,6 +89,7 @@ export default function AuthenticatePage() {
             confirmPassword: "",
           });
           // Optionally redirect or refresh here
+          router.push("/");
         } else {
           showErrorNotification(data.message || "Login failed");
         }
