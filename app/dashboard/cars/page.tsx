@@ -4,6 +4,14 @@ import { useEffect, useState } from 'react';
 import { FaPen, FaPlus } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 
+type ToastType = 'success' | 'error';
+
+type Toast = {
+  id: number;
+  type: ToastType;
+  message: string;
+};
+
 type Car = {
   id: string;
   carName: string;
@@ -423,10 +431,19 @@ export default function CarsPage() {
   const [error, setError] = useState('');
   const [selectedCar, setSelectedCar] = useState<Car | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [toasts, setToasts] = useState<Toast[]>([]);
 
   useEffect(() => {
     fetchCars();
   }, []);
+
+  const addToast = (type: ToastType, message: string) => {
+    const id = Date.now();
+    setToasts(prev => [...prev, { id, type, message }]);
+    setTimeout(() => {
+      setToasts(prev => prev.filter(toast => toast.id !== id));
+    }, 3000);
+  };
 
   const fetchCars = async () => {
     try {
@@ -472,19 +489,49 @@ export default function CarsPage() {
       // Close the modal
       setIsModalOpen(false);
       
-      // Show success message
-      alert('Car updated successfully');
+      // Show success toast
+      addToast('success', 'Car updated successfully');
       
       // Refresh the cars list
       await fetchCars();
     } catch (error) {
       console.error('Error updating car:', error);
-      alert('Failed to update car: ' + (error as Error).message);
+      addToast('error', 'Failed to update car: ' + (error as Error).message);
     }
   };
 
   return (
     <div className="p-6 lg:p-8">
+      {/* Toast Notifications */}
+      <div className="fixed top-4 right-4 z-50 space-y-2">
+        <AnimatePresence>
+          {toasts.map((toast) => (
+            <motion.div
+              key={toast.id}
+              initial={{ opacity: 0, y: -20, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -20, scale: 0.95 }}
+              className={`rounded-lg shadow-lg p-4 flex items-center gap-2 ${
+                toast.type === 'success' 
+                  ? 'bg-green-50 border border-green-200 text-green-700'
+                  : 'bg-red-50 border border-red-200 text-red-700'
+              }`}
+            >
+              {toast.type === 'success' ? (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              ) : (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              )}
+              {toast.message}
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
+
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-800">Cars Management</h1>
       </div>

@@ -26,6 +26,12 @@ type ActionModalProps = {
   onSave: (maintenance: MaintenanceRequest) => Promise<void>;
 };
 
+type MaintenanceDetailsModalProps = {
+  maintenance: MaintenanceRequest;
+  isOpen: boolean;
+  onClose: () => void;
+};
+
 const ActionModal = ({ maintenance, isOpen, onClose, onSave }: ActionModalProps) => {
   const [status, setStatus] = useState<MaintenanceStatus>(maintenance.status || 'pending');
   const [saving, setSaving] = useState(false);
@@ -112,16 +118,117 @@ const ActionModal = ({ maintenance, isOpen, onClose, onSave }: ActionModalProps)
   );
 };
 
+const MaintenanceDetailsModal = ({ maintenance, isOpen, onClose }: MaintenanceDetailsModalProps) => {
+  if (!isOpen) return null;
+
+  return (
+    <div 
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+      onClick={onClose}
+    >
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        className="bg-white rounded-2xl p-6 w-full max-w-2xl shadow-xl"
+        onClick={e => e.stopPropagation()}
+      >
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold text-gray-800">Maintenance Details</h2>
+          <button
+            onClick={onClose}
+            className="text-gray-400 hover:text-gray-600 transition-colors"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <div className="space-y-6">
+          {/* Customer Information */}
+          <div>
+            <h3 className="text-lg font-semibold text-gray-800 mb-3">Customer Information</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm text-gray-500">Name</p>
+                <p className="font-medium">{maintenance.name}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Email</p>
+                <p className="font-medium">{maintenance.email}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Phone</p>
+                <p className="font-medium">{maintenance.phone}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Request Date</p>
+                <p className="font-medium">{new Date(maintenance.createdAt).toLocaleDateString()}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Vehicle Information */}
+          <div>
+            <h3 className="text-lg font-semibold text-gray-800 mb-3">Vehicle Information</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm text-gray-500">Car Model</p>
+                <p className="font-medium">{maintenance.carModel}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Service Type</p>
+                <p className="font-medium capitalize">{maintenance.serviceType}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Preferred Date</p>
+                <p className="font-medium">{new Date(maintenance.preferredDate).toLocaleDateString()}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Status</p>
+                <p className="font-medium capitalize">{maintenance.status || 'pending'}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Additional Notes */}
+          {maintenance.additionalNotes && (
+            <div>
+              <h3 className="text-lg font-semibold text-gray-800 mb-3">Additional Notes</h3>
+              <p className="text-gray-600 bg-gray-50 p-4 rounded-lg">
+                {maintenance.additionalNotes}
+              </p>
+            </div>
+          )}
+        </div>
+      </motion.div>
+    </div>
+  );
+};
+
 export default function MaintenancePage() {
   const [maintenanceRequests, setMaintenanceRequests] = useState<MaintenanceRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [selectedMaintenance, setSelectedMaintenance] = useState<MaintenanceRequest | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [selectedMaintenanceForDetails, setSelectedMaintenanceForDetails] = useState<MaintenanceRequest | null>(null);
+  const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
     fetchMaintenanceRequests();
   }, []);
+
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => {
+        setSuccessMessage('');
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage]);
 
   const fetchMaintenanceRequests = async () => {
     try {
@@ -161,7 +268,7 @@ export default function MaintenancePage() {
 
   const handleSaveMaintenance = async (maintenanceData: MaintenanceRequest) => {
     try {
-      const response = await fetch(`/api/updateMaintenance/${maintenanceData.id}`, {
+      const response = await fetch('/api/updateMaintenance', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(maintenanceData),
@@ -169,7 +276,8 @@ export default function MaintenancePage() {
 
       if (!response.ok) throw new Error('Failed to update maintenance status');
 
-      // Refresh the maintenance requests list
+      setSuccessMessage('Maintenance status updated successfully');
+      
       await fetchMaintenanceRequests();
     } catch (error) {
       console.error('Error updating maintenance:', error);
@@ -192,11 +300,30 @@ export default function MaintenancePage() {
     }
   };
 
+  const handleRowClick = (maintenance: MaintenanceRequest) => {
+    setSelectedMaintenanceForDetails(maintenance);
+    setIsDetailsModalOpen(true);
+  };
+
   return (
     <div className="p-6 lg:p-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-800">Maintenance Requests</h1>
       </div>
+
+      {successMessage && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          className="mb-6 bg-green-50 border border-green-200 rounded-lg p-4 text-green-600 flex items-center gap-2"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
+          {successMessage}
+        </motion.div>
+      )}
 
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
@@ -236,7 +363,11 @@ export default function MaintenancePage() {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {maintenanceRequests.map((maintenance) => (
-                  <tr key={maintenance.id} className="hover:bg-gray-50 transition-colors">
+                  <tr 
+                    key={maintenance.id} 
+                    className="hover:bg-gray-50 transition-colors cursor-pointer"
+                    onClick={() => handleRowClick(maintenance)}
+                  >
                     <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{maintenance.carModel}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-gray-600 capitalize">{maintenance.serviceType}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-gray-600">
@@ -254,9 +385,12 @@ export default function MaintenancePage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <button
-                        onClick={() => handleEditMaintenance(maintenance)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEditMaintenance(maintenance);
+                        }}
                         className="text-blue-600 hover:text-blue-800 transition-colors p-2 rounded-lg hover:bg-blue-50"
-                        title="View Details"
+                        title="Update Status"
                       >
                         <FaPen className="w-4 h-4" />
                       </button>
@@ -279,6 +413,19 @@ export default function MaintenancePage() {
               setSelectedMaintenance(null);
             }}
             onSave={handleSaveMaintenance}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {selectedMaintenanceForDetails && (
+          <MaintenanceDetailsModal
+            maintenance={selectedMaintenanceForDetails}
+            isOpen={isDetailsModalOpen}
+            onClose={() => {
+              setIsDetailsModalOpen(false);
+              setSelectedMaintenanceForDetails(null);
+            }}
           />
         )}
       </AnimatePresence>
