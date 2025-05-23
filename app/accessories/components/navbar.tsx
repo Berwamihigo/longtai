@@ -239,7 +239,7 @@ export default function DesktopNav() {
       
       {/* Desktop header */}
       <header className="desktop md:display-none">
-        <Link href="/" onClick={() => handleLinkClick('/')}>
+        <Link href="/home" onClick={() => handleLinkClick('/')}>
           <div className="image">
             <img className="logo" src="/assets/longtai.png" alt="Longtai" />
           </div>
@@ -248,7 +248,7 @@ export default function DesktopNav() {
         <div className="links">
           <ul className="nav-links">
             <li className="linked flex items-center gap-1.5">
-              <Link href="/" onClick={() => handleLinkClick('/')}>Home</Link>
+              <Link href="/home" onClick={() => handleLinkClick('/')}>Home</Link>
             </li>
             <li className="linked flex items-center gap-1.5">
               <Link href="/shopping-tools" onClick={() => handleLinkClick('/shopping-tools')}>Shop</Link>
@@ -380,7 +380,7 @@ export default function DesktopNav() {
 
       {/* Mobile nav */}
       <header className="mobile md:display-none flex justify-between items-center px-4 py-3 bg-white">
-        <Link href="/" onClick={() => handleLinkClick('/')}>
+        <Link href="/home">
           <div className="image">
             <img src="/assets/longtai.png" alt="Longtai" className="h-10" />
           </div>
@@ -417,7 +417,7 @@ export default function DesktopNav() {
           </div>
           <div className="flex flex-col gap-6 mt-10 text-lg font-medium text-gray-800">
             <span className="flex justify-between items-center cursor-pointer">
-              <Link href="/" onClick={() => handleLinkClick('/')}>Home</Link>
+              <Link href="/home">Home</Link>
             </span>
             <span className="flex justify-between items-center cursor-pointer">
               <Link href="/shopping-tools" onClick={() => handleLinkClick('/shopping-tools')}>Shop</Link>

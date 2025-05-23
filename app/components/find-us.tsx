@@ -60,7 +60,7 @@ export default function FindUs() {
       country: "Ethiopia",
       flag: "🇪🇹",
       mapUrl: "https://www.google.com/maps/embed?pb=...",
-      image: "/countries/ethiopia.jpg",
+      image: "/countries/ethiopiad.png",
       phone: "+251911123456",
       email: "info@ethiopia.autozone.com",
       services: ["Car Sales", "Car Rentals", "Accessories Shopping"],

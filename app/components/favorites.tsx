@@ -83,25 +83,27 @@ export default function FavoriteTray({
 
   const fetchFavorites = async (email: string) => {
     try {
-      const favRes = await fetch(`/api/favorites?email=${encodeURIComponent(email)}`);
+      const favRes = await fetch(
+        `/api/favorites?email=${encodeURIComponent(email)}`
+      );
       const favData = await favRes.json();
-      console.log('Favorites API response:', favData);
+      console.log("Favorites API response:", favData);
 
       if (favData.success) {
         setFavorites(favData.favorites);
         const details: Record<string, CarDetails> = {};
         for (const fav of favData.favorites) {
-          console.log('Processing favorite:', fav);
+          console.log("Processing favorite:", fav);
           const carRes = await fetch(
             `/api/getparticular?name=${encodeURIComponent(fav.carName)}`
           );
           const carData = await carRes.json();
-          console.log('Car details response:', carData);
+          console.log("Car details response:", carData);
           if (carData.success) {
             details[fav.carName] = carData.data;
           }
         }
-        console.log('Final car details:', details);
+        console.log("Final car details:", details);
         setCarDetails(details);
       }
     } catch (error) {
@@ -129,7 +131,9 @@ export default function FavoriteTray({
       }
 
       const res = await fetch(
-        `/api/favorites?email=${encodeURIComponent(sessionData.user.email)}&carName=${encodeURIComponent(carName)}`,
+        `/api/favorites?email=${encodeURIComponent(
+          sessionData.user.email
+        )}&carName=${encodeURIComponent(carName)}`,
         { method: "DELETE" }
       );
       const data = await res.json();
@@ -161,10 +165,7 @@ export default function FavoriteTray({
 
   return (
     <div className="fixed inset-0 z-[50000] flex justify-end">
-      <div
-        className="fixed inset-0 bg-black/50"
-        onClick={onClose}
-      />
+      <div className="fixed inset-0 bg-black/50" onClick={onClose} />
       <motion.div
         initial={{ x: "100%" }}
         animate={{ x: 0 }}
@@ -190,36 +191,42 @@ export default function FavoriteTray({
           ) : (
             <div className="space-y-4">
               {favorites.map((car) => (
-                <div
-                  key={car.carName}
-                  className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg"
-                >
-                  <img
-                    src={carDetails[car.carName]?.mainImageUrl}
-                    alt={car.carName}
-                    className="w-20 h-20 object-cover rounded"
-                  />
-                  <div className="flex-1">
-                    <Link
-                      href={`/view?name=${encodeURIComponent(car.carName)}`}
-                      className="text-lg font-semibold text-gray-900 hover:text-[#f1b274] transition-colors duration-300 inline-block hover:translate-x-1"
-                    >
-                      {car.carName}
-                    </Link>
-                    <p className="text-sm text-gray-500">{carDetails[car.carName]?.powerType === "Electric" ? "Electric" : carDetails[car.carName]?.powerType === "Hybrid" ? "Hybrid" : "Gas"} • {carDetails[car.carName]?.year}</p>
-                  </div>
-                  <button
-                    onClick={() => handleRemoveFavorite(car.carName)}
-                    disabled={removingFavorite === car.carName}
-                    className="text-red-500 hover:text-red-700 disabled:opacity-50"
+                <Link href={`/view?name=${encodeURIComponent(car.carName)}`}>
+                  <div
+                    key={car.carName}
+                    className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg"
                   >
-                    {removingFavorite === car.carName ? (
-                      <RiLoader4Line className="animate-spin" />
-                    ) : (
-                      <RiCloseLine size={20} />
-                    )}
-                  </button>
-                </div>
+                    <img
+                      src={carDetails[car.carName]?.mainImageUrl}
+                      alt={car.carName}
+                      className="w-20 h-20 object-cover rounded"
+                    />
+                    <div className="flex-1">
+                      <span className="text-lg font-semibold text-gray-900 hover:text-[#f1b274] transition-colors duration-300 inline-block hover:translate-x-1">
+                        {car.carName}
+                      </span>
+                      <p className="text-sm text-gray-500">
+                        {carDetails[car.carName]?.powerType === "Electric"
+                          ? "Electric"
+                          : carDetails[car.carName]?.powerType === "Hybrid"
+                          ? "Hybrid"
+                          : "Gas"}{" "}
+                        • {carDetails[car.carName]?.year}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => handleRemoveFavorite(car.carName)}
+                      disabled={removingFavorite === car.carName}
+                      className="text-red-500 hover:text-red-700 disabled:opacity-50"
+                    >
+                      {removingFavorite === car.carName ? (
+                        <RiLoader4Line className="animate-spin" />
+                      ) : (
+                        <RiCloseLine size={20} />
+                      )}
+                    </button>
+                  </div>
+                </Link>
               ))}
             </div>
           )}
