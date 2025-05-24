@@ -39,7 +39,7 @@ export default function RootLayout({
           content="VEuFtkOQlQ_46YEYNo0EjQEN7e00NYO7QVrmvRtiAKg"
         />
         <link rel="shortcut icon" href="longtaiico.ico" type="image/x-icon" />
-        <link rel="icon" type="image/png" href="/assets/longtaiafc.png" />
+        <link rel="icon" type="image/png" href="/assets/longtaiico.ico" />
 
         <meta
           name="keywords"
