@@ -21,56 +21,56 @@ const accessories: Accessory[] = [
     id: 1,
     name: "Premium Seat Covers",
     price: 180000,
-    image: "/assets/accessories/car-seats.jpg",
+    image: "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1748080028/longtai/huvnkodbgz9vup2kx4k2.jpg",
     category: "Interior"
   },
   {
     id: 2,
     name: "All-Weather Floor Mats",
     price: 35000,
-    image: "/assets/accessories/car-mats.jpg",
+    image: "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1748080028/longtai/ebmugnjc4sq0idhkk2ye.jpg",
     category: "Interior"
   },
   {
     id: 3,
     name: "Leather Steering Wheel Cover",
     price: 12000,
-    image: "/assets/accessories/steering-cover.jpg",
+    image: "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1748080029/longtai/tspbk0s3zyzrxvtzxdag.jpg",
     category: "Interior"
   },
   {
     id: 4,
     name: "Universal Sunshade",
     price: 40000,
-    image: "/assets/accessories/sunshade.jpg",
+    image: "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1748080029/longtai/cf32qgft280curhx2m8k.jpg",
     category: "Exterior"
   },
   {
     id: 5,
     name: "HD Dash Cam",
     price: 120000,
-    image: "/assets/accessories/dash-cam.jpg",
+    image: "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1748080028/longtai/iikawopj5hxsahjtj3d9.jpg",
     category: "Electronics"
   },
   {
     id: 6,
     name: "Fast Wireless Car Charger",
     price: 12000,
-    image: "/assets/accessories/car-charger.jpg",
+    image: "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1748080028/longtai/xy69ldvwamndd8rrah6b.jpg",
     category: "Electronics"
   },
   {
     id: 7,
     name: "Ambient LED Interior Kit",
     price: 65000,
-    image: "/assets/accessories/led-lights.jpg",
+    image: "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1748080029/longtai/wsr4bqkr9o36ez3ypuej.jpg",
     category: "Interior"
   },
   {
     id: 8,
     name: "Universal Phone Mount",
     price: 8000,
-    image: "/assets/accessories/phone-mount.jpg",
+    image: "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1748080029/longtai/wfd4ojtsfirvonh1648k.jpg",
     category: "Electronics"
   }
 ];

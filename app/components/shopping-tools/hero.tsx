@@ -11,7 +11,7 @@ export default function ShoppingToolsPage() {
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: "url('/assets/back/shopping-hero.png')",
+            backgroundImage: "url('https://res.cloudinary.com/dc5mdwzoz/image/upload/v1748080029/longtai/dazlke6a8afqmkkjtzah.png')",
           }}
         />
 

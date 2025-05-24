@@ -193,7 +193,7 @@ export default function DesktopNav() {
       <header className="desktop md:display-none">
         <Link href="/home">
           <div className="image">
-            <img className="logo" src="/assets/longtai.png" alt="Longtai" />
+            <img className="logo" src="https://res.cloudinary.com/dc5mdwzoz/image/upload/v1748080029/longtai/ameow5z2agjkshszvkkb.png" alt="Longtai" />
           </div>
         </Link>
 
@@ -325,7 +325,7 @@ export default function DesktopNav() {
       <header className="mobile md:display-none flex justify-between items-center px-4 py-3 bg-white">
         <Link href="/home">
           <div className="image">
-            <img src="/assets/longtai.png" alt="Longtai" className="h-10" />
+            <img src="https://res.cloudinary.com/dc5mdwzoz/image/upload/v1748080029/longtai/ameow5z2agjkshszvkkb.png" alt="Longtai" className="h-10" />
           </div>
         </Link>
         <div className="icon">

@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   description:
     "Longtai Auto is a company that specialized in car sales in rwanda",
   icons: {
-    icon: "/longtaiico.ico",
+    icon: "/longtai.ico",
   },
 };
 
@@ -38,8 +38,6 @@ export default function RootLayout({
           name="google-site-verification"
           content="VEuFtkOQlQ_46YEYNo0EjQEN7e00NYO7QVrmvRtiAKg"
         />
-        <link rel="shortcut icon" href="longtaiico.ico" type="image/x-icon" />
-        <link rel="icon" type="image/png" href="/assets/longtaiico.ico" />
 
         <meta
           name="keywords"

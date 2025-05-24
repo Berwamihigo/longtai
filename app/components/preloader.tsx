@@ -35,7 +35,7 @@ export default function Preloader() {
             className="relative w-48 h-48"
           >
             <Image
-              src="/assets/longtai.png"
+              src="https://res.cloudinary.com/dc5mdwzoz/image/upload/v1748080029/longtai/ameow5z2agjkshszvkkb.png"
               alt="Longtai Logo"
               fill
               className="object-contain"
