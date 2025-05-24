@@ -38,7 +38,7 @@ export default function RootLayout({
           name="google-site-verification"
           content="VEuFtkOQlQ_46YEYNo0EjQEN7e00NYO7QVrmvRtiAKg"
         />
-        <link rel="shortcut icon" href="longtai.png" type="image/x-icon" />
+        <link rel="shortcut icon" href="longtaiico.ico" type="image/x-icon" />
         <link rel="icon" type="image/png" href="/assets/longtaiafc.png" />
 
         <meta
