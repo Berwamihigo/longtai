@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const brands = [
-  { image: "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1747650957/cars/sub/nmn4vbdmm7d8axwuujou.png" },
   { image: "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1747650958/cars/sub/ldthdjz8llplmbwlzpat.png" },
   { image: "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1747572152/cars/sub/ahit2qbswac4tbwqnxaz.png" },
   { image: "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1747572152/cars/sub/gnlaochhxwmqiqsjzhpo.png" },
@@ -12,7 +11,6 @@ const brands = [
   { image: "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1747650957/cars/sub/dzwnyilvt1pbcah487nj.png" },
   { image: "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1747650957/cars/sub/m7topwhakr3oji6zolhc.png" },
   { image: "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1747650959/cars/sub/w2s6k3aftdlppt6f1qvx.png" },
-  { image: "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1747650963/cars/sub/haihtt1lhm9zcnalp7q2.png" },
   { image: "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1747650959/cars/sub/ob6yan3m82zzhwnrld2l.png" },
   { image: "https://res.cloudinary.com/dc5mdwzoz/image/upload/v1747650957/cars/sub/c7i2yly6xlzb9tgb3vmp.png" }
 ];
