@@ -19,6 +19,7 @@ import {
 import { IoSpeedometerOutline, IoColorPaletteOutline } from "react-icons/io5";
 import FavoriteButton from "./FavoriteButton";
 import ShareButton from "./ShareButton";
+import Link from "next/link";
 
 type CarData = {
   mainImageUrl: string;
@@ -356,9 +357,11 @@ export default function CarCustomizer() {
                   url={window.location.href}
                   className="w-full bg-white border border-gray-200 hover:bg-gray-50 py-3 rounded-lg font-medium flex items-center justify-center gap-2 transition-all"
                 />
-                <button className="w-full bg-gray-900 text-white hover:bg-gray-800 py-3 rounded-lg font-medium flex items-center justify-center gap-2 transition-all">
-                  Book Test Drive <FiChevronRight size={18} />
-                </button>
+                <Link href="/test-drive">
+                  <button className="w-full bg-gray-900 text-white hover:bg-gray-800 py-3 rounded-lg font-medium flex items-center justify-center gap-2 transition-all">
+                    Book Test Drive <FiChevronRight size={18} />
+                  </button>
+                </Link>
               </div>
             </motion.div>
           </div>
