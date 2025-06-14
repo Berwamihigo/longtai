@@ -328,11 +328,18 @@ export default function DesktopNav() {
             <img src="https://res.cloudinary.com/dc5mdwzoz/image/upload/v1748080029/longtai/ameow5z2agjkshszvkkb.png" alt="Longtai" className="h-10" />
           </div>
         </Link>
-        <div className="icon">
-          <RiMenuLine
-            className="ri-menu-line text-3xl"
-            onClick={() => setIsMobileMenuOpen(true)}
+        <div className="flex items-center gap-4">
+          <RiAccountCircleLine
+            className="ri-account-circle-line text-3xl"
+            onClick={handleAccountClick}
+            style={{ cursor: "pointer" }}
           />
+          <div className="icon">
+            <RiMenuLine
+              className="ri-menu-line text-3xl"
+              onClick={() => setIsMobileMenuOpen(true)}
+            />
+          </div>
         </div>
       </header>
 
